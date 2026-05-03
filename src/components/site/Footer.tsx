@@ -28,10 +28,10 @@ export function Footer() {
         <div>
           <h4 className="font-display font-semibold mb-4">Solutions</h4>
           <ul className="space-y-2.5 text-sm text-background/70">
-            <li><Link to="/services/molecular-lab" className="hover:text-background transition-colors">Molecular Lab</Link></li>
-            <li><Link to="/services/equipment" className="hover:text-background transition-colors">Equipment & Reagents</Link></li>
-            <li><Link to="/services/training" className="hover:text-background transition-colors">Training</Link></li>
-            <li><Link to="/services/consulting" className="hover:text-background transition-colors">Consulting</Link></li>
+            <li><Link to="/services/$slug" params={{ slug: "molecular-lab" }} className="hover:text-background transition-colors">Molecular Lab</Link></li>
+            <li><Link to="/services/$slug" params={{ slug: "equipment" }} className="hover:text-background transition-colors">Equipment & Reagents</Link></li>
+            <li><Link to="/services/$slug" params={{ slug: "training" }} className="hover:text-background transition-colors">Training</Link></li>
+            <li><Link to="/services/$slug" params={{ slug: "consulting" }} className="hover:text-background transition-colors">Consulting</Link></li>
           </ul>
         </div>
         <div>
