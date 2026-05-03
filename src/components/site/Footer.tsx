@@ -46,9 +46,9 @@ export function Footer() {
         <div>
           <h4 className="font-display font-semibold mb-4">Contact</h4>
           <ul className="space-y-3 text-sm text-background/70">
-            <li className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-accent-cyan" /> Abuja, Nigeria</li>
-            <li className="flex items-start gap-2"><Phone className="h-4 w-4 mt-0.5 text-accent-cyan" /> +1 (234) 567-8901</li>
-            <li className="flex items-start gap-2"><Mail className="h-4 w-4 mt-0.5 text-accent-cyan" /> info@appliedbiotech.com</li>
+            <li className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-accent-cyan" /><span>Abuja, Nigeria</span></li>
+            <li className="flex items-start gap-2"><Phone className="h-4 w-4 mt-0.5 text-accent-cyan" /><span>+1 (234) 567-8901</span></li>
+            <li className="flex items-start gap-2"><Mail className="h-4 w-4 mt-0.5 text-accent-cyan" /><span>info@appliedbiotech.com</span></li>
           </ul>
         </div>
       </div>
