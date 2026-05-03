@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as Covid19RouteImport } from './routes/covid-19'
@@ -16,6 +17,11 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/covid-19': typeof Covid19Route
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
+  '/shop': typeof ShopRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/covid-19': typeof Covid19Route
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
+  '/shop': typeof ShopRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,12 +79,20 @@ export interface FileRoutesById {
   '/covid-19': typeof Covid19Route
   '/gallery': typeof GalleryRoute
   '/news': typeof NewsRoute
+  '/shop': typeof ShopRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contact' | '/covid-19' | '/gallery' | '/news'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/covid-19'
+    | '/gallery'
+    | '/news'
+    | '/shop'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/covid-19' | '/gallery' | '/news'
+  to: '/' | '/about' | '/contact' | '/covid-19' | '/gallery' | '/news' | '/shop'
   id:
     | '__root__'
     | '/'
@@ -85,6 +101,7 @@ export interface FileRouteTypes {
     | '/covid-19'
     | '/gallery'
     | '/news'
+    | '/shop'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,10 +111,18 @@ export interface RootRouteChildren {
   Covid19Route: typeof Covid19Route
   GalleryRoute: typeof GalleryRoute
   NewsRoute: typeof NewsRoute
+  ShopRoute: typeof ShopRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/news': {
       id: '/news'
       path: '/news'
@@ -150,6 +175,7 @@ const rootRouteChildren: RootRouteChildren = {
   Covid19Route: Covid19Route,
   GalleryRoute: GalleryRoute,
   NewsRoute: NewsRoute,
+  ShopRoute: ShopRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
