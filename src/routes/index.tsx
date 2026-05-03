@@ -285,4 +285,3 @@ function CTA() {
     </section>
   );
 }
-}
