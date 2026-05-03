@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Footer } from "@/components/site/Footer";
+import { Navbar } from "@/components/site/Navbar";
 import { useReveal } from "@/hooks/use-reveal";
 import {
   ShoppingCart, Heart, User, Search, Menu, ChevronLeft, ChevronRight,
@@ -400,6 +401,7 @@ function ShopPage() {
   useReveal();
   return (
     <div className="min-h-screen bg-background">
+      <Navbar />
       <div className="pt-16 lg:pt-20">
         <ShopSubNav />
         <HeroCarousel />
