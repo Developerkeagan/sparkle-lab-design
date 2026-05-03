@@ -3,19 +3,18 @@ import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown, ShoppingBag } from "lucide-react";
 import logo from "@/assets/logo.png";
 
-const services = [
-  { label: "Molecular Lab Services", to: "/services/molecular-lab" },
-  { label: "Lab Equipments & Reagents", to: "/services/equipment" },
-  { label: "Training & Applied Biotech Institute", to: "/services/training" },
-  { label: "Consulting", to: "/services/consulting" },
+const services: { label: string; slug: string }[] = [
+  { label: "Molecular Lab Services", slug: "molecular-lab" },
+  { label: "Lab Equipments & Reagents", slug: "equipment" },
+  { label: "Training & Applied Biotech Institute", slug: "training" },
+  { label: "Consulting", slug: "consulting" },
 ];
 
-const links = [
-  { label: "About Us", to: "/about" },
-  { label: "Covid-19", to: "/covid-19" },
-  { label: "Gallery", to: "/gallery" },
-  { label: "News", to: "/news" },
-  { label: "Contact", to: "/contact" },
+const navLinks = [
+  { label: "Covid-19", to: "/covid-19" as const },
+  { label: "Gallery", to: "/gallery" as const },
+  { label: "News", to: "/news" as const },
+  { label: "Contact", to: "/contact" as const },
 ];
 
 export function Navbar() {
@@ -69,8 +68,9 @@ export function Navbar() {
               <div className="w-72 rounded-2xl bg-popover border border-border shadow-brand p-2">
                 {services.map((s) => (
                   <Link
-                    key={s.to}
-                    to={s.to}
+                    key={s.slug}
+                    to="/services/$slug"
+                    params={{ slug: s.slug }}
                     className="block px-3 py-2.5 rounded-lg text-sm text-foreground/80 hover:bg-accent hover:text-accent-foreground transition-colors"
                   >
                     {s.label}
@@ -80,7 +80,7 @@ export function Navbar() {
             </div>
           </div>
 
-          {links.slice(1).map((l) => (
+          {navLinks.map((l) => (
             <Link key={l.to} to={l.to} className="px-3 py-2 text-sm font-medium text-foreground/80 hover:text-foreground transition-colors">
               {l.label}
             </Link>
@@ -110,12 +110,12 @@ export function Navbar() {
             <Link to="/about" onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-lg text-foreground/80 hover:bg-accent">About Us</Link>
             <div className="px-3 pt-2 pb-1 text-xs uppercase tracking-wider text-muted-foreground">Services</div>
             {services.map((s) => (
-              <Link key={s.to} to={s.to} onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-lg text-foreground/80 hover:bg-accent text-sm">
+              <Link key={s.slug} to="/services/$slug" params={{ slug: s.slug }} onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-lg text-foreground/80 hover:bg-accent text-sm">
                 {s.label}
               </Link>
             ))}
             <div className="border-t border-border my-2" />
-            {links.slice(1).map((l) => (
+            {navLinks.map((l) => (
               <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="block px-3 py-2.5 rounded-lg text-foreground/80 hover:bg-accent">
                 {l.label}
               </Link>
