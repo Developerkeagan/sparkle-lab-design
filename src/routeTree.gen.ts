@@ -29,6 +29,7 @@ import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSecurityRouteImport } from './routes/admin.security'
 import { Route as AdminProfileRouteImport } from './routes/admin.profile'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminLayoutsRouteImport } from './routes/admin.layouts'
 import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
@@ -134,6 +135,11 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminMessagesRoute = AdminMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminLayoutsRoute = AdminLayoutsRouteImport.update({
   id: '/layouts',
   path: '/layouts',
@@ -172,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
   '/admin/layouts': typeof AdminLayoutsRoute
+  '/admin/messages': typeof AdminMessagesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/security': typeof AdminSecurityRoute
@@ -197,6 +204,7 @@ export interface FileRoutesByTo {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
   '/admin/layouts': typeof AdminLayoutsRoute
+  '/admin/messages': typeof AdminMessagesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/security': typeof AdminSecurityRoute
@@ -224,6 +232,7 @@ export interface FileRoutesById {
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
   '/admin/layouts': typeof AdminLayoutsRoute
+  '/admin/messages': typeof AdminMessagesRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/security': typeof AdminSecurityRoute
@@ -252,6 +261,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/collections'
     | '/admin/layouts'
+    | '/admin/messages'
     | '/admin/orders'
     | '/admin/profile'
     | '/admin/security'
@@ -277,6 +287,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/collections'
     | '/admin/layouts'
+    | '/admin/messages'
     | '/admin/orders'
     | '/admin/profile'
     | '/admin/security'
@@ -303,6 +314,7 @@ export interface FileRouteTypes {
     | '/admin/analytics'
     | '/admin/collections'
     | '/admin/layouts'
+    | '/admin/messages'
     | '/admin/orders'
     | '/admin/profile'
     | '/admin/security'
@@ -471,6 +483,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/messages': {
+      id: '/admin/messages'
+      path: '/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AdminMessagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/layouts': {
       id: '/admin/layouts'
       path: '/layouts'
@@ -507,6 +526,7 @@ interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminCollectionsRoute: typeof AdminCollectionsRoute
   AdminLayoutsRoute: typeof AdminLayoutsRoute
+  AdminMessagesRoute: typeof AdminMessagesRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProfileRoute: typeof AdminProfileRoute
   AdminSecurityRoute: typeof AdminSecurityRoute
@@ -521,6 +541,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminCollectionsRoute: AdminCollectionsRoute,
   AdminLayoutsRoute: AdminLayoutsRoute,
+  AdminMessagesRoute: AdminMessagesRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProfileRoute: AdminProfileRoute,
   AdminSecurityRoute: AdminSecurityRoute,
