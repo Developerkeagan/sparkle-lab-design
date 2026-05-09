@@ -24,6 +24,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as AdminShopRouteImport } from './routes/admin.shop'
+import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 
 const ShopRoute = ShopRouteImport.update({
@@ -101,6 +102,11 @@ const AdminShopRoute = AdminShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCollectionsRoute = AdminCollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRoute
   '/shop': typeof ShopRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/collections': typeof AdminCollectionsRoute
   '/admin/shop': typeof AdminShopRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/news': typeof NewsRoute
   '/shop': typeof ShopRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/collections': typeof AdminCollectionsRoute
   '/admin/shop': typeof AdminShopRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/news': typeof NewsRoute
   '/shop': typeof ShopRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/collections': typeof AdminCollectionsRoute
   '/admin/shop': typeof AdminShopRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/shop'
     | '/admin/analytics'
+    | '/admin/collections'
     | '/admin/shop'
     | '/services/$slug'
     | '/admin/'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/shop'
     | '/admin/analytics'
+    | '/admin/collections'
     | '/admin/shop'
     | '/services/$slug'
     | '/admin'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/shop'
     | '/admin/analytics'
+    | '/admin/collections'
     | '/admin/shop'
     | '/services/$slug'
     | '/admin/'
@@ -340,6 +352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminShopRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/collections': {
+      id: '/admin/collections'
+      path: '/collections'
+      fullPath: '/admin/collections'
+      preLoaderRoute: typeof AdminCollectionsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/analytics': {
       id: '/admin/analytics'
       path: '/analytics'
@@ -352,12 +371,14 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminCollectionsRoute: typeof AdminCollectionsRoute
   AdminShopRoute: typeof AdminShopRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminCollectionsRoute: AdminCollectionsRoute,
   AdminShopRoute: AdminShopRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
