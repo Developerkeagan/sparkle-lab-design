@@ -26,6 +26,7 @@ import { Route as EditorIndexRouteImport } from './routes/editor.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as EditorProfileRouteImport } from './routes/editor.profile'
+import { Route as EditorAcademyRouteImport } from './routes/editor.academy'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminShopRouteImport } from './routes/admin.shop'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
@@ -123,6 +124,11 @@ const EditorProfileRoute = EditorProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => EditorRoute,
 } as any)
+const EditorAcademyRoute = EditorAcademyRouteImport.update({
+  id: '/academy',
+  path: '/academy',
+  getParentRoute: () => EditorRoute,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -204,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
+  '/editor/academy': typeof EditorAcademyRoute
   '/editor/profile': typeof EditorProfileRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -232,6 +239,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
+  '/editor/academy': typeof EditorAcademyRoute
   '/editor/profile': typeof EditorProfileRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -263,6 +271,7 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
+  '/editor/academy': typeof EditorAcademyRoute
   '/editor/profile': typeof EditorProfileRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -295,6 +304,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/shop'
     | '/admin/users'
+    | '/editor/academy'
     | '/editor/profile'
     | '/services/$slug'
     | '/admin/'
@@ -323,6 +333,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/shop'
     | '/admin/users'
+    | '/editor/academy'
     | '/editor/profile'
     | '/services/$slug'
     | '/admin'
@@ -353,6 +364,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/shop'
     | '/admin/users'
+    | '/editor/academy'
     | '/editor/profile'
     | '/services/$slug'
     | '/admin/'
@@ -497,6 +509,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditorProfileRouteImport
       parentRoute: typeof EditorRoute
     }
+    '/editor/academy': {
+      id: '/editor/academy'
+      path: '/academy'
+      fullPath: '/editor/academy'
+      preLoaderRoute: typeof EditorAcademyRouteImport
+      parentRoute: typeof EditorRoute
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -610,11 +629,13 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface EditorRouteChildren {
+  EditorAcademyRoute: typeof EditorAcademyRoute
   EditorProfileRoute: typeof EditorProfileRoute
   EditorIndexRoute: typeof EditorIndexRoute
 }
 
 const EditorRouteChildren: EditorRouteChildren = {
+  EditorAcademyRoute: EditorAcademyRoute,
   EditorProfileRoute: EditorProfileRoute,
   EditorIndexRoute: EditorIndexRoute,
 }
