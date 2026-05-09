@@ -25,6 +25,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as EditorIndexRouteImport } from './routes/editor.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
+import { Route as EditorProfileRouteImport } from './routes/editor.profile'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminShopRouteImport } from './routes/admin.shop'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
@@ -117,6 +118,11 @@ const ServicesSlugRoute = ServicesSlugRouteImport.update({
   path: '/services/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EditorProfileRoute = EditorProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => EditorRoute,
+} as any)
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
@@ -198,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
+  '/editor/profile': typeof EditorProfileRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/editor/': typeof EditorIndexRoute
@@ -225,6 +232,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
+  '/editor/profile': typeof EditorProfileRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/admin': typeof AdminIndexRoute
   '/editor': typeof EditorIndexRoute
@@ -255,6 +263,7 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
+  '/editor/profile': typeof EditorProfileRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/editor/': typeof EditorIndexRoute
@@ -286,6 +295,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/shop'
     | '/admin/users'
+    | '/editor/profile'
     | '/services/$slug'
     | '/admin/'
     | '/editor/'
@@ -313,6 +323,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/shop'
     | '/admin/users'
+    | '/editor/profile'
     | '/services/$slug'
     | '/admin'
     | '/editor'
@@ -342,6 +353,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/shop'
     | '/admin/users'
+    | '/editor/profile'
     | '/services/$slug'
     | '/admin/'
     | '/editor/'
@@ -478,6 +490,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/editor/profile': {
+      id: '/editor/profile'
+      path: '/profile'
+      fullPath: '/editor/profile'
+      preLoaderRoute: typeof EditorProfileRouteImport
+      parentRoute: typeof EditorRoute
+    }
     '/admin/users': {
       id: '/admin/users'
       path: '/users'
@@ -591,10 +610,12 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface EditorRouteChildren {
+  EditorProfileRoute: typeof EditorProfileRoute
   EditorIndexRoute: typeof EditorIndexRoute
 }
 
 const EditorRouteChildren: EditorRouteChildren = {
+  EditorProfileRoute: EditorProfileRoute,
   EditorIndexRoute: EditorIndexRoute,
 }
 
