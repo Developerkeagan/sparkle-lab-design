@@ -16,6 +16,7 @@ import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as Covid19RouteImport } from './routes/covid-19'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CollectionsRouteImport } from './routes/collections'
 import { Route as AcademyRouteImport } from './routes/academy'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -56,6 +57,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CollectionsRoute = CollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AcademyRoute = AcademyRouteImport.update({
   id: '/academy',
   path: '/academy',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academy': typeof AcademyRoute
+  '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
   '/forgot-password': typeof ForgotPasswordRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academy': typeof AcademyRoute
+  '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
   '/forgot-password': typeof ForgotPasswordRoute
@@ -108,6 +116,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academy': typeof AcademyRoute
+  '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
   '/forgot-password': typeof ForgotPasswordRoute
@@ -123,6 +132,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/academy'
+    | '/collections'
     | '/contact'
     | '/covid-19'
     | '/forgot-password'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/academy'
+    | '/collections'
     | '/contact'
     | '/covid-19'
     | '/forgot-password'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/academy'
+    | '/collections'
     | '/contact'
     | '/covid-19'
     | '/forgot-password'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AcademyRoute: typeof AcademyRoute
+  CollectionsRoute: typeof CollectionsRoute
   ContactRoute: typeof ContactRoute
   Covid19Route: typeof Covid19Route
   ForgotPasswordRoute: typeof ForgotPasswordRoute
@@ -224,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/collections': {
+      id: '/collections'
+      path: '/collections'
+      fullPath: '/collections'
+      preLoaderRoute: typeof CollectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/academy': {
       id: '/academy'
       path: '/academy'
@@ -259,6 +279,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AcademyRoute: AcademyRoute,
+  CollectionsRoute: CollectionsRoute,
   ContactRoute: ContactRoute,
   Covid19Route: Covid19Route,
   ForgotPasswordRoute: ForgotPasswordRoute,
