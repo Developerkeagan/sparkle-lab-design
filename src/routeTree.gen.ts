@@ -21,6 +21,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AcademyRouteImport } from './routes/academy'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 
 const ShopRoute = ShopRouteImport.update({
@@ -83,6 +84,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ServicesSlugRoute = ServicesSlugRouteImport.update({
   id: '/services/$slug',
   path: '/services/$slug',
@@ -93,7 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academy': typeof AcademyRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
@@ -103,12 +109,12 @@ export interface FileRoutesByFullPath {
   '/news': typeof NewsRoute
   '/shop': typeof ShopRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academy': typeof AcademyRoute
-  '/admin': typeof AdminRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
@@ -118,13 +124,14 @@ export interface FileRoutesByTo {
   '/news': typeof NewsRoute
   '/shop': typeof ShopRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academy': typeof AcademyRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
@@ -134,6 +141,7 @@ export interface FileRoutesById {
   '/news': typeof NewsRoute
   '/shop': typeof ShopRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -151,12 +159,12 @@ export interface FileRouteTypes {
     | '/news'
     | '/shop'
     | '/services/$slug'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/academy'
-    | '/admin'
     | '/collections'
     | '/contact'
     | '/covid-19'
@@ -166,6 +174,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/shop'
     | '/services/$slug'
+    | '/admin'
   id:
     | '__root__'
     | '/'
@@ -181,13 +190,14 @@ export interface FileRouteTypes {
     | '/news'
     | '/shop'
     | '/services/$slug'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AcademyRoute: typeof AcademyRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CollectionsRoute: typeof CollectionsRoute
   ContactRoute: typeof ContactRoute
   Covid19Route: typeof Covid19Route
@@ -285,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/services/$slug': {
       id: '/services/$slug'
       path: '/services/$slug'
@@ -295,11 +312,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AcademyRoute: AcademyRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   CollectionsRoute: CollectionsRoute,
   ContactRoute: ContactRoute,
   Covid19Route: Covid19Route,
