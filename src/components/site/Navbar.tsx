@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, ChevronDown, ShoppingBag } from "lucide-react";
+import { Menu, X, ChevronDown, ShoppingBag, LogIn, LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { useAuth } from "@/lib/auth";
 
 const services: { label: string; slug: string }[] = [
   { label: "Molecular Lab Services", slug: "molecular-lab" },
@@ -11,6 +12,8 @@ const services: { label: string; slug: string }[] = [
 ];
 
 const navLinks = [
+  { label: "Academy", to: "/academy" as const },
+  { label: "Collections", to: "/collections" as const },
   { label: "Covid-19", to: "/covid-19" as const },
   { label: "Gallery", to: "/gallery" as const },
   { label: "News", to: "/news" as const },
@@ -21,6 +24,8 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [svcOpen, setSvcOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -93,6 +98,38 @@ export function Navbar() {
             <ShoppingBag className="h-4 w-4" />
             Shop
           </Link>
+
+          {user ? (
+            <div className="relative ml-2" onMouseEnter={() => setUserOpen(true)} onMouseLeave={() => setUserOpen(false)}>
+              <button className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2 text-sm font-medium hover:bg-accent transition-colors">
+                <span className="h-7 w-7 rounded-full gradient-brand text-brand-foreground grid place-items-center text-xs font-bold">
+                  {user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                </span>
+                <span className="hidden xl:inline">{user.name.split(" ")[0]}</span>
+                <ChevronDown className="h-3.5 w-3.5" />
+              </button>
+              <div className={`absolute top-full right-0 pt-2 transition-all ${userOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1 pointer-events-none"}`}>
+                <div className="w-56 rounded-2xl bg-popover border border-border shadow-brand p-2">
+                  <div className="px-3 py-2 text-xs text-muted-foreground border-b border-border mb-1">
+                    Signed in as <span className="font-semibold text-foreground">{user.role}</span>
+                  </div>
+                  <Link to={user.role === "admin" ? "/admin" : "/editor"} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-accent">
+                    <LayoutDashboard className="h-4 w-4" /> Dashboard
+                  </Link>
+                  <Link to={user.role === "admin" ? "/admin/profile" : "/editor/profile"} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm hover:bg-accent">
+                    <UserIcon className="h-4 w-4" /> Profile
+                  </Link>
+                  <button onClick={logout} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-destructive hover:bg-destructive/10">
+                    <LogOut className="h-4 w-4" /> Sign out
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Link to="/login" className="ml-2 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold hover:bg-accent transition-colors">
+              <LogIn className="h-4 w-4" /> Login
+            </Link>
+          )}
         </nav>
 
         <button
@@ -123,6 +160,20 @@ export function Navbar() {
             <Link to="/shop" onClick={() => setOpen(false)} className="mt-2 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-5 py-2.5 text-sm font-semibold">
               <ShoppingBag className="h-4 w-4" /> Shop
             </Link>
+            {user ? (
+              <>
+                <Link to={user.role === "admin" ? "/admin" : "/editor"} onClick={() => setOpen(false)} className="mt-2 block px-3 py-2.5 rounded-lg text-foreground/80 hover:bg-accent">
+                  Dashboard
+                </Link>
+                <button onClick={() => { logout(); setOpen(false); }} className="block w-full text-left px-3 py-2.5 rounded-lg text-destructive hover:bg-destructive/10">
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <Link to="/login" onClick={() => setOpen(false)} className="mt-2 inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm font-semibold">
+                <LogIn className="h-4 w-4" /> Login
+              </Link>
+            )}
           </div>
         </div>
       )}

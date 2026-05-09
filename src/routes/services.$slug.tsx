@@ -67,7 +67,7 @@ function ServicePage() {
           <div className="lg:col-span-3 reveal">
             <p className="text-lg text-muted-foreground leading-relaxed">{d.intro}</p>
             <ul className="mt-8 space-y-3">
-              {d.bullets.map((b) => (
+              {d.bullets.map((b: string) => (
                 <li key={b} className="flex items-start gap-3">
                   <span className="mt-0.5 h-6 w-6 rounded-full grid place-items-center gradient-brand text-brand-foreground"><Check className="h-3.5 w-3.5" /></span>
                   <span className="text-foreground">{b}</span>
