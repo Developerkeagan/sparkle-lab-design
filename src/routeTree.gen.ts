@@ -25,6 +25,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as AdminShopRouteImport } from './routes/admin.shop'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminLayoutsRouteImport } from './routes/admin.layouts'
 import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAcademyRouteImport } from './routes/admin.academy'
@@ -109,6 +110,11 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLayoutsRoute = AdminLayoutsRouteImport.update({
+  id: '/layouts',
+  path: '/layouts',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminCollectionsRoute = AdminCollectionsRouteImport.update({
   id: '/collections',
   path: '/collections',
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
+  '/admin/layouts': typeof AdminLayoutsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/shop': typeof AdminShopRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByTo {
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
+  '/admin/layouts': typeof AdminLayoutsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/shop': typeof AdminShopRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -183,6 +191,7 @@ export interface FileRoutesById {
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
+  '/admin/layouts': typeof AdminLayoutsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/shop': typeof AdminShopRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -206,6 +215,7 @@ export interface FileRouteTypes {
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
+    | '/admin/layouts'
     | '/admin/orders'
     | '/admin/shop'
     | '/services/$slug'
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
+    | '/admin/layouts'
     | '/admin/orders'
     | '/admin/shop'
     | '/services/$slug'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
+    | '/admin/layouts'
     | '/admin/orders'
     | '/admin/shop'
     | '/services/$slug'
@@ -383,6 +395,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/layouts': {
+      id: '/admin/layouts'
+      path: '/layouts'
+      fullPath: '/admin/layouts'
+      preLoaderRoute: typeof AdminLayoutsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/collections': {
       id: '/admin/collections'
       path: '/collections'
@@ -411,6 +430,7 @@ interface AdminRouteChildren {
   AdminAcademyRoute: typeof AdminAcademyRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminCollectionsRoute: typeof AdminCollectionsRoute
+  AdminLayoutsRoute: typeof AdminLayoutsRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminShopRoute: typeof AdminShopRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -420,6 +440,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAcademyRoute: AdminAcademyRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminCollectionsRoute: AdminCollectionsRoute,
+  AdminLayoutsRoute: AdminLayoutsRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminShopRoute: AdminShopRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -445,3 +466,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
