@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as NewsRouteImport } from './routes/news'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as Covid19RouteImport } from './routes/covid-19'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -26,6 +27,11 @@ const ShopRoute = ShopRouteImport.update({
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/news': typeof NewsRoute
   '/shop': typeof ShopRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/news': typeof NewsRoute
   '/shop': typeof ShopRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
   '/gallery': typeof GalleryRoute
+  '/login': typeof LoginRoute
   '/news': typeof NewsRoute
   '/shop': typeof ShopRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/covid-19'
     | '/gallery'
+    | '/login'
     | '/news'
     | '/shop'
     | '/services/$slug'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/covid-19'
     | '/gallery'
+    | '/login'
     | '/news'
     | '/shop'
     | '/services/$slug'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/covid-19'
     | '/gallery'
+    | '/login'
     | '/news'
     | '/shop'
     | '/services/$slug'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   Covid19Route: typeof Covid19Route
   GalleryRoute: typeof GalleryRoute
+  LoginRoute: typeof LoginRoute
   NewsRoute: typeof NewsRoute
   ShopRoute: typeof ShopRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/news'
       preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   Covid19Route: Covid19Route,
   GalleryRoute: GalleryRoute,
+  LoginRoute: LoginRoute,
   NewsRoute: NewsRoute,
   ShopRoute: ShopRoute,
   ServicesSlugRoute: ServicesSlugRoute,
@@ -208,3 +229,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
