@@ -1,0 +1,58 @@
+import { createFileRoute, Outlet, Navigate } from "@tanstack/react-router";
+import { DashboardShell, type NavGroup } from "@/components/dashboard/DashboardShell";
+import { useAuth } from "@/lib/auth";
+import {
+  LayoutDashboard, Layers, ShoppingBag, Settings, Globe, User, Users,
+  GraduationCap, BarChart3, ShieldAlert, Receipt, MessageSquare,
+} from "lucide-react";
+
+export const Route = createFileRoute("/admin")({
+  component: AdminLayout,
+  head: () => ({ meta: [{ title: "Admin Dashboard — Applied Biotech" }] }),
+});
+
+const groups: NavGroup[] = [
+  {
+    label: "Workspace",
+    items: [
+      { label: "Overview", to: "/admin", icon: LayoutDashboard },
+      { label: "Analytics", to: "/admin/analytics", icon: BarChart3, badge: "New" },
+    ],
+  },
+  {
+    label: "Commerce",
+    items: [
+      { label: "Shop", to: "/admin/shop", icon: ShoppingBag },
+      { label: "Collections", to: "/admin/collections", icon: Layers },
+      { label: "Orders", to: "/admin/orders", icon: Receipt, badge: "12" },
+    ],
+  },
+  {
+    label: "Content",
+    items: [
+      { label: "Academy", to: "/admin/academy", icon: GraduationCap },
+      { label: "Site Layouts", to: "/admin/layouts", icon: Globe },
+      { label: "Messages", to: "/admin/messages", icon: MessageSquare, badge: "3" },
+    ],
+  },
+  {
+    label: "Administration",
+    items: [
+      { label: "Users & Roles", to: "/admin/users", icon: Users },
+      { label: "Website Settings", to: "/admin/settings", icon: Settings },
+      { label: "Security", to: "/admin/security", icon: ShieldAlert },
+      { label: "My Profile", to: "/admin/profile", icon: User },
+    ],
+  },
+];
+
+function AdminLayout() {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" />;
+  if (user.role !== "admin") return <Navigate to="/editor" />;
+  return (
+    <DashboardShell groups={groups} brandLabel="Admin Console">
+      <Outlet />
+    </DashboardShell>
+  );
+}
