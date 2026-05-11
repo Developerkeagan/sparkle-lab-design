@@ -18,7 +18,7 @@ import pPbs from "@/assets/prod-pbs.jpg";
 import pGel from "@/assets/prod-gel.jpg";
 import pMicro from "@/assets/prod-microfuge.jpg";
 
-export const Route = createFileRoute("/shop")({
+export const Route = createFileRoute("/shop/")({
   component: ShopPage,
   head: () => ({
     meta: [
