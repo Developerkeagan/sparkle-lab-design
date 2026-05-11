@@ -1,5 +1,5 @@
-import { ReactNode, useState } from "react";
-import { X, Plus, Search, MoreVertical } from "lucide-react";
+import { ReactNode, useRef, useState } from "react";
+import { X, Plus, Search, MoreVertical, Upload, ImageIcon, Trash2 } from "lucide-react";
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <div className={`bg-card border border-border rounded-2xl shadow-soft ${className}`}>{children}</div>;
