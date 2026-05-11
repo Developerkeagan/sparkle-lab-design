@@ -34,11 +34,11 @@ function HeroCarousel() {
                 <h1 className="mt-4 font-display text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-foreground">{s.title}</h1>
                 <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-md">{s.sub}</p>
                 {(s as any).slug ? (
-                  <Link to={s.to as any} params={{ slug: (s as any).slug }} className="mt-7 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-7 py-3.5 text-sm font-bold shadow-brand hover:scale-105 transition-transform">
+                  <Link to="/shop/category/$slug" params={{ slug: (s as any).slug as string }} className="mt-7 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-7 py-3.5 text-sm font-bold shadow-brand hover:scale-105 transition-transform">
                     {s.cta} <ChevronRight className="h-4 w-4" />
                   </Link>
                 ) : (
-                  <Link to={s.to as any} className="mt-7 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-7 py-3.5 text-sm font-bold shadow-brand hover:scale-105 transition-transform">
+                  <Link to="/shop/deals" className="mt-7 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-7 py-3.5 text-sm font-bold shadow-brand hover:scale-105 transition-transform">
                     {s.cta} <ChevronRight className="h-4 w-4" />
                   </Link>
                 )}
