@@ -50,10 +50,12 @@ function Media() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Media library" subtitle="Reusable images and assets used across the site.">
-        <input ref={ref} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { upload(e.target.files); e.currentTarget.value = ""; }} />
-        <PrimaryBtn onClick={() => ref.current?.click()}><Upload className="h-4 w-4" />Upload</PrimaryBtn>
-      </PageHeader>
+      <input ref={ref} type="file" accept="image/*" multiple className="hidden" onChange={(e) => { upload(e.target.files); e.currentTarget.value = ""; }} />
+      <PageHeader
+        title="Media library"
+        subtitle="Reusable images and assets used across the site."
+        actions={<PrimaryBtn onClick={() => ref.current?.click()}><Upload className="h-4 w-4" />Upload</PrimaryBtn>}
+      />
 
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
