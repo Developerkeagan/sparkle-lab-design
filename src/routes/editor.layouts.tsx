@@ -49,7 +49,7 @@ function EditorLayouts() {
         ))}
       </div>
 
-      <LayoutModal key={editing?.id} open={!!editing} onClose={() => setEditing(null)} editing={editing} onSave={(form) => { setItems((p) => p.map((x) => x.id === form.id ? { ...form, updated: "just now" } : x)); setEditing(null); toast.success("Layout updated"); }} />
+      <LayoutModal key={editing?.id} open={!!editing} onClose={() => setEditing(null)} editing={editing} onSave={(form: Layout) => { setItems((p) => p.map((x) => x.id === form.id ? { ...form, updated: "just now" } : x)); setEditing(null); toast.success("Layout updated"); }} />
     </div>
   );
 }
