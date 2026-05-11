@@ -32,7 +32,12 @@ import { Route as ShopCheckoutRouteImport } from './routes/shop.checkout'
 import { Route as ShopCartRouteImport } from './routes/shop.cart'
 import { Route as ShopAccountRouteImport } from './routes/shop.account'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
+import { Route as EditorShopRouteImport } from './routes/editor.shop'
 import { Route as EditorProfileRouteImport } from './routes/editor.profile'
+import { Route as EditorMediaRouteImport } from './routes/editor.media'
+import { Route as EditorLayoutsRouteImport } from './routes/editor.layouts'
+import { Route as EditorDraftsRouteImport } from './routes/editor.drafts'
+import { Route as EditorCollectionsRouteImport } from './routes/editor.collections'
 import { Route as EditorAcademyRouteImport } from './routes/editor.academy'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminShopRouteImport } from './routes/admin.shop'
@@ -163,9 +168,34 @@ const ServicesSlugRoute = ServicesSlugRouteImport.update({
   path: '/services/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EditorShopRoute = EditorShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => EditorRoute,
+} as any)
 const EditorProfileRoute = EditorProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorMediaRoute = EditorMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorLayoutsRoute = EditorLayoutsRouteImport.update({
+  id: '/layouts',
+  path: '/layouts',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorDraftsRoute = EditorDraftsRouteImport.update({
+  id: '/drafts',
+  path: '/drafts',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorCollectionsRoute = EditorCollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
   getParentRoute: () => EditorRoute,
 } as any)
 const EditorAcademyRoute = EditorAcademyRouteImport.update({
@@ -265,7 +295,12 @@ export interface FileRoutesByFullPath {
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
+  '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/layouts': typeof EditorLayoutsRoute
+  '/editor/media': typeof EditorMediaRoute
   '/editor/profile': typeof EditorProfileRoute
+  '/editor/shop': typeof EditorShopRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
@@ -302,7 +337,12 @@ export interface FileRoutesByTo {
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
+  '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/layouts': typeof EditorLayoutsRoute
+  '/editor/media': typeof EditorMediaRoute
   '/editor/profile': typeof EditorProfileRoute
+  '/editor/shop': typeof EditorShopRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
@@ -343,7 +383,12 @@ export interface FileRoutesById {
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
+  '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/layouts': typeof EditorLayoutsRoute
+  '/editor/media': typeof EditorMediaRoute
   '/editor/profile': typeof EditorProfileRoute
+  '/editor/shop': typeof EditorShopRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
@@ -385,7 +430,12 @@ export interface FileRouteTypes {
     | '/admin/shop'
     | '/admin/users'
     | '/editor/academy'
+    | '/editor/collections'
+    | '/editor/drafts'
+    | '/editor/layouts'
+    | '/editor/media'
     | '/editor/profile'
+    | '/editor/shop'
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
@@ -422,7 +472,12 @@ export interface FileRouteTypes {
     | '/admin/shop'
     | '/admin/users'
     | '/editor/academy'
+    | '/editor/collections'
+    | '/editor/drafts'
+    | '/editor/layouts'
+    | '/editor/media'
     | '/editor/profile'
+    | '/editor/shop'
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
@@ -462,7 +517,12 @@ export interface FileRouteTypes {
     | '/admin/shop'
     | '/admin/users'
     | '/editor/academy'
+    | '/editor/collections'
+    | '/editor/drafts'
+    | '/editor/layouts'
+    | '/editor/media'
     | '/editor/profile'
+    | '/editor/shop'
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
@@ -657,11 +717,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/editor/shop': {
+      id: '/editor/shop'
+      path: '/shop'
+      fullPath: '/editor/shop'
+      preLoaderRoute: typeof EditorShopRouteImport
+      parentRoute: typeof EditorRoute
+    }
     '/editor/profile': {
       id: '/editor/profile'
       path: '/profile'
       fullPath: '/editor/profile'
       preLoaderRoute: typeof EditorProfileRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/media': {
+      id: '/editor/media'
+      path: '/media'
+      fullPath: '/editor/media'
+      preLoaderRoute: typeof EditorMediaRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/layouts': {
+      id: '/editor/layouts'
+      path: '/layouts'
+      fullPath: '/editor/layouts'
+      preLoaderRoute: typeof EditorLayoutsRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/drafts': {
+      id: '/editor/drafts'
+      path: '/drafts'
+      fullPath: '/editor/drafts'
+      preLoaderRoute: typeof EditorDraftsRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/collections': {
+      id: '/editor/collections'
+      path: '/collections'
+      fullPath: '/editor/collections'
+      preLoaderRoute: typeof EditorCollectionsRouteImport
       parentRoute: typeof EditorRoute
     }
     '/editor/academy': {
@@ -799,13 +894,23 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface EditorRouteChildren {
   EditorAcademyRoute: typeof EditorAcademyRoute
+  EditorCollectionsRoute: typeof EditorCollectionsRoute
+  EditorDraftsRoute: typeof EditorDraftsRoute
+  EditorLayoutsRoute: typeof EditorLayoutsRoute
+  EditorMediaRoute: typeof EditorMediaRoute
   EditorProfileRoute: typeof EditorProfileRoute
+  EditorShopRoute: typeof EditorShopRoute
   EditorIndexRoute: typeof EditorIndexRoute
 }
 
 const EditorRouteChildren: EditorRouteChildren = {
   EditorAcademyRoute: EditorAcademyRoute,
+  EditorCollectionsRoute: EditorCollectionsRoute,
+  EditorDraftsRoute: EditorDraftsRoute,
+  EditorLayoutsRoute: EditorLayoutsRoute,
+  EditorMediaRoute: EditorMediaRoute,
   EditorProfileRoute: EditorProfileRoute,
+  EditorShopRoute: EditorShopRoute,
   EditorIndexRoute: EditorIndexRoute,
 }
 
