@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
-import { Card, Toolbar, RowMenu, Modal, Field, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
+import { Card, Toolbar, RowMenu, Modal, Field, ImageUpload, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/editor/academy")({ component: () => {
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/editor/academy")({ component: () => {
     { id: "a4", title: "CRISPR Lab Workshop", level: "Advanced", status: "Draft", updated: "today" },
   ]);
   const [q, setQ] = useState(""); const [open, setOpen] = useState(false);
+  const [cover, setCover] = useState<string | undefined>(undefined);
   return <div className="space-y-6">
     <PageHeader title="Academy content" subtitle="Edit lessons, modules and course materials." />
     <Toolbar onSearch={setQ} addLabel="New course" onAdd={() => setOpen(true)} />
@@ -27,7 +28,7 @@ export const Route = createFileRoute("/editor/academy")({ component: () => {
       ))}</tbody>
     </table></div></Card>
     <Modal open={open} onClose={() => setOpen(false)} title="New course" footer={<><GhostBtn onClick={() => setOpen(false)}>Cancel</GhostBtn><PrimaryBtn onClick={() => { setOpen(false); toast.success("Created"); }}>Create</PrimaryBtn></>}>
-      <div className="space-y-4"><Field label="Title"><input className={inputCls} /></Field><Field label="Outline"><textarea rows={4} className={textareaCls} /></Field></div>
+      <div className="space-y-4"><ImageUpload label="Cover" value={cover} onChange={setCover} aspect="aspect-[16/9]" /><Field label="Title"><input className={inputCls} /></Field><Field label="Outline"><textarea rows={4} className={textareaCls} /></Field></div>
     </Modal>
   </div>;
 } });
