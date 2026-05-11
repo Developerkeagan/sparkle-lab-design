@@ -76,3 +76,53 @@ export function RowMenu({ actions }: { actions: { label: string; onClick: () => 
     </div>
   );
 }
+export function ImageUpload({ value, onChange, label = "Image", aspect = "aspect-[4/3]" }: {
+  value?: string; onChange: (dataUrl: string | undefined) => void; label?: string; aspect?: string;
+}) {
+  const ref = useRef<HTMLInputElement | null>(null);
+  function handleFile(file: File) {
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 5 * 1024 * 1024) return;
+    const r = new FileReader();
+    r.onload = () => onChange(typeof r.result === "string" ? r.result : undefined);
+    r.readAsDataURL(file);
+  }
+  return (
+    <div>
+      <span className="text-sm font-medium text-foreground">{label}</span>
+      <div
+        onClick={() => ref.current?.click()}
+        onDragOver={(e) => { e.preventDefault(); }}
+        onDrop={(e) => { e.preventDefault(); const f = e.dataTransfer.files?.[0]; if (f) handleFile(f); }}
+        className={`mt-1.5 ${aspect} rounded-xl border-2 border-dashed border-border bg-muted/30 hover:bg-muted/50 hover:border-brand cursor-pointer overflow-hidden relative transition-colors group`}
+      >
+        {value ? (
+          <>
+            <img src={value} alt="preview" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors grid place-items-center gap-2">
+              <div className="opacity-0 group-hover:opacity-100 flex gap-2 transition-opacity">
+                <span className="px-3 py-1.5 rounded-lg bg-white/95 text-foreground text-xs font-semibold inline-flex items-center gap-1.5"><Upload className="h-3.5 w-3.5" />Replace</span>
+                <button type="button" onClick={(e) => { e.stopPropagation(); onChange(undefined); }} className="px-3 py-1.5 rounded-lg bg-destructive text-destructive-foreground text-xs font-semibold inline-flex items-center gap-1.5"><Trash2 className="h-3.5 w-3.5" />Remove</button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="absolute inset-0 grid place-items-center text-center p-4">
+            <div>
+              <div className="mx-auto h-10 w-10 rounded-full bg-brand/10 text-brand grid place-items-center mb-2"><ImageIcon className="h-5 w-5" /></div>
+              <div className="text-sm font-medium text-foreground">Drop image or click to upload</div>
+              <div className="text-xs text-muted-foreground mt-0.5">PNG, JPG up to 5MB</div>
+            </div>
+          </div>
+        )}
+        <input
+          ref={ref}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); e.currentTarget.value = ""; }}
+        />
+      </div>
+    </div>
+  );
+}
