@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
-import { Card, Modal, Field, Toolbar, RowMenu, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
+import { Card, Modal, Field, Toolbar, RowMenu, ImageUpload, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
 import { Package, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import pAgarose from "@/assets/prod-agarose.jpg";
@@ -32,13 +32,13 @@ function AdminShop() {
 
   const filtered = items.filter((i) => i.name.toLowerCase().includes(q.toLowerCase()));
 
-  function save(form: Omit<Product, "id" | "img"> & { id?: string }) {
+  function save(form: Omit<Product, "id"> & { id?: string }) {
     if (form.id) {
       setItems((prev) => prev.map((p) => (p.id === form.id ? { ...p, ...form } as Product : p)));
       toast.success("Product updated");
     } else {
       const id = `p${Date.now()}`;
-      setItems((prev) => [{ id, img: pKit, ...form } as Product, ...prev]);
+      setItems((prev) => [{ id, ...form, img: form.img || pKit } as Product, ...prev]);
       toast.success("Product added");
     }
     setOpen(false); setEditing(null);
@@ -79,7 +79,7 @@ function AdminShop() {
         ))}
       </div>
 
-      <ProductModal open={open} onClose={() => { setOpen(false); setEditing(null); }} editing={editing} onSave={save} />
+      <ProductModal key={editing?.id ?? "new"} open={open} onClose={() => { setOpen(false); setEditing(null); }} editing={editing} onSave={save} />
     </div>
   );
 }
@@ -90,19 +90,16 @@ function ProductModal({ open, onClose, editing, onSave }: { open: boolean; onClo
   const [stock, setStock] = useState(editing?.stock || 0);
   const [category, setCategory] = useState(editing?.category || "Reagents");
   const [status, setStatus] = useState<"Active" | "Draft">(editing?.status || "Active");
-
-  // reset on open
-  if (open && editing && name === "" && editing.name !== "") {
-    setName(editing.name); setPrice(editing.price); setStock(editing.stock); setCategory(editing.category); setStatus(editing.status);
-  }
+  const [img, setImg] = useState<string | undefined>(editing?.img);
 
   return (
     <Modal open={open} onClose={onClose} title={editing ? "Edit product" : "New product"}
       footer={<>
         <GhostBtn onClick={onClose}>Cancel</GhostBtn>
-        <PrimaryBtn onClick={() => onSave({ id: editing?.id, name, price: Number(price), stock: Number(stock), category, status })}>Save</PrimaryBtn>
+        <PrimaryBtn onClick={() => onSave({ id: editing?.id, name, price: Number(price), stock: Number(stock), category, status, img })}>Save</PrimaryBtn>
       </>}>
       <div className="space-y-4">
+        <ImageUpload label="Product image" value={img} onChange={setImg} />
         <Field label="Product name"><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} /></Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Price ($)"><input type="number" className={inputCls} value={price} onChange={(e) => setPrice(+e.target.value)} /></Field>

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
-import { Card, Toolbar, RowMenu, Modal, Field, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
+import { Card, Toolbar, RowMenu, Modal, Field, ImageUpload, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
 import { GraduationCap, Users } from "lucide-react";
 import { toast } from "sonner";
 
@@ -19,6 +19,7 @@ function AdminAcademy() {
   const [items, setItems] = useState(seed);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  const [cover, setCover] = useState<string | undefined>(undefined);
 
   return (
     <div className="space-y-6">
@@ -63,6 +64,7 @@ function AdminAcademy() {
       <Modal open={open} onClose={() => setOpen(false)} title="New course"
         footer={<><GhostBtn onClick={() => setOpen(false)}>Cancel</GhostBtn><PrimaryBtn onClick={() => { setOpen(false); toast.success("Course created"); }}>Create</PrimaryBtn></>}>
         <div className="space-y-4">
+          <ImageUpload label="Course cover" value={cover} onChange={setCover} aspect="aspect-[16/9]" />
           <Field label="Course title"><input className={inputCls} placeholder="E.g. Advanced Microbiology" /></Field>
           <div className="grid grid-cols-3 gap-3">
             <Field label="Level"><select className={inputCls}><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></Field>

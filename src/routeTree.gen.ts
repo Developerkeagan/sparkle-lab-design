@@ -22,10 +22,22 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AcademyRouteImport } from './routes/academy'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShopIndexRouteImport } from './routes/shop.index'
 import { Route as EditorIndexRouteImport } from './routes/editor.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as ShopWishlistRouteImport } from './routes/shop.wishlist'
+import { Route as ShopSearchRouteImport } from './routes/shop.search'
+import { Route as ShopDealsRouteImport } from './routes/shop.deals'
+import { Route as ShopCheckoutRouteImport } from './routes/shop.checkout'
+import { Route as ShopCartRouteImport } from './routes/shop.cart'
+import { Route as ShopAccountRouteImport } from './routes/shop.account'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
+import { Route as EditorShopRouteImport } from './routes/editor.shop'
 import { Route as EditorProfileRouteImport } from './routes/editor.profile'
+import { Route as EditorMediaRouteImport } from './routes/editor.media'
+import { Route as EditorLayoutsRouteImport } from './routes/editor.layouts'
+import { Route as EditorDraftsRouteImport } from './routes/editor.drafts'
+import { Route as EditorCollectionsRouteImport } from './routes/editor.collections'
 import { Route as EditorAcademyRouteImport } from './routes/editor.academy'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminShopRouteImport } from './routes/admin.shop'
@@ -38,6 +50,8 @@ import { Route as AdminLayoutsRouteImport } from './routes/admin.layouts'
 import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAcademyRouteImport } from './routes/admin.academy'
+import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
+import { Route as ShopCategorySlugRouteImport } from './routes/shop.category.$slug'
 
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
@@ -104,6 +118,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopIndexRoute = ShopIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShopRoute,
+} as any)
 const EditorIndexRoute = EditorIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -114,14 +133,69 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const ShopWishlistRoute = ShopWishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopSearchRoute = ShopSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopDealsRoute = ShopDealsRouteImport.update({
+  id: '/deals',
+  path: '/deals',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopCheckoutRoute = ShopCheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopCartRoute = ShopCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopAccountRoute = ShopAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => ShopRoute,
+} as any)
 const ServicesSlugRoute = ServicesSlugRouteImport.update({
   id: '/services/$slug',
   path: '/services/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EditorShopRoute = EditorShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => EditorRoute,
+} as any)
 const EditorProfileRoute = EditorProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorMediaRoute = EditorMediaRouteImport.update({
+  id: '/media',
+  path: '/media',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorLayoutsRoute = EditorLayoutsRouteImport.update({
+  id: '/layouts',
+  path: '/layouts',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorDraftsRoute = EditorDraftsRouteImport.update({
+  id: '/drafts',
+  path: '/drafts',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorCollectionsRoute = EditorCollectionsRouteImport.update({
+  id: '/collections',
+  path: '/collections',
   getParentRoute: () => EditorRoute,
 } as any)
 const EditorAcademyRoute = EditorAcademyRouteImport.update({
@@ -184,6 +258,16 @@ const AdminAcademyRoute = AdminAcademyRouteImport.update({
   path: '/academy',
   getParentRoute: () => AdminRoute,
 } as any)
+const ShopProductIdRoute = ShopProductIdRouteImport.update({
+  id: '/product/$id',
+  path: '/product/$id',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopCategorySlugRoute = ShopCategorySlugRouteImport.update({
+  id: '/category/$slug',
+  path: '/category/$slug',
+  getParentRoute: () => ShopRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -198,7 +282,7 @@ export interface FileRoutesByFullPath {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/news': typeof NewsRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -211,10 +295,24 @@ export interface FileRoutesByFullPath {
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
+  '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/layouts': typeof EditorLayoutsRoute
+  '/editor/media': typeof EditorMediaRoute
   '/editor/profile': typeof EditorProfileRoute
+  '/editor/shop': typeof EditorShopRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/shop/account': typeof ShopAccountRoute
+  '/shop/cart': typeof ShopCartRoute
+  '/shop/checkout': typeof ShopCheckoutRoute
+  '/shop/deals': typeof ShopDealsRoute
+  '/shop/search': typeof ShopSearchRoute
+  '/shop/wishlist': typeof ShopWishlistRoute
   '/admin/': typeof AdminIndexRoute
   '/editor/': typeof EditorIndexRoute
+  '/shop/': typeof ShopIndexRoute
+  '/shop/category/$slug': typeof ShopCategorySlugRoute
+  '/shop/product/$id': typeof ShopProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -227,7 +325,6 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/news': typeof NewsRoute
-  '/shop': typeof ShopRoute
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -240,10 +337,24 @@ export interface FileRoutesByTo {
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
+  '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/layouts': typeof EditorLayoutsRoute
+  '/editor/media': typeof EditorMediaRoute
   '/editor/profile': typeof EditorProfileRoute
+  '/editor/shop': typeof EditorShopRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/shop/account': typeof ShopAccountRoute
+  '/shop/cart': typeof ShopCartRoute
+  '/shop/checkout': typeof ShopCheckoutRoute
+  '/shop/deals': typeof ShopDealsRoute
+  '/shop/search': typeof ShopSearchRoute
+  '/shop/wishlist': typeof ShopWishlistRoute
   '/admin': typeof AdminIndexRoute
   '/editor': typeof EditorIndexRoute
+  '/shop': typeof ShopIndexRoute
+  '/shop/category/$slug': typeof ShopCategorySlugRoute
+  '/shop/product/$id': typeof ShopProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -259,7 +370,7 @@ export interface FileRoutesById {
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
   '/news': typeof NewsRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -272,10 +383,24 @@ export interface FileRoutesById {
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
+  '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/layouts': typeof EditorLayoutsRoute
+  '/editor/media': typeof EditorMediaRoute
   '/editor/profile': typeof EditorProfileRoute
+  '/editor/shop': typeof EditorShopRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/shop/account': typeof ShopAccountRoute
+  '/shop/cart': typeof ShopCartRoute
+  '/shop/checkout': typeof ShopCheckoutRoute
+  '/shop/deals': typeof ShopDealsRoute
+  '/shop/search': typeof ShopSearchRoute
+  '/shop/wishlist': typeof ShopWishlistRoute
   '/admin/': typeof AdminIndexRoute
   '/editor/': typeof EditorIndexRoute
+  '/shop/': typeof ShopIndexRoute
+  '/shop/category/$slug': typeof ShopCategorySlugRoute
+  '/shop/product/$id': typeof ShopProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -305,10 +430,24 @@ export interface FileRouteTypes {
     | '/admin/shop'
     | '/admin/users'
     | '/editor/academy'
+    | '/editor/collections'
+    | '/editor/drafts'
+    | '/editor/layouts'
+    | '/editor/media'
     | '/editor/profile'
+    | '/editor/shop'
     | '/services/$slug'
+    | '/shop/account'
+    | '/shop/cart'
+    | '/shop/checkout'
+    | '/shop/deals'
+    | '/shop/search'
+    | '/shop/wishlist'
     | '/admin/'
     | '/editor/'
+    | '/shop/'
+    | '/shop/category/$slug'
+    | '/shop/product/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -321,7 +460,6 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/login'
     | '/news'
-    | '/shop'
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
@@ -334,10 +472,24 @@ export interface FileRouteTypes {
     | '/admin/shop'
     | '/admin/users'
     | '/editor/academy'
+    | '/editor/collections'
+    | '/editor/drafts'
+    | '/editor/layouts'
+    | '/editor/media'
     | '/editor/profile'
+    | '/editor/shop'
     | '/services/$slug'
+    | '/shop/account'
+    | '/shop/cart'
+    | '/shop/checkout'
+    | '/shop/deals'
+    | '/shop/search'
+    | '/shop/wishlist'
     | '/admin'
     | '/editor'
+    | '/shop'
+    | '/shop/category/$slug'
+    | '/shop/product/$id'
   id:
     | '__root__'
     | '/'
@@ -365,10 +517,24 @@ export interface FileRouteTypes {
     | '/admin/shop'
     | '/admin/users'
     | '/editor/academy'
+    | '/editor/collections'
+    | '/editor/drafts'
+    | '/editor/layouts'
+    | '/editor/media'
     | '/editor/profile'
+    | '/editor/shop'
     | '/services/$slug'
+    | '/shop/account'
+    | '/shop/cart'
+    | '/shop/checkout'
+    | '/shop/deals'
+    | '/shop/search'
+    | '/shop/wishlist'
     | '/admin/'
     | '/editor/'
+    | '/shop/'
+    | '/shop/category/$slug'
+    | '/shop/product/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -384,7 +550,7 @@ export interface RootRouteChildren {
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
   NewsRoute: typeof NewsRoute
-  ShopRoute: typeof ShopRoute
+  ShopRoute: typeof ShopRouteWithChildren
   ServicesSlugRoute: typeof ServicesSlugRoute
 }
 
@@ -481,6 +647,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop/': {
+      id: '/shop/'
+      path: '/'
+      fullPath: '/shop/'
+      preLoaderRoute: typeof ShopIndexRouteImport
+      parentRoute: typeof ShopRoute
+    }
     '/editor/': {
       id: '/editor/'
       path: '/'
@@ -495,6 +668,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/shop/wishlist': {
+      id: '/shop/wishlist'
+      path: '/wishlist'
+      fullPath: '/shop/wishlist'
+      preLoaderRoute: typeof ShopWishlistRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/search': {
+      id: '/shop/search'
+      path: '/search'
+      fullPath: '/shop/search'
+      preLoaderRoute: typeof ShopSearchRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/deals': {
+      id: '/shop/deals'
+      path: '/deals'
+      fullPath: '/shop/deals'
+      preLoaderRoute: typeof ShopDealsRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/checkout': {
+      id: '/shop/checkout'
+      path: '/checkout'
+      fullPath: '/shop/checkout'
+      preLoaderRoute: typeof ShopCheckoutRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/cart': {
+      id: '/shop/cart'
+      path: '/cart'
+      fullPath: '/shop/cart'
+      preLoaderRoute: typeof ShopCartRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/account': {
+      id: '/shop/account'
+      path: '/account'
+      fullPath: '/shop/account'
+      preLoaderRoute: typeof ShopAccountRouteImport
+      parentRoute: typeof ShopRoute
+    }
     '/services/$slug': {
       id: '/services/$slug'
       path: '/services/$slug'
@@ -502,11 +717,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/editor/shop': {
+      id: '/editor/shop'
+      path: '/shop'
+      fullPath: '/editor/shop'
+      preLoaderRoute: typeof EditorShopRouteImport
+      parentRoute: typeof EditorRoute
+    }
     '/editor/profile': {
       id: '/editor/profile'
       path: '/profile'
       fullPath: '/editor/profile'
       preLoaderRoute: typeof EditorProfileRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/media': {
+      id: '/editor/media'
+      path: '/media'
+      fullPath: '/editor/media'
+      preLoaderRoute: typeof EditorMediaRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/layouts': {
+      id: '/editor/layouts'
+      path: '/layouts'
+      fullPath: '/editor/layouts'
+      preLoaderRoute: typeof EditorLayoutsRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/drafts': {
+      id: '/editor/drafts'
+      path: '/drafts'
+      fullPath: '/editor/drafts'
+      preLoaderRoute: typeof EditorDraftsRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/collections': {
+      id: '/editor/collections'
+      path: '/collections'
+      fullPath: '/editor/collections'
+      preLoaderRoute: typeof EditorCollectionsRouteImport
       parentRoute: typeof EditorRoute
     }
     '/editor/academy': {
@@ -593,6 +843,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAcademyRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/shop/product/$id': {
+      id: '/shop/product/$id'
+      path: '/product/$id'
+      fullPath: '/shop/product/$id'
+      preLoaderRoute: typeof ShopProductIdRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/category/$slug': {
+      id: '/shop/category/$slug'
+      path: '/category/$slug'
+      fullPath: '/shop/category/$slug'
+      preLoaderRoute: typeof ShopCategorySlugRouteImport
+      parentRoute: typeof ShopRoute
+    }
   }
 }
 
@@ -630,18 +894,54 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface EditorRouteChildren {
   EditorAcademyRoute: typeof EditorAcademyRoute
+  EditorCollectionsRoute: typeof EditorCollectionsRoute
+  EditorDraftsRoute: typeof EditorDraftsRoute
+  EditorLayoutsRoute: typeof EditorLayoutsRoute
+  EditorMediaRoute: typeof EditorMediaRoute
   EditorProfileRoute: typeof EditorProfileRoute
+  EditorShopRoute: typeof EditorShopRoute
   EditorIndexRoute: typeof EditorIndexRoute
 }
 
 const EditorRouteChildren: EditorRouteChildren = {
   EditorAcademyRoute: EditorAcademyRoute,
+  EditorCollectionsRoute: EditorCollectionsRoute,
+  EditorDraftsRoute: EditorDraftsRoute,
+  EditorLayoutsRoute: EditorLayoutsRoute,
+  EditorMediaRoute: EditorMediaRoute,
   EditorProfileRoute: EditorProfileRoute,
+  EditorShopRoute: EditorShopRoute,
   EditorIndexRoute: EditorIndexRoute,
 }
 
 const EditorRouteWithChildren =
   EditorRoute._addFileChildren(EditorRouteChildren)
+
+interface ShopRouteChildren {
+  ShopAccountRoute: typeof ShopAccountRoute
+  ShopCartRoute: typeof ShopCartRoute
+  ShopCheckoutRoute: typeof ShopCheckoutRoute
+  ShopDealsRoute: typeof ShopDealsRoute
+  ShopSearchRoute: typeof ShopSearchRoute
+  ShopWishlistRoute: typeof ShopWishlistRoute
+  ShopIndexRoute: typeof ShopIndexRoute
+  ShopCategorySlugRoute: typeof ShopCategorySlugRoute
+  ShopProductIdRoute: typeof ShopProductIdRoute
+}
+
+const ShopRouteChildren: ShopRouteChildren = {
+  ShopAccountRoute: ShopAccountRoute,
+  ShopCartRoute: ShopCartRoute,
+  ShopCheckoutRoute: ShopCheckoutRoute,
+  ShopDealsRoute: ShopDealsRoute,
+  ShopSearchRoute: ShopSearchRoute,
+  ShopWishlistRoute: ShopWishlistRoute,
+  ShopIndexRoute: ShopIndexRoute,
+  ShopCategorySlugRoute: ShopCategorySlugRoute,
+  ShopProductIdRoute: ShopProductIdRoute,
+}
+
+const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -656,7 +956,7 @@ const rootRouteChildren: RootRouteChildren = {
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
   NewsRoute: NewsRoute,
-  ShopRoute: ShopRoute,
+  ShopRoute: ShopRouteWithChildren,
   ServicesSlugRoute: ServicesSlugRoute,
 }
 export const routeTree = rootRouteImport

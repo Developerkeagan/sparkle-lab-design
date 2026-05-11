@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
-import { Card, Modal, Field, Toolbar, RowMenu, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
+import { Card, Modal, Field, Toolbar, RowMenu, ImageUpload, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
 import { Layers } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,11 +21,12 @@ function AdminCollections() {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
+  const [cover, setCover] = useState<string | undefined>(undefined);
 
   function add() {
     if (!name.trim()) return toast.error("Enter a name");
     setItems((prev) => [{ id: `c${Date.now()}`, name, items: 0, status: "Draft", updated: "just now" }, ...prev]);
-    setName(""); setOpen(false); toast.success("Collection created");
+    setName(""); setCover(undefined); setOpen(false); toast.success("Collection created");
   }
 
   return (
@@ -61,8 +62,11 @@ function AdminCollections() {
 
       <Modal open={open} onClose={() => setOpen(false)} title="New collection"
         footer={<><GhostBtn onClick={() => setOpen(false)}>Cancel</GhostBtn><PrimaryBtn onClick={add}>Create</PrimaryBtn></>}>
-        <Field label="Collection name"><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} placeholder="E.g. Holiday Promo Pack" /></Field>
-        <div className="mt-4"><Field label="Description"><textarea rows={3} className={textareaCls} placeholder="Optional description" /></Field></div>
+        <div className="space-y-4">
+          <ImageUpload label="Cover image" value={cover} onChange={setCover} aspect="aspect-[16/9]" />
+          <Field label="Collection name"><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} placeholder="E.g. Holiday Promo Pack" /></Field>
+          <Field label="Description"><textarea rows={3} className={textareaCls} placeholder="Optional description" /></Field>
+        </div>
       </Modal>
     </div>
   );
