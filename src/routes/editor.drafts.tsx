@@ -52,12 +52,12 @@ function Drafts() {
         </table>
       </Card>
 
-      <DraftModal key={editing?.id ?? (creating ? "new" : "")} open={!!editing || creating} editing={editing} onClose={() => { setEditing(null); setCreating(false); }} onSave={(d) => {
+      <DraftModal key={editing?.id ?? (creating ? "new" : "")} open={!!editing || creating} editing={editing} onClose={() => { setEditing(null); setCreating(false); }} onSave={(d: any) => {
         if (editing) setItems((p) => p.map((x) => x.id === editing.id ? { ...d, id: editing.id, updated: "just now" } : x));
         else setItems((p) => [{ ...d, id: `d${Date.now()}`, updated: "just now" }, ...p]);
         setEditing(null); setCreating(false);
         toast.success("Saved");
-      }} onPublish={(d) => {
+      }} onPublish={(_d: any) => {
         if (editing) setItems((p) => p.filter((x) => x.id !== editing.id));
         setEditing(null); setCreating(false);
         toast.success("Published — moved to live content");
