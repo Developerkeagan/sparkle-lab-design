@@ -3,7 +3,7 @@ import { DashboardShell, type NavGroup } from "@/components/dashboard/DashboardS
 import { useAuth } from "@/lib/auth";
 import {
   LayoutDashboard, Layers, ShoppingBag, Settings, Globe, User, Users,
-  GraduationCap, BarChart3, ShieldAlert, Receipt, MessageSquare,
+  GraduationCap, BarChart3, ShieldAlert, Receipt, MessageSquare, Newspaper, Image, Phone, Tag,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -24,6 +24,7 @@ const groups: NavGroup[] = [
     items: [
       { label: "Shop", to: "/admin/shop", icon: ShoppingBag },
       { label: "Collections", to: "/admin/collections", icon: Layers },
+      { label: "Deal of the Week", to: "/editor/deal", icon: Tag },
       { label: "Orders", to: "/admin/orders", icon: Receipt, badge: "12" },
     ],
   },
@@ -31,6 +32,9 @@ const groups: NavGroup[] = [
     label: "Content",
     items: [
       { label: "Academy", to: "/admin/academy", icon: GraduationCap },
+      { label: "News", to: "/editor/news", icon: Newspaper },
+      { label: "Gallery", to: "/editor/gallery", icon: Image },
+      { label: "Contact Info", to: "/editor/contact", icon: Phone },
       { label: "Site Layouts", to: "/admin/layouts", icon: Globe },
       { label: "Messages", to: "/admin/messages", icon: MessageSquare, badge: "3" },
     ],

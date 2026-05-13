@@ -34,9 +34,13 @@ import { Route as ShopAccountRouteImport } from './routes/shop.account'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as EditorShopRouteImport } from './routes/editor.shop'
 import { Route as EditorProfileRouteImport } from './routes/editor.profile'
+import { Route as EditorNewsRouteImport } from './routes/editor.news'
 import { Route as EditorMediaRouteImport } from './routes/editor.media'
 import { Route as EditorLayoutsRouteImport } from './routes/editor.layouts'
+import { Route as EditorGalleryRouteImport } from './routes/editor.gallery'
 import { Route as EditorDraftsRouteImport } from './routes/editor.drafts'
+import { Route as EditorDealRouteImport } from './routes/editor.deal'
+import { Route as EditorContactRouteImport } from './routes/editor.contact'
 import { Route as EditorCollectionsRouteImport } from './routes/editor.collections'
 import { Route as EditorAcademyRouteImport } from './routes/editor.academy'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
@@ -178,6 +182,11 @@ const EditorProfileRoute = EditorProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => EditorRoute,
 } as any)
+const EditorNewsRoute = EditorNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => EditorRoute,
+} as any)
 const EditorMediaRoute = EditorMediaRouteImport.update({
   id: '/media',
   path: '/media',
@@ -188,9 +197,24 @@ const EditorLayoutsRoute = EditorLayoutsRouteImport.update({
   path: '/layouts',
   getParentRoute: () => EditorRoute,
 } as any)
+const EditorGalleryRoute = EditorGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => EditorRoute,
+} as any)
 const EditorDraftsRoute = EditorDraftsRouteImport.update({
   id: '/drafts',
   path: '/drafts',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorDealRoute = EditorDealRouteImport.update({
+  id: '/deal',
+  path: '/deal',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorContactRoute = EditorContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => EditorRoute,
 } as any)
 const EditorCollectionsRoute = EditorCollectionsRouteImport.update({
@@ -296,9 +320,13 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
   '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/contact': typeof EditorContactRoute
+  '/editor/deal': typeof EditorDealRoute
   '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/gallery': typeof EditorGalleryRoute
   '/editor/layouts': typeof EditorLayoutsRoute
   '/editor/media': typeof EditorMediaRoute
+  '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -338,9 +366,13 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
   '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/contact': typeof EditorContactRoute
+  '/editor/deal': typeof EditorDealRoute
   '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/gallery': typeof EditorGalleryRoute
   '/editor/layouts': typeof EditorLayoutsRoute
   '/editor/media': typeof EditorMediaRoute
+  '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -384,9 +416,13 @@ export interface FileRoutesById {
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
   '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/contact': typeof EditorContactRoute
+  '/editor/deal': typeof EditorDealRoute
   '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/gallery': typeof EditorGalleryRoute
   '/editor/layouts': typeof EditorLayoutsRoute
   '/editor/media': typeof EditorMediaRoute
+  '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
   '/services/$slug': typeof ServicesSlugRoute
@@ -431,9 +467,13 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/editor/academy'
     | '/editor/collections'
+    | '/editor/contact'
+    | '/editor/deal'
     | '/editor/drafts'
+    | '/editor/gallery'
     | '/editor/layouts'
     | '/editor/media'
+    | '/editor/news'
     | '/editor/profile'
     | '/editor/shop'
     | '/services/$slug'
@@ -473,9 +513,13 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/editor/academy'
     | '/editor/collections'
+    | '/editor/contact'
+    | '/editor/deal'
     | '/editor/drafts'
+    | '/editor/gallery'
     | '/editor/layouts'
     | '/editor/media'
+    | '/editor/news'
     | '/editor/profile'
     | '/editor/shop'
     | '/services/$slug'
@@ -518,9 +562,13 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/editor/academy'
     | '/editor/collections'
+    | '/editor/contact'
+    | '/editor/deal'
     | '/editor/drafts'
+    | '/editor/gallery'
     | '/editor/layouts'
     | '/editor/media'
+    | '/editor/news'
     | '/editor/profile'
     | '/editor/shop'
     | '/services/$slug'
@@ -731,6 +779,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditorProfileRouteImport
       parentRoute: typeof EditorRoute
     }
+    '/editor/news': {
+      id: '/editor/news'
+      path: '/news'
+      fullPath: '/editor/news'
+      preLoaderRoute: typeof EditorNewsRouteImport
+      parentRoute: typeof EditorRoute
+    }
     '/editor/media': {
       id: '/editor/media'
       path: '/media'
@@ -745,11 +800,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditorLayoutsRouteImport
       parentRoute: typeof EditorRoute
     }
+    '/editor/gallery': {
+      id: '/editor/gallery'
+      path: '/gallery'
+      fullPath: '/editor/gallery'
+      preLoaderRoute: typeof EditorGalleryRouteImport
+      parentRoute: typeof EditorRoute
+    }
     '/editor/drafts': {
       id: '/editor/drafts'
       path: '/drafts'
       fullPath: '/editor/drafts'
       preLoaderRoute: typeof EditorDraftsRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/deal': {
+      id: '/editor/deal'
+      path: '/deal'
+      fullPath: '/editor/deal'
+      preLoaderRoute: typeof EditorDealRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/contact': {
+      id: '/editor/contact'
+      path: '/contact'
+      fullPath: '/editor/contact'
+      preLoaderRoute: typeof EditorContactRouteImport
       parentRoute: typeof EditorRoute
     }
     '/editor/collections': {
@@ -895,9 +971,13 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 interface EditorRouteChildren {
   EditorAcademyRoute: typeof EditorAcademyRoute
   EditorCollectionsRoute: typeof EditorCollectionsRoute
+  EditorContactRoute: typeof EditorContactRoute
+  EditorDealRoute: typeof EditorDealRoute
   EditorDraftsRoute: typeof EditorDraftsRoute
+  EditorGalleryRoute: typeof EditorGalleryRoute
   EditorLayoutsRoute: typeof EditorLayoutsRoute
   EditorMediaRoute: typeof EditorMediaRoute
+  EditorNewsRoute: typeof EditorNewsRoute
   EditorProfileRoute: typeof EditorProfileRoute
   EditorShopRoute: typeof EditorShopRoute
   EditorIndexRoute: typeof EditorIndexRoute
@@ -906,9 +986,13 @@ interface EditorRouteChildren {
 const EditorRouteChildren: EditorRouteChildren = {
   EditorAcademyRoute: EditorAcademyRoute,
   EditorCollectionsRoute: EditorCollectionsRoute,
+  EditorContactRoute: EditorContactRoute,
+  EditorDealRoute: EditorDealRoute,
   EditorDraftsRoute: EditorDraftsRoute,
+  EditorGalleryRoute: EditorGalleryRoute,
   EditorLayoutsRoute: EditorLayoutsRoute,
   EditorMediaRoute: EditorMediaRoute,
+  EditorNewsRoute: EditorNewsRoute,
   EditorProfileRoute: EditorProfileRoute,
   EditorShopRoute: EditorShopRoute,
   EditorIndexRoute: EditorIndexRoute,
@@ -962,3 +1046,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
