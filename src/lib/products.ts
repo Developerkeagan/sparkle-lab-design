@@ -34,6 +34,14 @@ export const PRODUCTS: Product[] = [
   { id: "11", name: "Agarose (Molecular Grade)", price: 100000, img: pAgarose, rating: 5, category: "reagents", description: "Molecular-biology-grade agarose powder for high-resolution DNA analysis.", stock: 40 },
   { id: "12", name: "PBS 10L 10X Powdered Concentrate", price: 250000, img: pPbs, rating: 4, category: "reagents", description: "Phosphate-buffered saline 10X powdered concentrate, makes 10L.", stock: 22 },
   { id: "13", name: "10ml Disposable Pipettes (pack)", price: 25000, img: pPip, rating: 4, category: "consumables", description: "Disposable serological pipettes, pack of 50.", stock: 180 },
+  { id: "14", name: "Benchtop Microcentrifuge (12,000 rpm)", price: 850000, img: pMicro, tag: "NEW", rating: 5, category: "equipment", description: "Compact benchtop microcentrifuge with brushless motor and 24-place rotor.", stock: 8 },
+  { id: "15", name: "Adjustable Micropipette 100–1000 µL", price: 95000, oldPrice: 120000, img: pPip, tag: "SALE", rating: 5, category: "equipment", description: "Single-channel adjustable volume micropipette with autoclavable lower assembly.", stock: 24 },
+  { id: "16", name: "Mini Gel Electrophoresis System", price: 420000, img: pGel, rating: 4, category: "equipment", description: "Compact horizontal gel electrophoresis tank with combs and integrated UV-safe tray.", stock: 12 },
+  { id: "17", name: "Pipette Tip Box Refill (1000 µL)", price: 18000, img: pPip, rating: 4, category: "accessories", description: "Universal-fit refill tips, sterile, low-retention. 96 tips per rack.", stock: 200 },
+  { id: "18", name: "Tube Rack — 80 Position", price: 9500, img: pFalcon, rating: 4, category: "accessories", description: "Autoclavable polypropylene rack for 1.5/2.0 mL microtubes.", stock: 140 },
+  { id: "19", name: "Lab Notebook (Hard-bound, 200 pages)", price: 6500, img: pLab, rating: 5, category: "accessories", description: "Numbered, archival-grade research notebook with carbonless duplicate pages.", stock: 90 },
+  { id: "20", name: "RNA Isolation Mini Kit", price: 195000, img: pKit, tag: "HOT", rating: 5, category: "kits", description: "High-yield total RNA purification from cells and tissues — 50 preps.", stock: 22 },
+  { id: "21", name: "Safety Goggles (Anti-fog)", price: 7500, img: pLab, rating: 4, category: "apparel", description: "Wrap-around anti-fog safety goggles with adjustable strap.", stock: 110 },
 ];
 
 export const CATEGORIES = [

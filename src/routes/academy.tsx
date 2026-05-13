@@ -87,9 +87,9 @@ function AcademyPage() {
                     </div>
                     <div className="font-display text-xl font-bold">${c.price}</div>
                   </div>
-                  <button className="mt-4 w-full h-10 rounded-xl gradient-brand text-brand-foreground text-sm font-semibold shadow-soft hover:scale-[1.02] transition-transform">
+                  <Link to="/contact" className="mt-4 w-full h-10 rounded-xl gradient-brand text-brand-foreground text-sm font-semibold shadow-soft hover:scale-[1.02] transition-transform inline-flex items-center justify-center">
                     Enroll now
-                  </button>
+                  </Link>
                 </div>
               </article>
             ))}

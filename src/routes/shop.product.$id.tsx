@@ -32,7 +32,9 @@ function ProductDetail() {
   const { addToCart, toggleWishlist, inWishlist } = useShop();
   const [qty, setQty] = useState(1);
   const wished = inWishlist(product.id);
-  const related = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id).slice(0, 4);
+  const sameCat = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id);
+  const fillers = PRODUCTS.filter((p) => p.id !== product.id && !sameCat.some((s) => s.id === p.id));
+  const related = [...sameCat, ...fillers].slice(0, 4);
 
   return (
     <section className="px-4 sm:px-6 lg:px-8 py-10">

@@ -4,9 +4,9 @@ import { useReveal } from "@/hooks/use-reveal";
 import { ChevronLeft, ChevronRight, Truck, ShieldCheck, Headphones, RotateCcw } from "lucide-react";
 import hero1 from "@/assets/shop-hero-1.jpg";
 import hero2 from "@/assets/shop-hero-2.jpg";
-import pMicro from "@/assets/prod-microfuge.jpg";
-import { PRODUCTS, CATEGORIES, fmt } from "@/lib/products";
+import { PRODUCTS, CATEGORIES, fmt, getProduct } from "@/lib/products";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { useSiteContent } from "@/lib/site-content";
 
 export const Route = createFileRoute("/shop/")({ component: ShopHome });
 
@@ -26,12 +26,12 @@ function HeroCarousel() {
   return (
     <section className="px-4 sm:px-6 lg:px-8 pt-6">
       <div className="mx-auto max-w-7xl relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent/40 via-secondary to-accent/30 shadow-soft">
-        <div className="grid md:grid-cols-2 items-center min-h-[360px] md:min-h-[440px]">
+        <div className="relative min-h-[380px] md:min-h-[440px]">
           {slides.map((s, idx) => (
-            <div key={idx} className={`col-start-1 row-start-1 md:col-span-2 grid md:grid-cols-2 items-center transition-all duration-700 ${i === idx ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6 pointer-events-none"}`}>
-              <div className="p-8 md:p-14 order-2 md:order-1">
+            <div key={idx} className={`absolute inset-0 grid md:grid-cols-2 items-center transition-all duration-700 ${i === idx ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6 pointer-events-none"}`}>
+              <div className="p-8 md:p-14 order-2 md:order-1 relative z-10">
                 <span className="inline-block text-[11px] font-bold uppercase tracking-[0.18em] px-3 py-1 rounded-full bg-brand/10 text-brand">{s.eyebrow}</span>
-                <h1 className="mt-4 font-display text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-foreground">{s.title}</h1>
+                <h1 className="mt-4 font-display text-3xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight text-foreground">{s.title}</h1>
                 <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-md">{s.sub}</p>
                 {(s as any).slug ? (
                   <Link to="/shop/category/$slug" params={{ slug: (s as any).slug as string }} className="mt-7 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-7 py-3.5 text-sm font-bold shadow-brand hover:scale-105 transition-transform">
@@ -43,8 +43,8 @@ function HeroCarousel() {
                   </Link>
                 )}
               </div>
-              <div className="order-1 md:order-2 h-56 md:h-[440px] relative">
-                <img src={s.img} alt={s.title} width={1280} height={768} className="absolute inset-0 w-full h-full object-cover md:rounded-l-[3rem]" />
+              <div className="order-1 md:order-2 hidden md:block h-full relative">
+                <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover md:rounded-l-[3rem]" />
               </div>
             </div>
           ))}
@@ -94,7 +94,7 @@ function CategoryGrid() {
             <div className="text-xs uppercase tracking-[0.2em] text-brand font-bold">Browse</div>
             <h2 className="font-display text-2xl md:text-3xl font-bold mt-1">Shop by Category</h2>
           </div>
-          <Link to="/shop" className="text-sm font-semibold text-brand hover:underline">View all →</Link>
+          <Link to="/shop/categories" className="text-sm font-semibold text-brand hover:underline">View all →</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {CATEGORIES.map((c, i) => (
@@ -130,24 +130,27 @@ function ProductSection({ title, eyebrow, items }: { title: string; eyebrow: str
 }
 
 function DealBanner() {
+  const { deal } = useSiteContent();
+  const product = getProduct(deal.productId);
+  if (!product) return null;
   return (
     <section className="px-4 sm:px-6 lg:px-8 mt-14">
       <div className="mx-auto max-w-7xl reveal grid md:grid-cols-2 rounded-3xl overflow-hidden bg-foreground text-background relative">
         <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full gradient-brand opacity-30 blur-3xl" />
         <div className="p-10 md:p-14 relative">
-          <div className="text-xs uppercase tracking-[0.2em] text-accent-cyan font-bold">Deal of the Week</div>
-          <h3 className="mt-3 font-display text-3xl md:text-5xl font-extrabold leading-tight">Microfuge Tube <span className="gradient-text">RNAse-free 1.5ml</span></h3>
-          <p className="mt-4 text-background/70 max-w-md">Premium-grade certified tubes — perfect for sensitive PCR and RNA work. Limited stock.</p>
+          <div className="text-xs uppercase tracking-[0.2em] text-accent-cyan font-bold">{deal.eyebrow}</div>
+          <h3 className="mt-3 font-display text-3xl md:text-5xl font-extrabold leading-tight"><span className="gradient-text">{deal.headline}</span></h3>
+          <p className="mt-4 text-background/70 max-w-md">{deal.blurb}</p>
           <div className="mt-6 flex items-center gap-4">
-            <div className="font-display text-3xl font-bold text-accent-cyan">{fmt(8500)}</div>
-            <div className="text-background/50 line-through">{fmt(12000)}</div>
-            <span className="px-2 py-0.5 rounded-full bg-accent-cyan text-foreground text-xs font-bold">-30%</span>
+            <div className="font-display text-3xl font-bold text-accent-cyan">{fmt(deal.price)}</div>
+            <div className="text-background/50 line-through">{fmt(deal.oldPrice)}</div>
+            <span className="px-2 py-0.5 rounded-full bg-accent-cyan text-foreground text-xs font-bold">{deal.discountLabel}</span>
           </div>
-          <Link to="/shop/product/$id" params={{ id: "3" }} className="mt-7 inline-flex items-center gap-2 rounded-full bg-background text-foreground px-6 py-3 text-sm font-bold hover:scale-105 transition-transform">
+          <Link to="/shop/product/$id" params={{ id: deal.productId }} className="mt-7 inline-flex items-center gap-2 rounded-full bg-background text-foreground px-6 py-3 text-sm font-bold hover:scale-105 transition-transform">
             Shop the Deal <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="relative min-h-[300px]"><img src={pMicro} alt="Microfuge tubes" loading="lazy" className="absolute inset-0 w-full h-full object-cover" /></div>
+        <div className="relative min-h-[300px]"><img src={product.img} alt={product.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover" /></div>
       </div>
     </section>
   );

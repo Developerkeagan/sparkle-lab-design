@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/site/PageHero";
 import { Footer } from "@/components/site/Footer";
 import { useReveal } from "@/hooks/use-reveal";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, Clock } from "lucide-react";
+import { useSiteContent } from "@/lib/site-content";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
   component: ContactPage,
@@ -11,6 +13,7 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   useReveal();
+  const { contact } = useSiteContent();
   return (
     <div className="min-h-screen bg-background">
       <PageHero eyebrow="Contact" title={<>Let's <span className="gradient-text">talk</span></>} subtitle="Tell us about your project, training need or equipment request." />
@@ -18,9 +21,10 @@ function ContactPage() {
         <div className="mx-auto max-w-6xl grid gap-10 lg:grid-cols-2">
           <div className="reveal space-y-6">
             {[
-              { I: MapPin, t: "Visit", v: "Plot 234, Biotech Way, Abuja" },
-              { I: Phone, t: "Call", v: "+1 (234) 567-8901" },
-              { I: Mail, t: "Email", v: "info@appliedbiotech.com" },
+              { I: MapPin, t: "Visit", v: contact.address },
+              { I: Phone, t: "Call", v: contact.phone },
+              { I: Mail, t: "Email", v: contact.email },
+              { I: Clock, t: "Hours", v: contact.hours },
             ].map(({ I, t, v }) => (
               <div key={t} className="flex items-start gap-4 p-5 rounded-2xl border border-border bg-card hover:shadow-soft transition-shadow">
                 <div className="h-11 w-11 grid place-items-center rounded-xl gradient-brand text-brand-foreground"><I className="h-5 w-5" /></div>
@@ -31,7 +35,7 @@ function ContactPage() {
               </div>
             ))}
           </div>
-          <form className="reveal rounded-2xl border border-border bg-card p-7 shadow-soft space-y-4" onSubmit={(e) => e.preventDefault()}>
+          <form className="reveal rounded-2xl border border-border bg-card p-7 shadow-soft space-y-4" onSubmit={(e) => { e.preventDefault(); (e.currentTarget as HTMLFormElement).reset(); toast.success("Message sent — we'll be in touch."); }}>
             <div className="grid gap-4 sm:grid-cols-2">
               <input className="rounded-lg border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand" placeholder="First name" />
               <input className="rounded-lg border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand" placeholder="Last name" />

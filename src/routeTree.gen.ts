@@ -29,14 +29,20 @@ import { Route as ShopWishlistRouteImport } from './routes/shop.wishlist'
 import { Route as ShopSearchRouteImport } from './routes/shop.search'
 import { Route as ShopDealsRouteImport } from './routes/shop.deals'
 import { Route as ShopCheckoutRouteImport } from './routes/shop.checkout'
+import { Route as ShopCategoriesRouteImport } from './routes/shop.categories'
 import { Route as ShopCartRouteImport } from './routes/shop.cart'
 import { Route as ShopAccountRouteImport } from './routes/shop.account'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as EditorShopRouteImport } from './routes/editor.shop'
 import { Route as EditorProfileRouteImport } from './routes/editor.profile'
+import { Route as EditorNewsRouteImport } from './routes/editor.news'
 import { Route as EditorMediaRouteImport } from './routes/editor.media'
 import { Route as EditorLayoutsRouteImport } from './routes/editor.layouts'
+import { Route as EditorGalleryRouteImport } from './routes/editor.gallery'
 import { Route as EditorDraftsRouteImport } from './routes/editor.drafts'
+import { Route as EditorDealRouteImport } from './routes/editor.deal'
+import { Route as EditorContactRouteImport } from './routes/editor.contact'
 import { Route as EditorCollectionsRouteImport } from './routes/editor.collections'
 import { Route as EditorAcademyRouteImport } from './routes/editor.academy'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
@@ -153,6 +159,11 @@ const ShopCheckoutRoute = ShopCheckoutRouteImport.update({
   path: '/checkout',
   getParentRoute: () => ShopRoute,
 } as any)
+const ShopCategoriesRoute = ShopCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => ShopRoute,
+} as any)
 const ShopCartRoute = ShopCartRouteImport.update({
   id: '/cart',
   path: '/cart',
@@ -168,6 +179,11 @@ const ServicesSlugRoute = ServicesSlugRouteImport.update({
   path: '/services/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => NewsRoute,
+} as any)
 const EditorShopRoute = EditorShopRouteImport.update({
   id: '/shop',
   path: '/shop',
@@ -176,6 +192,11 @@ const EditorShopRoute = EditorShopRouteImport.update({
 const EditorProfileRoute = EditorProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorNewsRoute = EditorNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
   getParentRoute: () => EditorRoute,
 } as any)
 const EditorMediaRoute = EditorMediaRouteImport.update({
@@ -188,9 +209,24 @@ const EditorLayoutsRoute = EditorLayoutsRouteImport.update({
   path: '/layouts',
   getParentRoute: () => EditorRoute,
 } as any)
+const EditorGalleryRoute = EditorGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => EditorRoute,
+} as any)
 const EditorDraftsRoute = EditorDraftsRouteImport.update({
   id: '/drafts',
   path: '/drafts',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorDealRoute = EditorDealRouteImport.update({
+  id: '/deal',
+  path: '/deal',
+  getParentRoute: () => EditorRoute,
+} as any)
+const EditorContactRoute = EditorContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => EditorRoute,
 } as any)
 const EditorCollectionsRoute = EditorCollectionsRouteImport.update({
@@ -281,7 +317,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -296,14 +332,20 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
   '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/contact': typeof EditorContactRoute
+  '/editor/deal': typeof EditorDealRoute
   '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/gallery': typeof EditorGalleryRoute
   '/editor/layouts': typeof EditorLayoutsRoute
   '/editor/media': typeof EditorMediaRoute
+  '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
+  '/shop/categories': typeof ShopCategoriesRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/deals': typeof ShopDealsRoute
   '/shop/search': typeof ShopSearchRoute
@@ -324,7 +366,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -338,14 +380,20 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
   '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/contact': typeof EditorContactRoute
+  '/editor/deal': typeof EditorDealRoute
   '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/gallery': typeof EditorGalleryRoute
   '/editor/layouts': typeof EditorLayoutsRoute
   '/editor/media': typeof EditorMediaRoute
+  '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
+  '/shop/categories': typeof ShopCategoriesRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/deals': typeof ShopDealsRoute
   '/shop/search': typeof ShopSearchRoute
@@ -369,7 +417,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -384,14 +432,20 @@ export interface FileRoutesById {
   '/admin/users': typeof AdminUsersRoute
   '/editor/academy': typeof EditorAcademyRoute
   '/editor/collections': typeof EditorCollectionsRoute
+  '/editor/contact': typeof EditorContactRoute
+  '/editor/deal': typeof EditorDealRoute
   '/editor/drafts': typeof EditorDraftsRoute
+  '/editor/gallery': typeof EditorGalleryRoute
   '/editor/layouts': typeof EditorLayoutsRoute
   '/editor/media': typeof EditorMediaRoute
+  '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
+  '/shop/categories': typeof ShopCategoriesRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/deals': typeof ShopDealsRoute
   '/shop/search': typeof ShopSearchRoute
@@ -431,14 +485,20 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/editor/academy'
     | '/editor/collections'
+    | '/editor/contact'
+    | '/editor/deal'
     | '/editor/drafts'
+    | '/editor/gallery'
     | '/editor/layouts'
     | '/editor/media'
+    | '/editor/news'
     | '/editor/profile'
     | '/editor/shop'
+    | '/news/$slug'
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
+    | '/shop/categories'
     | '/shop/checkout'
     | '/shop/deals'
     | '/shop/search'
@@ -473,14 +533,20 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/editor/academy'
     | '/editor/collections'
+    | '/editor/contact'
+    | '/editor/deal'
     | '/editor/drafts'
+    | '/editor/gallery'
     | '/editor/layouts'
     | '/editor/media'
+    | '/editor/news'
     | '/editor/profile'
     | '/editor/shop'
+    | '/news/$slug'
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
+    | '/shop/categories'
     | '/shop/checkout'
     | '/shop/deals'
     | '/shop/search'
@@ -518,14 +584,20 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/editor/academy'
     | '/editor/collections'
+    | '/editor/contact'
+    | '/editor/deal'
     | '/editor/drafts'
+    | '/editor/gallery'
     | '/editor/layouts'
     | '/editor/media'
+    | '/editor/news'
     | '/editor/profile'
     | '/editor/shop'
+    | '/news/$slug'
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
+    | '/shop/categories'
     | '/shop/checkout'
     | '/shop/deals'
     | '/shop/search'
@@ -549,7 +621,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
-  NewsRoute: typeof NewsRoute
+  NewsRoute: typeof NewsRouteWithChildren
   ShopRoute: typeof ShopRouteWithChildren
   ServicesSlugRoute: typeof ServicesSlugRoute
 }
@@ -696,6 +768,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopCheckoutRouteImport
       parentRoute: typeof ShopRoute
     }
+    '/shop/categories': {
+      id: '/shop/categories'
+      path: '/categories'
+      fullPath: '/shop/categories'
+      preLoaderRoute: typeof ShopCategoriesRouteImport
+      parentRoute: typeof ShopRoute
+    }
     '/shop/cart': {
       id: '/shop/cart'
       path: '/cart'
@@ -717,6 +796,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof NewsRoute
+    }
     '/editor/shop': {
       id: '/editor/shop'
       path: '/shop'
@@ -729,6 +815,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/editor/profile'
       preLoaderRoute: typeof EditorProfileRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/news': {
+      id: '/editor/news'
+      path: '/news'
+      fullPath: '/editor/news'
+      preLoaderRoute: typeof EditorNewsRouteImport
       parentRoute: typeof EditorRoute
     }
     '/editor/media': {
@@ -745,11 +838,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditorLayoutsRouteImport
       parentRoute: typeof EditorRoute
     }
+    '/editor/gallery': {
+      id: '/editor/gallery'
+      path: '/gallery'
+      fullPath: '/editor/gallery'
+      preLoaderRoute: typeof EditorGalleryRouteImport
+      parentRoute: typeof EditorRoute
+    }
     '/editor/drafts': {
       id: '/editor/drafts'
       path: '/drafts'
       fullPath: '/editor/drafts'
       preLoaderRoute: typeof EditorDraftsRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/deal': {
+      id: '/editor/deal'
+      path: '/deal'
+      fullPath: '/editor/deal'
+      preLoaderRoute: typeof EditorDealRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/contact': {
+      id: '/editor/contact'
+      path: '/contact'
+      fullPath: '/editor/contact'
+      preLoaderRoute: typeof EditorContactRouteImport
       parentRoute: typeof EditorRoute
     }
     '/editor/collections': {
@@ -895,9 +1009,13 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 interface EditorRouteChildren {
   EditorAcademyRoute: typeof EditorAcademyRoute
   EditorCollectionsRoute: typeof EditorCollectionsRoute
+  EditorContactRoute: typeof EditorContactRoute
+  EditorDealRoute: typeof EditorDealRoute
   EditorDraftsRoute: typeof EditorDraftsRoute
+  EditorGalleryRoute: typeof EditorGalleryRoute
   EditorLayoutsRoute: typeof EditorLayoutsRoute
   EditorMediaRoute: typeof EditorMediaRoute
+  EditorNewsRoute: typeof EditorNewsRoute
   EditorProfileRoute: typeof EditorProfileRoute
   EditorShopRoute: typeof EditorShopRoute
   EditorIndexRoute: typeof EditorIndexRoute
@@ -906,9 +1024,13 @@ interface EditorRouteChildren {
 const EditorRouteChildren: EditorRouteChildren = {
   EditorAcademyRoute: EditorAcademyRoute,
   EditorCollectionsRoute: EditorCollectionsRoute,
+  EditorContactRoute: EditorContactRoute,
+  EditorDealRoute: EditorDealRoute,
   EditorDraftsRoute: EditorDraftsRoute,
+  EditorGalleryRoute: EditorGalleryRoute,
   EditorLayoutsRoute: EditorLayoutsRoute,
   EditorMediaRoute: EditorMediaRoute,
+  EditorNewsRoute: EditorNewsRoute,
   EditorProfileRoute: EditorProfileRoute,
   EditorShopRoute: EditorShopRoute,
   EditorIndexRoute: EditorIndexRoute,
@@ -917,9 +1039,20 @@ const EditorRouteChildren: EditorRouteChildren = {
 const EditorRouteWithChildren =
   EditorRoute._addFileChildren(EditorRouteChildren)
 
+interface NewsRouteChildren {
+  NewsSlugRoute: typeof NewsSlugRoute
+}
+
+const NewsRouteChildren: NewsRouteChildren = {
+  NewsSlugRoute: NewsSlugRoute,
+}
+
+const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
+
 interface ShopRouteChildren {
   ShopAccountRoute: typeof ShopAccountRoute
   ShopCartRoute: typeof ShopCartRoute
+  ShopCategoriesRoute: typeof ShopCategoriesRoute
   ShopCheckoutRoute: typeof ShopCheckoutRoute
   ShopDealsRoute: typeof ShopDealsRoute
   ShopSearchRoute: typeof ShopSearchRoute
@@ -932,6 +1065,7 @@ interface ShopRouteChildren {
 const ShopRouteChildren: ShopRouteChildren = {
   ShopAccountRoute: ShopAccountRoute,
   ShopCartRoute: ShopCartRoute,
+  ShopCategoriesRoute: ShopCategoriesRoute,
   ShopCheckoutRoute: ShopCheckoutRoute,
   ShopDealsRoute: ShopDealsRoute,
   ShopSearchRoute: ShopSearchRoute,
@@ -955,7 +1089,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
-  NewsRoute: NewsRoute,
+  NewsRoute: NewsRouteWithChildren,
   ShopRoute: ShopRouteWithChildren,
   ServicesSlugRoute: ServicesSlugRoute,
 }
