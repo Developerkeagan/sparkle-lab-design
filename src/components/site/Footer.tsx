@@ -1,8 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import logo from "@/assets/logo.png";
+import { useSiteContent } from "@/lib/site-content";
 
 export function Footer() {
+  const { contact } = useSiteContent();
+  const socials: { I: typeof Facebook; href: string }[] = [
+    { I: Facebook, href: contact.facebook },
+    { I: Twitter, href: contact.twitter },
+    { I: Linkedin, href: contact.linkedin },
+    { I: Instagram, href: contact.instagram },
+  ];
   return (
     <footer className="relative bg-foreground text-background mt-20 overflow-hidden">
       <div className="absolute inset-0 opacity-[0.06] pointer-events-none">
@@ -18,9 +26,9 @@ export function Footer() {
             Pioneering innovative biotechnology pathways to provide healthier and well-being.
           </p>
           <div className="flex gap-3 mt-5">
-            {[Facebook, Twitter, Linkedin, Instagram].map((I, i) => (
-              <a key={i} href="#" className="h-9 w-9 grid place-items-center rounded-full bg-background/10 hover:bg-background/20 transition-colors">
-                <I className="h-4 w-4" />
+            {socials.map((s, i) => (
+              <a key={i} href={s.href || "#"} target={s.href ? "_blank" : undefined} rel="noreferrer" className="h-9 w-9 grid place-items-center rounded-full bg-background/10 hover:bg-background/20 transition-colors">
+                <s.I className="h-4 w-4" />
               </a>
             ))}
           </div>
@@ -46,9 +54,9 @@ export function Footer() {
         <div>
           <h4 className="font-display font-semibold mb-4">Contact</h4>
           <ul className="space-y-3 text-sm text-background/70">
-            <li className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-accent-cyan" /><span>Abuja, Nigeria</span></li>
-            <li className="flex items-start gap-2"><Phone className="h-4 w-4 mt-0.5 text-accent-cyan" /><span>+1 (234) 567-8901</span></li>
-            <li className="flex items-start gap-2"><Mail className="h-4 w-4 mt-0.5 text-accent-cyan" /><span>info@appliedbiotech.com</span></li>
+            <li className="flex items-start gap-2"><MapPin className="h-4 w-4 mt-0.5 text-accent-cyan" /><span>{contact.address}</span></li>
+            <li className="flex items-start gap-2"><Phone className="h-4 w-4 mt-0.5 text-accent-cyan" /><a href={`tel:${contact.phone}`} className="hover:text-background transition-colors">{contact.phone}</a></li>
+            <li className="flex items-start gap-2"><Mail className="h-4 w-4 mt-0.5 text-accent-cyan" /><a href={`mailto:${contact.email}`} className="hover:text-background transition-colors">{contact.email}</a></li>
           </ul>
         </div>
       </div>

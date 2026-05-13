@@ -3,7 +3,7 @@ import { Footer } from "@/components/site/Footer";
 import { useSiteContent } from "@/lib/site-content";
 import { ArrowLeft, Calendar } from "lucide-react";
 
-export const Route = createFileRoute("/news/$slug")({
+export const Route = createFileRoute("/news/")({
   component: NewsDetail,
   head: ({ params }) => ({ meta: [{ title: `${params?.slug ?? "Article"} · Applied Biotech News` }] }),
   notFoundComponent: () => (

@@ -54,6 +54,7 @@ import { Route as AdminLayoutsRouteImport } from './routes/admin.layouts'
 import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAcademyRouteImport } from './routes/admin.academy'
+import { Route as NewsRouteImport } from './routes/news.'
 import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
 import { Route as ShopCategorySlugRouteImport } from './routes/shop.category.$slug'
 
@@ -282,6 +283,11 @@ const AdminAcademyRoute = AdminAcademyRouteImport.update({
   path: '/academy',
   getParentRoute: () => AdminRoute,
 } as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => NewsRoute,
+} as any)
 const ShopProductIdRoute = ShopProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
@@ -305,8 +311,9 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
+  '/news/': typeof NewsRoute
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -401,8 +408,9 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
+  '/news/': typeof NewsRoute
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -454,6 +462,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/news'
     | '/shop'
+    | '/news/'
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
@@ -549,6 +558,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/news'
     | '/shop'
+    | '/news/'
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
@@ -597,7 +607,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   GalleryRoute: typeof GalleryRoute
   LoginRoute: typeof LoginRoute
-  NewsRoute: typeof NewsRoute
+  NewsRoute: typeof NewsRouteWithChildren
   ShopRoute: typeof ShopRouteWithChildren
   ServicesSlugRoute: typeof ServicesSlugRoute
 }
@@ -919,6 +929,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAcademyRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/news/': {
+      id: '/news/'
+      path: '/'
+      fullPath: '/news/'
+      preLoaderRoute: typeof NewsRouteImport
+      parentRoute: typeof NewsRoute
+    }
     '/shop/product/$id': {
       id: '/shop/product/$id'
       path: '/product/$id'
@@ -1001,6 +1018,16 @@ const EditorRouteChildren: EditorRouteChildren = {
 const EditorRouteWithChildren =
   EditorRoute._addFileChildren(EditorRouteChildren)
 
+interface NewsRouteChildren {
+  NewsRoute: typeof NewsRoute
+}
+
+const NewsRouteChildren: NewsRouteChildren = {
+  NewsRoute: NewsRoute,
+}
+
+const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
+
 interface ShopRouteChildren {
   ShopAccountRoute: typeof ShopAccountRoute
   ShopCartRoute: typeof ShopCartRoute
@@ -1039,10 +1066,19 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   GalleryRoute: GalleryRoute,
   LoginRoute: LoginRoute,
-  NewsRoute: NewsRoute,
+  NewsRoute: NewsRouteWithChildren,
   ShopRoute: ShopRouteWithChildren,
   ServicesSlugRoute: ServicesSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
