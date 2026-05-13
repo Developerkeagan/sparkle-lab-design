@@ -32,6 +32,7 @@ import { Route as ShopCheckoutRouteImport } from './routes/shop.checkout'
 import { Route as ShopCartRouteImport } from './routes/shop.cart'
 import { Route as ShopAccountRouteImport } from './routes/shop.account'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
+import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as EditorShopRouteImport } from './routes/editor.shop'
 import { Route as EditorProfileRouteImport } from './routes/editor.profile'
 import { Route as EditorNewsRouteImport } from './routes/editor.news'
@@ -54,7 +55,6 @@ import { Route as AdminLayoutsRouteImport } from './routes/admin.layouts'
 import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAcademyRouteImport } from './routes/admin.academy'
-import { Route as NewsRouteImport } from './routes/news.'
 import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
 import { Route as ShopCategorySlugRouteImport } from './routes/shop.category.$slug'
 
@@ -173,6 +173,11 @@ const ServicesSlugRoute = ServicesSlugRouteImport.update({
   path: '/services/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => NewsRoute,
+} as any)
 const EditorShopRoute = EditorShopRouteImport.update({
   id: '/shop',
   path: '/shop',
@@ -283,11 +288,6 @@ const AdminAcademyRoute = AdminAcademyRouteImport.update({
   path: '/academy',
   getParentRoute: () => AdminRoute,
 } as any)
-const NewsRoute = NewsRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => NewsRoute,
-} as any)
 const ShopProductIdRoute = ShopProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
@@ -313,7 +313,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/news': typeof NewsRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
-  '/news/': typeof NewsRoute
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -336,6 +335,7 @@ export interface FileRoutesByFullPath {
   '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
@@ -359,7 +359,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
   '/login': typeof LoginRoute
-  '/news': typeof NewsRoute
+  '/news': typeof NewsRouteWithChildren
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -382,6 +382,7 @@ export interface FileRoutesByTo {
   '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
@@ -410,7 +411,6 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/news': typeof NewsRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
-  '/news/': typeof NewsRoute
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -433,6 +433,7 @@ export interface FileRoutesById {
   '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
@@ -462,7 +463,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/news'
     | '/shop'
-    | '/news/'
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
@@ -485,6 +485,7 @@ export interface FileRouteTypes {
     | '/editor/news'
     | '/editor/profile'
     | '/editor/shop'
+    | '/news/$slug'
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
@@ -531,6 +532,7 @@ export interface FileRouteTypes {
     | '/editor/news'
     | '/editor/profile'
     | '/editor/shop'
+    | '/news/$slug'
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
@@ -558,7 +560,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/news'
     | '/shop'
-    | '/news/'
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
@@ -581,6 +582,7 @@ export interface FileRouteTypes {
     | '/editor/news'
     | '/editor/profile'
     | '/editor/shop'
+    | '/news/$slug'
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
@@ -775,6 +777,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news/$slug': {
+      id: '/news/$slug'
+      path: '/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof NewsRoute
+    }
     '/editor/shop': {
       id: '/editor/shop'
       path: '/shop'
@@ -929,13 +938,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAcademyRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/news/': {
-      id: '/news/'
-      path: '/'
-      fullPath: '/news/'
-      preLoaderRoute: typeof NewsRouteImport
-      parentRoute: typeof NewsRoute
-    }
     '/shop/product/$id': {
       id: '/shop/product/$id'
       path: '/product/$id'
@@ -1019,11 +1021,11 @@ const EditorRouteWithChildren =
   EditorRoute._addFileChildren(EditorRouteChildren)
 
 interface NewsRouteChildren {
-  NewsRoute: typeof NewsRoute
+  NewsSlugRoute: typeof NewsSlugRoute
 }
 
 const NewsRouteChildren: NewsRouteChildren = {
-  NewsRoute: NewsRoute,
+  NewsSlugRoute: NewsSlugRoute,
 }
 
 const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
@@ -1073,3 +1075,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
