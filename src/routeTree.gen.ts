@@ -29,6 +29,7 @@ import { Route as ShopWishlistRouteImport } from './routes/shop.wishlist'
 import { Route as ShopSearchRouteImport } from './routes/shop.search'
 import { Route as ShopDealsRouteImport } from './routes/shop.deals'
 import { Route as ShopCheckoutRouteImport } from './routes/shop.checkout'
+import { Route as ShopCategoriesRouteImport } from './routes/shop.categories'
 import { Route as ShopCartRouteImport } from './routes/shop.cart'
 import { Route as ShopAccountRouteImport } from './routes/shop.account'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
@@ -156,6 +157,11 @@ const ShopDealsRoute = ShopDealsRouteImport.update({
 const ShopCheckoutRoute = ShopCheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopCategoriesRoute = ShopCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
   getParentRoute: () => ShopRoute,
 } as any)
 const ShopCartRoute = ShopCartRouteImport.update({
@@ -339,6 +345,7 @@ export interface FileRoutesByFullPath {
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
+  '/shop/categories': typeof ShopCategoriesRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/deals': typeof ShopDealsRoute
   '/shop/search': typeof ShopSearchRoute
@@ -386,6 +393,7 @@ export interface FileRoutesByTo {
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
+  '/shop/categories': typeof ShopCategoriesRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/deals': typeof ShopDealsRoute
   '/shop/search': typeof ShopSearchRoute
@@ -437,6 +445,7 @@ export interface FileRoutesById {
   '/services/$slug': typeof ServicesSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
+  '/shop/categories': typeof ShopCategoriesRoute
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/deals': typeof ShopDealsRoute
   '/shop/search': typeof ShopSearchRoute
@@ -489,6 +498,7 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
+    | '/shop/categories'
     | '/shop/checkout'
     | '/shop/deals'
     | '/shop/search'
@@ -536,6 +546,7 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
+    | '/shop/categories'
     | '/shop/checkout'
     | '/shop/deals'
     | '/shop/search'
@@ -586,6 +597,7 @@ export interface FileRouteTypes {
     | '/services/$slug'
     | '/shop/account'
     | '/shop/cart'
+    | '/shop/categories'
     | '/shop/checkout'
     | '/shop/deals'
     | '/shop/search'
@@ -754,6 +766,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout'
       fullPath: '/shop/checkout'
       preLoaderRoute: typeof ShopCheckoutRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/categories': {
+      id: '/shop/categories'
+      path: '/categories'
+      fullPath: '/shop/categories'
+      preLoaderRoute: typeof ShopCategoriesRouteImport
       parentRoute: typeof ShopRoute
     }
     '/shop/cart': {
@@ -1033,6 +1052,7 @@ const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
 interface ShopRouteChildren {
   ShopAccountRoute: typeof ShopAccountRoute
   ShopCartRoute: typeof ShopCartRoute
+  ShopCategoriesRoute: typeof ShopCategoriesRoute
   ShopCheckoutRoute: typeof ShopCheckoutRoute
   ShopDealsRoute: typeof ShopDealsRoute
   ShopSearchRoute: typeof ShopSearchRoute
@@ -1045,6 +1065,7 @@ interface ShopRouteChildren {
 const ShopRouteChildren: ShopRouteChildren = {
   ShopAccountRoute: ShopAccountRoute,
   ShopCartRoute: ShopCartRoute,
+  ShopCategoriesRoute: ShopCategoriesRoute,
   ShopCheckoutRoute: ShopCheckoutRoute,
   ShopDealsRoute: ShopDealsRoute,
   ShopSearchRoute: ShopSearchRoute,
@@ -1075,3 +1096,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

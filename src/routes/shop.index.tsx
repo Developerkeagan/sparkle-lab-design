@@ -5,8 +5,9 @@ import { ChevronLeft, ChevronRight, Truck, ShieldCheck, Headphones, RotateCcw } 
 import hero1 from "@/assets/shop-hero-1.jpg";
 import hero2 from "@/assets/shop-hero-2.jpg";
 import pMicro from "@/assets/prod-microfuge.jpg";
-import { PRODUCTS, CATEGORIES, fmt } from "@/lib/products";
+import { PRODUCTS, CATEGORIES, fmt, getProduct } from "@/lib/products";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { useSiteContent } from "@/lib/site-content";
 
 export const Route = createFileRoute("/shop/")({ component: ShopHome });
 
@@ -26,12 +27,12 @@ function HeroCarousel() {
   return (
     <section className="px-4 sm:px-6 lg:px-8 pt-6">
       <div className="mx-auto max-w-7xl relative overflow-hidden rounded-3xl bg-gradient-to-br from-accent/40 via-secondary to-accent/30 shadow-soft">
-        <div className="grid md:grid-cols-2 items-center min-h-[360px] md:min-h-[440px]">
+        <div className="relative min-h-[380px] md:min-h-[440px]">
           {slides.map((s, idx) => (
-            <div key={idx} className={`col-start-1 row-start-1 md:col-span-2 grid md:grid-cols-2 items-center transition-all duration-700 ${i === idx ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6 pointer-events-none"}`}>
-              <div className="p-8 md:p-14 order-2 md:order-1">
+            <div key={idx} className={`absolute inset-0 grid md:grid-cols-2 items-center transition-all duration-700 ${i === idx ? "opacity-100 translate-x-0" : "opacity-0 translate-x-6 pointer-events-none"}`}>
+              <div className="p-8 md:p-14 order-2 md:order-1 relative z-10">
                 <span className="inline-block text-[11px] font-bold uppercase tracking-[0.18em] px-3 py-1 rounded-full bg-brand/10 text-brand">{s.eyebrow}</span>
-                <h1 className="mt-4 font-display text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-foreground">{s.title}</h1>
+                <h1 className="mt-4 font-display text-3xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight text-foreground">{s.title}</h1>
                 <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-md">{s.sub}</p>
                 {(s as any).slug ? (
                   <Link to="/shop/category/$slug" params={{ slug: (s as any).slug as string }} className="mt-7 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-7 py-3.5 text-sm font-bold shadow-brand hover:scale-105 transition-transform">
@@ -43,8 +44,8 @@ function HeroCarousel() {
                   </Link>
                 )}
               </div>
-              <div className="order-1 md:order-2 h-56 md:h-[440px] relative">
-                <img src={s.img} alt={s.title} width={1280} height={768} className="absolute inset-0 w-full h-full object-cover md:rounded-l-[3rem]" />
+              <div className="order-1 md:order-2 hidden md:block h-full relative">
+                <img src={s.img} alt={s.title} className="absolute inset-0 w-full h-full object-cover md:rounded-l-[3rem]" />
               </div>
             </div>
           ))}
