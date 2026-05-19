@@ -7,7 +7,7 @@ export function ProductCard({ p }: { p: Product }) {
   const { addToCart, toggleWishlist, inWishlist } = useShop();
   const wished = inWishlist(p.id);
   return (
-    <div className="reveal group relative rounded-2xl bg-card border border-border overflow-hidden hover:shadow-brand hover:-translate-y-1 transition-all duration-300">
+    <div className="group relative rounded-2xl bg-card border border-border overflow-hidden hover:shadow-brand hover:-translate-y-1 transition-all duration-300">
       {p.tag && (
         <span className={`absolute top-3 left-3 z-10 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${
           p.tag === "HOT" ? "bg-destructive text-destructive-foreground"
