@@ -32,9 +32,13 @@ function NewsDetail() {
             <span className="text-muted-foreground flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5" />{post.date}</span>
           </div>
           <h1 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-tight">{post.title}</h1>
-          {post.cover && <img src={post.cover} alt="" className="mt-8 rounded-2xl w-full aspect-[16/9] object-cover" />}
-          <p className="mt-6 text-lg text-muted-foreground leading-relaxed">{post.excerpt}</p>
-          <div className="mt-6 prose prose-neutral max-w-none text-foreground/90 leading-relaxed whitespace-pre-line">{post.body}</div>
+          {post.cover && <img src={post.cover} alt={post.title} className="mt-8 rounded-2xl w-full aspect-[16/9] object-cover" />}
+          <p className="mt-8 text-lg md:text-xl text-foreground/80 leading-relaxed font-medium">{post.excerpt}</p>
+          <div className="mt-6 space-y-5 text-base md:text-lg text-foreground/90 leading-[1.8]">
+            {post.body.split(/\n\s*\n/).map((para, i) => (
+              <p key={i} className="whitespace-pre-line">{para}</p>
+            ))}
+          </div>
         </div>
       </article>
       {others.length > 0 && (
