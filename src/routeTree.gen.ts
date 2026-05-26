@@ -11,14 +11,19 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as ServicesRouteImport } from './routes/services'
+import { Route as RentALabRouteImport } from './routes/rent-a-lab'
+import { Route as RdPortfolioRouteImport } from './routes/rd-portfolio'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as IpPublicationsRouteImport } from './routes/ip-publications'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as EditorRouteImport } from './routes/editor'
 import { Route as Covid19RouteImport } from './routes/covid-19'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CollectionsRouteImport } from './routes/collections'
+import { Route as CareersRouteImport } from './routes/careers'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AcademyRouteImport } from './routes/academy'
 import { Route as AboutRouteImport } from './routes/about'
@@ -72,6 +77,21 @@ const ShopRoute = ShopRouteImport.update({
   path: '/shop',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RentALabRoute = RentALabRouteImport.update({
+  id: '/rent-a-lab',
+  path: '/rent-a-lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RdPortfolioRoute = RdPortfolioRouteImport.update({
+  id: '/rd-portfolio',
+  path: '/rd-portfolio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewsRoute = NewsRouteImport.update({
   id: '/news',
   path: '/news',
@@ -80,6 +100,11 @@ const NewsRoute = NewsRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IpPublicationsRoute = IpPublicationsRouteImport.update({
+  id: '/ip-publications',
+  path: '/ip-publications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GalleryRoute = GalleryRouteImport.update({
@@ -110,6 +135,11 @@ const ContactRoute = ContactRouteImport.update({
 const CollectionsRoute = CollectionsRouteImport.update({
   id: '/collections',
   path: '/collections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CareersRoute = CareersRouteImport.update({
+  id: '/careers',
+  path: '/careers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -183,9 +213,9 @@ const ShopAccountRoute = ShopAccountRouteImport.update({
   getParentRoute: () => ShopRoute,
 } as any)
 const ServicesSlugRoute = ServicesSlugRouteImport.update({
-  id: '/services/$slug',
-  path: '/services/$slug',
-  getParentRoute: () => rootRouteImport,
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ServicesRoute,
 } as any)
 const NewsSlugRoute = NewsSlugRouteImport.update({
   id: '/$slug',
@@ -328,14 +358,19 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/academy': typeof AcademyRoute
   '/admin': typeof AdminRouteWithChildren
+  '/careers': typeof CareersRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
   '/editor': typeof EditorRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
+  '/ip-publications': typeof IpPublicationsRoute
   '/login': typeof LoginRoute
   '/news': typeof NewsRouteWithChildren
+  '/rd-portfolio': typeof RdPortfolioRoute
+  '/rent-a-lab': typeof RentALabRoute
+  '/services': typeof ServicesRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/academy': typeof AdminAcademyRoute
@@ -381,13 +416,18 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/academy': typeof AcademyRoute
+  '/careers': typeof CareersRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
+  '/ip-publications': typeof IpPublicationsRoute
   '/login': typeof LoginRoute
   '/news': typeof NewsRouteWithChildren
+  '/rd-portfolio': typeof RdPortfolioRoute
+  '/rent-a-lab': typeof RentALabRoute
+  '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -434,14 +474,19 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/academy': typeof AcademyRoute
   '/admin': typeof AdminRouteWithChildren
+  '/careers': typeof CareersRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
   '/covid-19': typeof Covid19Route
   '/editor': typeof EditorRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/gallery': typeof GalleryRoute
+  '/ip-publications': typeof IpPublicationsRoute
   '/login': typeof LoginRoute
   '/news': typeof NewsRouteWithChildren
+  '/rd-portfolio': typeof RdPortfolioRoute
+  '/rent-a-lab': typeof RentALabRoute
+  '/services': typeof ServicesRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/academy': typeof AdminAcademyRoute
@@ -490,14 +535,19 @@ export interface FileRouteTypes {
     | '/about'
     | '/academy'
     | '/admin'
+    | '/careers'
     | '/collections'
     | '/contact'
     | '/covid-19'
     | '/editor'
     | '/forgot-password'
     | '/gallery'
+    | '/ip-publications'
     | '/login'
     | '/news'
+    | '/rd-portfolio'
+    | '/rent-a-lab'
+    | '/services'
     | '/shop'
     | '/sitemap.xml'
     | '/admin/academy'
@@ -543,13 +593,18 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/academy'
+    | '/careers'
     | '/collections'
     | '/contact'
     | '/covid-19'
     | '/forgot-password'
     | '/gallery'
+    | '/ip-publications'
     | '/login'
     | '/news'
+    | '/rd-portfolio'
+    | '/rent-a-lab'
+    | '/services'
     | '/sitemap.xml'
     | '/admin/academy'
     | '/admin/analytics'
@@ -595,14 +650,19 @@ export interface FileRouteTypes {
     | '/about'
     | '/academy'
     | '/admin'
+    | '/careers'
     | '/collections'
     | '/contact'
     | '/covid-19'
     | '/editor'
     | '/forgot-password'
     | '/gallery'
+    | '/ip-publications'
     | '/login'
     | '/news'
+    | '/rd-portfolio'
+    | '/rent-a-lab'
+    | '/services'
     | '/shop'
     | '/sitemap.xml'
     | '/admin/academy'
@@ -650,17 +710,21 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AcademyRoute: typeof AcademyRoute
   AdminRoute: typeof AdminRouteWithChildren
+  CareersRoute: typeof CareersRoute
   CollectionsRoute: typeof CollectionsRoute
   ContactRoute: typeof ContactRoute
   Covid19Route: typeof Covid19Route
   EditorRoute: typeof EditorRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   GalleryRoute: typeof GalleryRoute
+  IpPublicationsRoute: typeof IpPublicationsRoute
   LoginRoute: typeof LoginRoute
   NewsRoute: typeof NewsRouteWithChildren
+  RdPortfolioRoute: typeof RdPortfolioRoute
+  RentALabRoute: typeof RentALabRoute
+  ServicesRoute: typeof ServicesRouteWithChildren
   ShopRoute: typeof ShopRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  ServicesSlugRoute: typeof ServicesSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -679,6 +743,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rent-a-lab': {
+      id: '/rent-a-lab'
+      path: '/rent-a-lab'
+      fullPath: '/rent-a-lab'
+      preLoaderRoute: typeof RentALabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rd-portfolio': {
+      id: '/rd-portfolio'
+      path: '/rd-portfolio'
+      fullPath: '/rd-portfolio'
+      preLoaderRoute: typeof RdPortfolioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/news': {
       id: '/news'
       path: '/news'
@@ -691,6 +776,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ip-publications': {
+      id: '/ip-publications'
+      path: '/ip-publications'
+      fullPath: '/ip-publications'
+      preLoaderRoute: typeof IpPublicationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gallery': {
@@ -733,6 +825,13 @@ declare module '@tanstack/react-router' {
       path: '/collections'
       fullPath: '/collections'
       preLoaderRoute: typeof CollectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/careers': {
+      id: '/careers'
+      path: '/careers'
+      fullPath: '/careers'
+      preLoaderRoute: typeof CareersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -835,10 +934,10 @@ declare module '@tanstack/react-router' {
     }
     '/services/$slug': {
       id: '/services/$slug'
-      path: '/services/$slug'
+      path: '/$slug'
       fullPath: '/services/$slug'
       preLoaderRoute: typeof ServicesSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof ServicesRoute
     }
     '/news/$slug': {
       id: '/news/$slug'
@@ -1111,6 +1210,18 @@ const NewsRouteChildren: NewsRouteChildren = {
 
 const NewsRouteWithChildren = NewsRoute._addFileChildren(NewsRouteChildren)
 
+interface ServicesRouteChildren {
+  ServicesSlugRoute: typeof ServicesSlugRoute
+}
+
+const ServicesRouteChildren: ServicesRouteChildren = {
+  ServicesSlugRoute: ServicesSlugRoute,
+}
+
+const ServicesRouteWithChildren = ServicesRoute._addFileChildren(
+  ServicesRouteChildren,
+)
+
 interface ShopRouteChildren {
   ShopAccountRoute: typeof ShopAccountRoute
   ShopCartRoute: typeof ShopCartRoute
@@ -1144,27 +1255,22 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AcademyRoute: AcademyRoute,
   AdminRoute: AdminRouteWithChildren,
+  CareersRoute: CareersRoute,
   CollectionsRoute: CollectionsRoute,
   ContactRoute: ContactRoute,
   Covid19Route: Covid19Route,
   EditorRoute: EditorRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   GalleryRoute: GalleryRoute,
+  IpPublicationsRoute: IpPublicationsRoute,
   LoginRoute: LoginRoute,
   NewsRoute: NewsRouteWithChildren,
+  RdPortfolioRoute: RdPortfolioRoute,
+  RentALabRoute: RentALabRoute,
+  ServicesRoute: ServicesRouteWithChildren,
   ShopRoute: ShopRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  ServicesSlugRoute: ServicesSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

@@ -46,9 +46,11 @@ export function Footer() {
           <h4 className="font-display font-semibold mb-4">Company</h4>
           <ul className="space-y-2.5 text-sm text-background/70">
             <li><Link to="/about" className="hover:text-background transition-colors">About Us</Link></li>
+            <li><Link to="/rd-portfolio" className="hover:text-background transition-colors">R&D Portfolio</Link></li>
+            <li><Link to="/ip-publications" className="hover:text-background transition-colors">IP & Publications</Link></li>
+            <li><Link to="/careers" className="hover:text-background transition-colors">Careers</Link></li>
             <li><Link to="/news" className="hover:text-background transition-colors">News</Link></li>
             <li><Link to="/gallery" className="hover:text-background transition-colors">Gallery</Link></li>
-            <li><Link to="/covid-19" className="hover:text-background transition-colors">Covid-19</Link></li>
           </ul>
         </div>
         <div>
