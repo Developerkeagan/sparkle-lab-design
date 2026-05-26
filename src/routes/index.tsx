@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { useReveal } from "@/hooks/use-reveal";
@@ -7,6 +8,7 @@ import {
   ArrowRight, FlaskConical, Microscope, GraduationCap, BrainCircuit,
   ShieldCheck, Sparkles, Beaker, ChevronRight, Quote,
 } from "lucide-react";
+import useFetch from "@/hooks/useFetch";
 import heroImg from "@/assets/hero-lab.jpg";
 import dnaImg from "@/assets/dna-bg.jpg";
 import pipImg from "@/assets/pipette.jpg";
@@ -23,6 +25,24 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   useReveal();
+  const { fetchData } = useFetch();
+
+  useEffect(() => {
+    // Track the visit to the landing page
+    const trackVisit = async () => {
+      try {
+        await fetchData("/api/v1/analytics/hit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ page: "landing" }),
+        });
+      } catch (e) {
+        console.warn("Analytics tracking failed", e);
+      }
+    };
+    trackVisit();
+  }, [fetchData]);
+
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <Navbar />

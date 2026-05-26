@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Heart, ArrowRight } from "lucide-react";
+import { Heart, ArrowRight, Loader2 } from "lucide-react";
 import { useShop } from "@/lib/shop";
-import { PRODUCTS } from "@/lib/products";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { useState, useEffect } from "react";
+import useFetch from "@/hooks/useFetch";
 
 export const Route = createFileRoute("/shop/wishlist")({
   component: WishlistPage,
@@ -11,7 +12,27 @@ export const Route = createFileRoute("/shop/wishlist")({
 
 function WishlistPage() {
   const { wishlist } = useShop();
-  const items = PRODUCTS.filter((p) => wishlist.includes(p.id));
+  const [products, setProducts] = useState<any[]>([]);
+  const { loading, fetchData } = useFetch();
+
+  useEffect(() => {
+    fetchData("/api/v1/shop/products").then(res => {
+      if (res) {
+        const normalized = res.map((p: any) => ({
+          id: p._id,
+          name: p.productName,
+          price: p.price,
+          img: p.productImage,
+          category: p.category,
+          rating: 5
+        }));
+        setProducts(normalized);
+      }
+    });
+  }, [fetchData]);
+
+  const items = products.filter((p) => wishlist.includes(p.id));
+
   return (
     <section className="px-4 sm:px-6 lg:px-8 py-10">
       <div className="mx-auto max-w-7xl">
@@ -19,7 +40,9 @@ function WishlistPage() {
           <div className="text-xs uppercase tracking-[0.2em] text-brand font-bold">Saved for later</div>
           <h1 className="font-display text-3xl md:text-4xl font-bold mt-1">Your Wishlist ({items.length})</h1>
         </div>
-        {items.length === 0 ? (
+        {loading ? (
+          <div className="py-20 flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
+        ) : items.length === 0 ? (
           <div className="text-center py-20">
             <div className="mx-auto h-20 w-20 rounded-full bg-secondary grid place-items-center mb-6"><Heart className="h-10 w-10 text-muted-foreground" /></div>
             <h2 className="font-display text-2xl font-bold">No favorites yet</h2>

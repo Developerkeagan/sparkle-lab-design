@@ -37,20 +37,20 @@ function EditorCollections() {
       <PageHeader title="Collections" subtitle="Group products into curated bundles." />
       <Toolbar onSearch={setQ} addLabel="New collection" onAdd={() => { setEditing(null); setOpen(true); }} />
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 relative pb-48">
+        {loading && items.length === 0 && <div className="col-span-full py-20 flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}
         {items.filter((i) => i.name.toLowerCase().includes(q.toLowerCase())).map((c) => (
-          <Card key={c.id} className="overflow-hidden">
-            <div className="aspect-[16/9] bg-gradient-to-br from-secondary to-accent/40 relative">
+          <Card key={c.id} className="group relative">
+            <div className="aspect-[16/9] bg-gradient-to-br from-secondary to-accent/40 relative rounded-t-2xl overflow-hidden">
               {c.cover ? <img src={c.cover} alt={c.name} className="w-full h-full object-cover" /> : (
                 <div className="absolute inset-0 grid place-items-center text-muted-foreground text-sm">No cover</div>
               )}
               <span className={`absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-full ${c.status === "Published" ? "bg-emerald-500/90 text-white" : "bg-background/90 text-muted-foreground"}`}>{c.status}</span>
-              <div className="absolute top-2 right-2"><RowMenu actions={[
-                { label: "Edit", onClick: () => { setEditing(c); setOpen(true); } },
-                { label: c.status === "Published" ? "Unpublish" : "Publish", onClick: () => setItems((p) => p.map((x) => x.id === c.id ? { ...x, status: x.status === "Published" ? "Draft" : "Published" } : x)) },
-                { label: "Delete", danger: true, onClick: () => { setItems((p) => p.filter((x) => x.id !== c.id)); toast.success("Deleted"); } },
-              ]} /></div>
             </div>
+            <div className="absolute top-2 right-2 z-20"><RowMenu actions={[
+              { label: "Edit", onClick: () => { setEditing(c); setOpen(true); } },
+              { label: "Delete", danger: true, onClick: () => handleDelete(c.id) },
+            ]} /></div>
             <div className="p-4">
               <div className="font-semibold">{c.name}</div>
               <div className="text-xs text-muted-foreground line-clamp-2 mt-1">{c.description}</div>

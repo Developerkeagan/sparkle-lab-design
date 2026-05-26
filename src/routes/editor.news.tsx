@@ -31,7 +31,8 @@ function NewsAdmin() {
     <div className="space-y-6">
       <PageHeader title="News & announcements" subtitle="Write, edit and publish posts to the public News page." />
       <Toolbar onSearch={setQ} addLabel="New article" onAdd={startNew} />
-      <Card className="overflow-hidden"><div className="overflow-x-auto"><table className="w-full text-sm">
+      <Card className="relative">
+        <div className="overflow-x-auto pb-48"><table className="w-full text-sm">
         <thead className="bg-muted/50 text-left text-muted-foreground text-xs uppercase">
           <tr><th className="px-4 py-3">Article</th><th>Tag</th><th>Date</th><th></th></tr>
         </thead>
@@ -54,7 +55,8 @@ function NewsAdmin() {
           ))}
           {filtered.length === 0 && <tr><td colSpan={4} className="px-4 py-12 text-center text-muted-foreground">No news posts yet.</td></tr>}
         </tbody>
-      </table></div></Card>
+      </table></div>
+      </Card>
 
       <Modal open={open} onClose={() => setOpen(false)} title={editing.id ? "Edit article" : "New article"}
         footer={<><GhostBtn onClick={() => setOpen(false)}>Cancel</GhostBtn><PrimaryBtn onClick={submit}>Save</PrimaryBtn></>}>

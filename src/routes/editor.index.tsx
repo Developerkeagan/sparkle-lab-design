@@ -20,7 +20,11 @@ function EditorOverview() {
         <Card className="p-6">
           <h3 className="font-display font-bold mb-4">Quick actions</h3>
           <div className="grid grid-cols-2 gap-3">
-            {[{ to: "/editor/academy", l: "New course", i: GraduationCap }, { to: "/editor/shop", l: "Add product", i: ShoppingBag }, { to: "/editor/collections", l: "New collection", i: Layers }, { to: "/editor/layouts", l: "Edit homepage", i: Edit3 }].map((a) => (
+            {[
+              { to: "/editor/academy", l: "New course", i: GraduationCap }, 
+              { to: "/editor/shop", l: "Add product", i: ShoppingBag }, 
+              { to: "/editor/collections", l: "New collection", i: Layers }
+            ].map((a) => (
               <Link key={a.to} to={a.to} className="group p-4 rounded-xl border border-border hover:bg-muted/40 transition-colors">
                 <a.i className="h-5 w-5 text-primary" />
                 <div className="mt-2 font-semibold text-sm">{a.l}</div>

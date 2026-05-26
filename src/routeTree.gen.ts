@@ -39,7 +39,6 @@ import { Route as EditorShopRouteImport } from './routes/editor.shop'
 import { Route as EditorProfileRouteImport } from './routes/editor.profile'
 import { Route as EditorNewsRouteImport } from './routes/editor.news'
 import { Route as EditorMediaRouteImport } from './routes/editor.media'
-import { Route as EditorLayoutsRouteImport } from './routes/editor.layouts'
 import { Route as EditorGalleryRouteImport } from './routes/editor.gallery'
 import { Route as EditorDraftsRouteImport } from './routes/editor.drafts'
 import { Route as EditorDealRouteImport } from './routes/editor.deal'
@@ -52,8 +51,11 @@ import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSecurityRouteImport } from './routes/admin.security'
 import { Route as AdminProfileRouteImport } from './routes/admin.profile'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminNewsRouteImport } from './routes/admin.news'
 import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
-import { Route as AdminLayoutsRouteImport } from './routes/admin.layouts'
+import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
+import { Route as AdminDealRouteImport } from './routes/admin.deal'
+import { Route as AdminContactRouteImport } from './routes/admin.contact'
 import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAcademyRouteImport } from './routes/admin.academy'
@@ -210,11 +212,6 @@ const EditorMediaRoute = EditorMediaRouteImport.update({
   path: '/media',
   getParentRoute: () => EditorRoute,
 } as any)
-const EditorLayoutsRoute = EditorLayoutsRouteImport.update({
-  id: '/layouts',
-  path: '/layouts',
-  getParentRoute: () => EditorRoute,
-} as any)
 const EditorGalleryRoute = EditorGalleryRouteImport.update({
   id: '/gallery',
   path: '/gallery',
@@ -275,14 +272,29 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminNewsRoute = AdminNewsRouteImport.update({
+  id: '/news',
+  path: '/news',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminMessagesRoute = AdminMessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminLayoutsRoute = AdminLayoutsRouteImport.update({
-  id: '/layouts',
-  path: '/layouts',
+const AdminGalleryRoute = AdminGalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDealRoute = AdminDealRouteImport.update({
+  id: '/deal',
+  path: '/deal',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminContactRoute = AdminContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCollectionsRoute = AdminCollectionsRouteImport.update({
@@ -329,8 +341,11 @@ export interface FileRoutesByFullPath {
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
-  '/admin/layouts': typeof AdminLayoutsRoute
+  '/admin/contact': typeof AdminContactRoute
+  '/admin/deal': typeof AdminDealRoute
+  '/admin/gallery': typeof AdminGalleryRoute
   '/admin/messages': typeof AdminMessagesRoute
+  '/admin/news': typeof AdminNewsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/security': typeof AdminSecurityRoute
@@ -343,7 +358,6 @@ export interface FileRoutesByFullPath {
   '/editor/deal': typeof EditorDealRoute
   '/editor/drafts': typeof EditorDraftsRoute
   '/editor/gallery': typeof EditorGalleryRoute
-  '/editor/layouts': typeof EditorLayoutsRoute
   '/editor/media': typeof EditorMediaRoute
   '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
@@ -378,8 +392,11 @@ export interface FileRoutesByTo {
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
-  '/admin/layouts': typeof AdminLayoutsRoute
+  '/admin/contact': typeof AdminContactRoute
+  '/admin/deal': typeof AdminDealRoute
+  '/admin/gallery': typeof AdminGalleryRoute
   '/admin/messages': typeof AdminMessagesRoute
+  '/admin/news': typeof AdminNewsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/security': typeof AdminSecurityRoute
@@ -392,7 +409,6 @@ export interface FileRoutesByTo {
   '/editor/deal': typeof EditorDealRoute
   '/editor/drafts': typeof EditorDraftsRoute
   '/editor/gallery': typeof EditorGalleryRoute
-  '/editor/layouts': typeof EditorLayoutsRoute
   '/editor/media': typeof EditorMediaRoute
   '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
@@ -431,8 +447,11 @@ export interface FileRoutesById {
   '/admin/academy': typeof AdminAcademyRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
-  '/admin/layouts': typeof AdminLayoutsRoute
+  '/admin/contact': typeof AdminContactRoute
+  '/admin/deal': typeof AdminDealRoute
+  '/admin/gallery': typeof AdminGalleryRoute
   '/admin/messages': typeof AdminMessagesRoute
+  '/admin/news': typeof AdminNewsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/profile': typeof AdminProfileRoute
   '/admin/security': typeof AdminSecurityRoute
@@ -445,7 +464,6 @@ export interface FileRoutesById {
   '/editor/deal': typeof EditorDealRoute
   '/editor/drafts': typeof EditorDraftsRoute
   '/editor/gallery': typeof EditorGalleryRoute
-  '/editor/layouts': typeof EditorLayoutsRoute
   '/editor/media': typeof EditorMediaRoute
   '/editor/news': typeof EditorNewsRoute
   '/editor/profile': typeof EditorProfileRoute
@@ -485,8 +503,11 @@ export interface FileRouteTypes {
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
-    | '/admin/layouts'
+    | '/admin/contact'
+    | '/admin/deal'
+    | '/admin/gallery'
     | '/admin/messages'
+    | '/admin/news'
     | '/admin/orders'
     | '/admin/profile'
     | '/admin/security'
@@ -499,7 +520,6 @@ export interface FileRouteTypes {
     | '/editor/deal'
     | '/editor/drafts'
     | '/editor/gallery'
-    | '/editor/layouts'
     | '/editor/media'
     | '/editor/news'
     | '/editor/profile'
@@ -534,8 +554,11 @@ export interface FileRouteTypes {
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
-    | '/admin/layouts'
+    | '/admin/contact'
+    | '/admin/deal'
+    | '/admin/gallery'
     | '/admin/messages'
+    | '/admin/news'
     | '/admin/orders'
     | '/admin/profile'
     | '/admin/security'
@@ -548,7 +571,6 @@ export interface FileRouteTypes {
     | '/editor/deal'
     | '/editor/drafts'
     | '/editor/gallery'
-    | '/editor/layouts'
     | '/editor/media'
     | '/editor/news'
     | '/editor/profile'
@@ -586,8 +608,11 @@ export interface FileRouteTypes {
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
-    | '/admin/layouts'
+    | '/admin/contact'
+    | '/admin/deal'
+    | '/admin/gallery'
     | '/admin/messages'
+    | '/admin/news'
     | '/admin/orders'
     | '/admin/profile'
     | '/admin/security'
@@ -600,7 +625,6 @@ export interface FileRouteTypes {
     | '/editor/deal'
     | '/editor/drafts'
     | '/editor/gallery'
-    | '/editor/layouts'
     | '/editor/media'
     | '/editor/news'
     | '/editor/profile'
@@ -851,13 +875,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditorMediaRouteImport
       parentRoute: typeof EditorRoute
     }
-    '/editor/layouts': {
-      id: '/editor/layouts'
-      path: '/layouts'
-      fullPath: '/editor/layouts'
-      preLoaderRoute: typeof EditorLayoutsRouteImport
-      parentRoute: typeof EditorRoute
-    }
     '/editor/gallery': {
       id: '/editor/gallery'
       path: '/gallery'
@@ -942,6 +959,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/news': {
+      id: '/admin/news'
+      path: '/news'
+      fullPath: '/admin/news'
+      preLoaderRoute: typeof AdminNewsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/messages': {
       id: '/admin/messages'
       path: '/messages'
@@ -949,11 +973,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMessagesRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/layouts': {
-      id: '/admin/layouts'
-      path: '/layouts'
-      fullPath: '/admin/layouts'
-      preLoaderRoute: typeof AdminLayoutsRouteImport
+    '/admin/gallery': {
+      id: '/admin/gallery'
+      path: '/gallery'
+      fullPath: '/admin/gallery'
+      preLoaderRoute: typeof AdminGalleryRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/deal': {
+      id: '/admin/deal'
+      path: '/deal'
+      fullPath: '/admin/deal'
+      preLoaderRoute: typeof AdminDealRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/contact': {
+      id: '/admin/contact'
+      path: '/contact'
+      fullPath: '/admin/contact'
+      preLoaderRoute: typeof AdminContactRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/collections': {
@@ -998,8 +1036,11 @@ interface AdminRouteChildren {
   AdminAcademyRoute: typeof AdminAcademyRoute
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminCollectionsRoute: typeof AdminCollectionsRoute
-  AdminLayoutsRoute: typeof AdminLayoutsRoute
+  AdminContactRoute: typeof AdminContactRoute
+  AdminDealRoute: typeof AdminDealRoute
+  AdminGalleryRoute: typeof AdminGalleryRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
+  AdminNewsRoute: typeof AdminNewsRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProfileRoute: typeof AdminProfileRoute
   AdminSecurityRoute: typeof AdminSecurityRoute
@@ -1013,8 +1054,11 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminAcademyRoute: AdminAcademyRoute,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminCollectionsRoute: AdminCollectionsRoute,
-  AdminLayoutsRoute: AdminLayoutsRoute,
+  AdminContactRoute: AdminContactRoute,
+  AdminDealRoute: AdminDealRoute,
+  AdminGalleryRoute: AdminGalleryRoute,
   AdminMessagesRoute: AdminMessagesRoute,
+  AdminNewsRoute: AdminNewsRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProfileRoute: AdminProfileRoute,
   AdminSecurityRoute: AdminSecurityRoute,
@@ -1033,7 +1077,6 @@ interface EditorRouteChildren {
   EditorDealRoute: typeof EditorDealRoute
   EditorDraftsRoute: typeof EditorDraftsRoute
   EditorGalleryRoute: typeof EditorGalleryRoute
-  EditorLayoutsRoute: typeof EditorLayoutsRoute
   EditorMediaRoute: typeof EditorMediaRoute
   EditorNewsRoute: typeof EditorNewsRoute
   EditorProfileRoute: typeof EditorProfileRoute
@@ -1048,7 +1091,6 @@ const EditorRouteChildren: EditorRouteChildren = {
   EditorDealRoute: EditorDealRoute,
   EditorDraftsRoute: EditorDraftsRoute,
   EditorGalleryRoute: EditorGalleryRoute,
-  EditorLayoutsRoute: EditorLayoutsRoute,
   EditorMediaRoute: EditorMediaRoute,
   EditorNewsRoute: EditorNewsRoute,
   EditorProfileRoute: EditorProfileRoute,
@@ -1117,3 +1159,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

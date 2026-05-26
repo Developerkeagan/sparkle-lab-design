@@ -1,7 +1,7 @@
 import { createFileRoute, Outlet, Navigate } from "@tanstack/react-router";
 import { DashboardShell, type NavGroup } from "@/components/dashboard/DashboardShell";
 import { useAuth } from "@/lib/auth";
-import { LayoutDashboard, GraduationCap, ShoppingBag, Layers, User, Image, FileText, Globe, Newspaper, Phone, Tag } from "lucide-react";
+import { LayoutDashboard, GraduationCap, ShoppingBag, Layers, User, Image, FileText, Globe, Newspaper, Phone, Tag, Receipt } from "lucide-react";
 
 export const Route = createFileRoute("/editor")({
   component: EditorLayout,
@@ -15,10 +15,10 @@ const groups: NavGroup[] = [
     { label: "Shop Items", to: "/editor/shop", icon: ShoppingBag },
     { label: "Collections", to: "/editor/collections", icon: Layers },
     { label: "Deal of the Week", to: "/editor/deal", icon: Tag },
+    { label: "Orders", to: "/editor/orders", icon: Receipt, badge: "12" },
     { label: "News", to: "/editor/news", icon: Newspaper },
     { label: "Gallery", to: "/editor/gallery", icon: Image },
     { label: "Contact Info", to: "/editor/contact", icon: Phone },
-    { label: "Page Layouts", to: "/editor/layouts", icon: Globe },
     { label: "Drafts", to: "/editor/drafts", icon: FileText, badge: "4" },
     { label: "Media Library", to: "/editor/media", icon: Image },
   ] },

@@ -1,34 +1,79 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useState, FormEvent } from "react";
 import { useAuth } from "@/lib/auth";
 import { Navbar } from "@/components/site/Navbar";
-import { Eye, EyeOff, LogIn, Loader2, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, LogIn, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import useFetch from "@/hooks/useFetch"; // Import the new useFetch hook
+import { Loader2 } from "lucide-react"; // Ensure Loader2 is imported
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({ meta: [{ title: "Login — Applied Biotech" }] }),
 });
 
+// Define a type for the expected user data from the login API
+interface LoginResponse {
+  token: string;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    role: "admin" | "editor";
+    fullName: string;
+  };
+}
+
 function LoginPage() {
-  const { login } = useAuth();
+  // We need the function that sets the user state, usually named 'login' or 'setUser'
+  const { login: authLogin } = useAuth(); 
   const navigate = useNavigate();
+  const router = useRouter();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  // Use the new useFetch hook for the login API call
+  const { loading: fetchLoading, error: fetchError, fetchData } = useFetch<LoginResponse>();
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    setLoading(true);
     try {
-      const u = await login(identifier, password);
-      toast.success(`Welcome back, ${u.name.split(" ")[0]}`);
-      navigate({ to: u.role === "admin" ? "/admin" : "/editor" });
+      const loginPayload = { 
+        email: identifier.trim(), 
+        password: password 
+      };
+
+      // Replace the direct call to useAuth().login with fetchData
+      const result = await fetchData("/api/v1/auth/login", { // Placeholder for your actual login API endpoint
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginPayload),
+      });
+
+      if (result) {
+        // Normalize user object for frontend consistency
+        const normalizedUser = {
+          ...result.user,
+          name: result.user.fullName, // Frontend components expect 'name'
+          role: result.user.role.toLowerCase() as "admin" | "editor",
+        };
+
+        await authLogin(result.token, normalizedUser);
+        
+        // Force the router to re-run loaders and guards with the new auth state
+        await router.invalidate();
+        
+        toast.success(`Welcome back, ${normalizedUser.name.split(" ")[0]}`);
+        
+        const target = normalizedUser.role === "admin" ? "/admin/users" : "/editor";
+        navigate({ to: target as any, replace: true });
+      }
     } catch (err: any) {
+      console.error("Login failed:", err); // Log the error to the console
       toast.error(err.message || "Login failed");
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -64,7 +109,7 @@ function LoginPage() {
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             required
-            placeholder="admin@gmail.com"
+            placeholder="Enter your email (e.g. admin@gmail.com)"
             className="mt-1.5 w-full h-11 rounded-xl border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
           />
 
@@ -92,10 +137,10 @@ function LoginPage() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={fetchLoading}
             className="mt-6 w-full h-11 rounded-xl gradient-brand text-brand-foreground font-semibold inline-flex items-center justify-center gap-2 shadow-brand hover:scale-[1.01] transition-transform disabled:opacity-70"
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+            {fetchLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
             Sign in
           </button>
 

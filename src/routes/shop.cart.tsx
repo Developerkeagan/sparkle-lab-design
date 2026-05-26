@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowRight, Loader2 } from "lucide-react";
 import { useShop } from "@/lib/shop";
 import { fmt } from "@/lib/products";
+import { useState, useEffect, useMemo } from "react";
+import useFetch from "@/hooks/useFetch";
 
 export const Route = createFileRoute("/shop/cart")({
   component: CartPage,
@@ -9,11 +11,38 @@ export const Route = createFileRoute("/shop/cart")({
 });
 
 function CartPage() {
-  const { cartItems, cartTotal, setQty, removeFromCart, clearCart } = useShop();
-  const shipping = cartTotal > 100000 ? 0 : cartTotal === 0 ? 0 : 5000;
+  const { cartItems: cart, setQty, removeFromCart, clearCart } = useShop();
+  const [products, setProducts] = useState<any[]>([]);
+  const { loading, fetchData } = useFetch();
+
+  useEffect(() => {
+    if (cart.length > 0) {
+      fetchData("/api/v1/shop/products").then(res => {
+        if (res) setProducts(res);
+      });
+    }
+  }, [fetchData, cart.length]);
+
+  const items = useMemo(() => {
+    return cart.map((c: any) => {
+      const p = products.find(x => x._id === (c.id || c.product));
+      if (!p) return null;
+      return {
+        ...c,
+        id: p._id,
+        name: p.productName,
+        price: p.price,
+        img: p.productImage,
+        category: p.category,
+      };
+    }).filter(Boolean);
+  }, [cart, products]);
+
+  const cartTotal = useMemo(() => items.reduce((acc: number, it: any) => acc + (it.price * it.qty), 0), [items]);
+  const shipping = cartTotal > 100000 || cartTotal === 0 ? 0 : 5000;
   const total = cartTotal + shipping;
 
-  if (cartItems.length === 0) {
+  if (cart.length === 0) {
     return (
       <section className="px-4 sm:px-6 lg:px-8 py-20">
         <div className="mx-auto max-w-md text-center">
@@ -28,20 +57,28 @@ function CartPage() {
     );
   }
 
+  if (loading && items.length === 0) {
+    return (
+      <div className="py-40 flex justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <section className="px-4 sm:px-6 lg:px-8 py-10">
       <div className="mx-auto max-w-7xl">
         <div className="flex items-end justify-between mb-8">
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-brand font-bold">Cart</div>
-            <h1 className="font-display text-3xl md:text-4xl font-bold mt-1">Your Cart ({cartItems.length})</h1>
+            <h1 className="font-display text-3xl md:text-4xl font-bold mt-1">Your Cart ({items.length})</h1>
           </div>
           <button onClick={clearCart} className="text-sm font-medium text-muted-foreground hover:text-destructive">Clear cart</button>
         </div>
 
         <div className="grid lg:grid-cols-[1fr_360px] gap-8">
           <div className="space-y-3">
-            {cartItems.map((it) => (
+            {items.map((it) => (
               <div key={it.id} className="bg-card border border-border rounded-2xl p-3 sm:p-4 flex gap-4">
                 <Link to="/shop/product/$id" params={{ id: it.id }} className="h-24 w-24 sm:h-28 sm:w-28 rounded-xl overflow-hidden bg-secondary shrink-0">
                   <img src={it.img} alt={it.name} className="w-full h-full object-cover" />

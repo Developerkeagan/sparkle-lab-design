@@ -14,76 +14,55 @@ export interface AuthUser {
 
 interface AuthContextValue {
   user: AuthUser | null;
-  login: (identifier: string, password: string) => Promise<AuthUser>;
+  token: string | null;
+  login: (token: string, user: AuthUser) => Promise<void>;
   logout: () => void;
   updateProfile: (patch: Partial<AuthUser>) => void;
 }
 
-const STORAGE_KEY = "ab.auth.user";
-
-const MOCK_USERS: (AuthUser & { password: string })[] = [
-  {
-    id: "u-admin",
-    username: "admin",
-    email: "admin@gmail.com",
-    password: "admin123",
-    role: "admin",
-    name: "Dr. Ada Okafor",
-    bio: "Lead administrator overseeing operations, content & sales.",
-  },
-  {
-    id: "u-editor",
-    username: "editor",
-    email: "editor@gmail.com",
-    password: "editor123",
-    role: "editor",
-    name: "Tunde Bello",
-    bio: "Content editor for the academy, shop & collections.",
-  },
-];
+const USER_KEY = "ab.auth.user";
+const TOKEN_KEY = "ab.auth.token";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setUser(JSON.parse(raw));
+      const u = localStorage.getItem(USER_KEY);
+      const t = localStorage.getItem(TOKEN_KEY);
+      if (u) setUser(JSON.parse(u));
+      if (t) setToken(t);
     } catch {}
   }, []);
 
-  const login = async (identifier: string, password: string) => {
-    const id = identifier.trim().toLowerCase();
-    const found = MOCK_USERS.find(
-      (u) =>
-        (u.email.toLowerCase() === id || u.username.toLowerCase() === id) &&
-        u.password === password,
-    );
-    if (!found) throw new Error("Invalid credentials");
-    const { password: _pw, ...safe } = found;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(safe));
-    setUser(safe);
-    return safe;
+  const login = async (newToken: string, userData: AuthUser) => {
+    localStorage.setItem(TOKEN_KEY, newToken);
+    localStorage.setItem(USER_KEY, JSON.stringify(userData));
+    setToken(newToken);
+    setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(TOKEN_KEY);
     setUser(null);
+    setToken(null);
   };
 
   const updateProfile = (patch: Partial<AuthUser>) => {
     setUser((prev) => {
       if (!prev) return prev;
       const next = { ...prev, ...patch };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      localStorage.setItem(USER_KEY, JSON.stringify(next));
       return next;
     });
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateProfile }}>
+    <AuthContext.Provider value={{ user, token, login, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

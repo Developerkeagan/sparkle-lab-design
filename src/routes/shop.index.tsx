@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useReveal } from "@/hooks/use-reveal";
-import { ChevronLeft, ChevronRight, Truck, ShieldCheck, Headphones, RotateCcw } from "lucide-react";
+import { ChevronLeft, ChevronRight, Truck, ShieldCheck, Headphones, RotateCcw, Loader2 } from "lucide-react";
 import hero1 from "@/assets/shop-hero-1.jpg";
 import hero2 from "@/assets/shop-hero-2.jpg";
-import { PRODUCTS, CATEGORIES, fmt, getProduct } from "@/lib/products";
+import { CATEGORIES, fmt, getProduct } from "@/lib/products";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { useSiteContent } from "@/lib/site-content";
+import useFetch from "@/hooks/useFetch";
 
 export const Route = createFileRoute("/shop/")({ component: ShopHome });
 
@@ -85,23 +86,24 @@ function PromoStrip() {
   );
 }
 
-function CategoryGrid() {
+function CollectionGrid({ collections }: { collections: any[] }) {
   return (
     <section className="px-4 sm:px-6 lg:px-8 mt-14">
       <div className="mx-auto max-w-7xl">
         <div className="flex items-end justify-between mb-6">
           <div>
             <div className="text-xs uppercase tracking-[0.2em] text-brand font-bold">Browse</div>
-            <h2 className="font-display text-2xl md:text-3xl font-bold mt-1">Shop by Category</h2>
+            <h2 className="font-display text-2xl md:text-3xl font-bold mt-1">Shop by Collection</h2>
           </div>
-          <Link to="/shop/categories" className="text-sm font-semibold text-brand hover:underline">View all →</Link>
+          <Link to="/collections" className="text-sm font-semibold text-brand hover:underline">View all →</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          {CATEGORIES.map((c, i) => (
-            <Link key={i} to="/shop/category/$slug" params={{ slug: c.slug }} className="reveal group relative aspect-square rounded-2xl bg-gradient-to-br from-secondary to-accent/40 border border-border p-4 flex flex-col justify-between text-left hover:shadow-brand hover:-translate-y-1 transition-all overflow-hidden">
-              <div className="absolute -right-6 -bottom-6 h-24 w-24 rounded-full gradient-brand opacity-10 group-hover:opacity-30 group-hover:scale-150 transition-all duration-500" />
-              <div className="text-xs text-muted-foreground">{PRODUCTS.filter((p) => p.category === c.slug).length} items</div>
-              <div className="font-display font-bold text-foreground">{c.name}</div>
+          {collections.slice(0, 6).map((c) => (
+            <Link key={c._id} to="/collections" className="group relative aspect-square rounded-2xl bg-muted border border-border p-4 flex flex-col justify-between text-left hover:shadow-brand hover:-translate-y-1 transition-all overflow-hidden">
+              {c.coverImage && <img src={c.coverImage} alt="" className="absolute inset-0 h-full w-full object-cover group-hover:scale-110 transition-transform duration-500" />}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <div className="relative z-10 text-[10px] font-bold uppercase tracking-wider text-white/80">{c.items?.length || 0} items</div>
+              <div className="relative z-10 font-display font-bold text-white line-clamp-2 leading-tight">{c.collectionName}</div>
             </Link>
           ))}
         </div>
@@ -110,7 +112,7 @@ function CategoryGrid() {
   );
 }
 
-function ProductSection({ title, eyebrow, items }: { title: string; eyebrow: string; items: typeof PRODUCTS }) {
+function ProductSection({ title, eyebrow, items }: { title: string; eyebrow: string; items: any[] }) {
   return (
     <section className="px-4 sm:px-6 lg:px-8 mt-14">
       <div className="mx-auto max-w-7xl">
@@ -129,28 +131,33 @@ function ProductSection({ title, eyebrow, items }: { title: string; eyebrow: str
   );
 }
 
-function DealBanner() {
-  const { deal } = useSiteContent();
-  const product = getProduct(deal.productId);
-  if (!product) return null;
+function DealBanner({ deal }: { deal: any }) {
+  if (!deal || !deal.product) return null;
+
+  // Backend usually populates the product object
+  const product = deal.product;
+  const productId = product._id || product;
+  const productImg = product.productImage;
+  const productName = product.productName;
+
   return (
     <section className="px-4 sm:px-6 lg:px-8 mt-14">
-      <div className="mx-auto max-w-7xl reveal grid md:grid-cols-2 rounded-3xl overflow-hidden bg-foreground text-background relative">
+      <div className="mx-auto max-w-7xl grid md:grid-cols-2 rounded-3xl overflow-hidden bg-foreground text-background relative">
         <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full gradient-brand opacity-30 blur-3xl" />
         <div className="p-10 md:p-14 relative">
           <div className="text-xs uppercase tracking-[0.2em] text-accent-cyan font-bold">{deal.eyebrow}</div>
           <h3 className="mt-3 font-display text-3xl md:text-5xl font-extrabold leading-tight"><span className="gradient-text">{deal.headline}</span></h3>
           <p className="mt-4 text-background/70 max-w-md">{deal.blurb}</p>
           <div className="mt-6 flex items-center gap-4">
-            <div className="font-display text-3xl font-bold text-accent-cyan">{fmt(deal.price)}</div>
-            <div className="text-background/50 line-through">{fmt(deal.oldPrice)}</div>
+            <div className="font-display text-3xl font-bold text-accent-cyan">₦{(deal.salePrice || 0).toLocaleString()}</div>
+            <div className="text-background/50 line-through">₦{(deal.oldPrice || 0).toLocaleString()}</div>
             <span className="px-2 py-0.5 rounded-full bg-accent-cyan text-foreground text-xs font-bold">{deal.discountLabel}</span>
           </div>
-          <Link to="/shop/product/$id" params={{ id: deal.productId }} className="mt-7 inline-flex items-center gap-2 rounded-full bg-background text-foreground px-6 py-3 text-sm font-bold hover:scale-105 transition-transform">
+          <Link to="/shop/product/$id" params={{ id: productId }} className="mt-7 inline-flex items-center gap-2 rounded-full bg-background text-foreground px-6 py-3 text-sm font-bold hover:scale-105 transition-transform">
             Shop the Deal <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="relative min-h-[300px]"><img src={product.img} alt={product.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover" /></div>
+        <div className="relative min-h-[300px]"><img src={productImg} alt={productName} loading="lazy" className="absolute inset-0 w-full h-full object-cover" /></div>
       </div>
     </section>
   );
@@ -173,17 +180,61 @@ function Newsletter() {
 
 function ShopHome() {
   useReveal();
+  const [products, setProducts] = useState<any[]>([]);
+  const [collections, setCollections] = useState<any[]>([]);
+  const [deal, setDeal] = useState<any>(null);
+  const { loading, fetchData } = useFetch();
+
+  useEffect(() => {
+    const load = async () => {
+      const [prodRes, collRes, dealRes] = await Promise.all([
+        fetchData("/api/v1/shop/products"),
+        fetchData("/api/v1/collections"),
+        fetchData("/api/v1/shop/deal-of-the-week")
+      ]);
+
+      if (prodRes) {
+        const normalized = prodRes.map((p: any) => ({
+          id: p._id,
+          name: p.productName,
+          price: p.price,
+          stock: p.stock,
+          status: p.status,
+          img: p.productImage,
+          category: p.category,
+          description: p.description,
+          rating: 5
+        }));
+        setProducts(normalized);
+      }
+      if (collRes) setCollections(collRes);
+      if (dealRes) setDeal(dealRes);
+    };
+    load();
+  }, [fetchData]);
+
+  const featured = useMemo(() => products.slice(0, 4), [products]);
+  const topRated = useMemo(() => products.slice(0, 4), [products]);
+  const bestSellers = useMemo(() => products.slice(Math.min(7, products.length), Math.min(11, products.length)), [products]);
+  const newArrivals = useMemo(() => products.slice(-4), [products]);
+
   return (
     <>
       <HeroCarousel />
       <PromoStrip />
-      <CategoryGrid />
-      <ProductSection eyebrow="Featured" title="Featured Products" items={PRODUCTS.slice(0, 4)} />
-      <ProductSection eyebrow="Top Rated" title="Customer Favorites" items={PRODUCTS.filter((p) => p.rating === 5).slice(0, 4)} />
-      <DealBanner />
-      <ProductSection eyebrow="Best Sellers" title="Best Selling Products" items={PRODUCTS.slice(7, 11)} />
-      <ProductSection eyebrow="New Arrivals" title="Latest Products" items={PRODUCTS.slice(-4)} />
-      <Newsletter />
+      {loading && products.length === 0 ? (
+        <div className="py-20 flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
+      ) : (
+        <>
+          <CollectionGrid collections={collections} />
+          <ProductSection eyebrow="Featured" title="Featured Products" items={featured} />
+          <ProductSection eyebrow="Top Rated" title="Customer Favorites" items={topRated} />
+          <DealBanner deal={deal} />
+          <ProductSection eyebrow="Best Sellers" title="Best Selling Products" items={bestSellers} />
+          <ProductSection eyebrow="New Arrivals" title="Latest Products" items={newArrivals} />
+          <Newsletter />
+        </>
+      )}
     </>
   );
 }

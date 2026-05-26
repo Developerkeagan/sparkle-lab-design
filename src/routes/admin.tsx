@@ -24,7 +24,7 @@ const groups: NavGroup[] = [
     items: [
       { label: "Shop", to: "/admin/shop", icon: ShoppingBag },
       { label: "Collections", to: "/admin/collections", icon: Layers },
-      { label: "Deal of the Week", to: "/editor/deal", icon: Tag },
+      { label: "Deal of the Week", to: "/admin/deal", icon: Tag },
       { label: "Orders", to: "/admin/orders", icon: Receipt, badge: "12" },
     ],
   },
@@ -32,10 +32,9 @@ const groups: NavGroup[] = [
     label: "Content",
     items: [
       { label: "Academy", to: "/admin/academy", icon: GraduationCap },
-      { label: "News", to: "/editor/news", icon: Newspaper },
-      { label: "Gallery", to: "/editor/gallery", icon: Image },
-      { label: "Contact Info", to: "/editor/contact", icon: Phone },
-      { label: "Site Layouts", to: "/admin/layouts", icon: Globe },
+      { label: "News", to: "/admin/news", icon: Newspaper },
+      { label: "Gallery", to: "/admin/gallery", icon: Image },
+      { label: "Contact Info", to: "/admin/contact", icon: Phone },
       { label: "Messages", to: "/admin/messages", icon: MessageSquare, badge: "3" },
     ],
   },

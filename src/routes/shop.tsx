@@ -24,11 +24,6 @@ function ShopSubNav() {
 
   const links = [
     { label: "All Products", to: "/shop" as const },
-    { label: "Reagents", to: "/shop/category/$slug" as const, params: { slug: "reagents" } },
-    { label: "Consumables", to: "/shop/category/$slug" as const, params: { slug: "consumables" } },
-    { label: "Equipment", to: "/shop/category/$slug" as const, params: { slug: "equipment" } },
-    { label: "Kits", to: "/shop/category/$slug" as const, params: { slug: "kits" } },
-    { label: "Apparel", to: "/shop/category/$slug" as const, params: { slug: "apparel" } },
     { label: "Deals", to: "/shop/deals" as const },
   ];
 

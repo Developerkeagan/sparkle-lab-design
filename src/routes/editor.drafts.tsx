@@ -27,8 +27,8 @@ function Drafts() {
       <PageHeader title="Drafts" subtitle="Continue editing or publish your in-progress content." />
       <Toolbar onSearch={setQ} addLabel="New draft" onAdd={() => setCreating(true)} />
 
-      <Card className="overflow-hidden">
-        <table className="w-full text-sm">
+      <Card className="relative">
+        <div className="overflow-x-auto pb-48"><table className="w-full text-sm">
           <thead className="bg-muted/50 text-left text-muted-foreground text-xs uppercase">
             <tr><th className="px-4 py-3">Draft</th><th>Type</th><th>Updated</th><th></th></tr>
           </thead>
@@ -50,6 +50,7 @@ function Drafts() {
             ))}
           </tbody>
         </table>
+        </div>
       </Card>
 
       <DraftModal key={editing?.id ?? (creating ? "new" : "")} open={!!editing || creating} editing={editing} onClose={() => { setEditing(null); setCreating(false); }} onSave={(d: any) => {

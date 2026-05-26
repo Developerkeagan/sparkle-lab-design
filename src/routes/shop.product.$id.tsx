@@ -1,16 +1,36 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Star, Heart, Plus, Minus, ShoppingBag, Truck, ShieldCheck, RotateCcw, ArrowLeft } from "lucide-react";
-import { getProduct, fmt, PRODUCTS } from "@/lib/products";
+import { fmt } from "@/lib/products";
 import { useShop } from "@/lib/shop";
 import { ProductCard } from "@/components/shop/ProductCard";
+import useFetch from "@/hooks/useFetch";
+
+const BASE_URL = import.meta.env.VITE_BACKEND_URL || '';
 
 export const Route = createFileRoute("/shop/product/$id")({
   component: ProductDetail,
-  loader: ({ params }) => {
-    const product = getProduct(params.id);
-    if (!product) throw notFound();
-    return { product };
+  loader: async ({ params }) => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/v1/shop/products`);
+      const all = await res.json();
+      const p = all.find((x: any) => x._id === params.id);
+      if (!p) throw notFound();
+      return { 
+        product: {
+          id: p._id,
+          name: p.productName,
+          price: p.price,
+          stock: p.stock,
+          img: p.productImage,
+          category: p.category,
+          description: p.description,
+          rating: 5
+        } 
+      };
+    } catch (e) {
+      throw notFound();
+    }
   },
   head: ({ loaderData }) => ({
     meta: loaderData ? [
@@ -32,9 +52,27 @@ function ProductDetail() {
   const { addToCart, toggleWishlist, inWishlist } = useShop();
   const [qty, setQty] = useState(1);
   const wished = inWishlist(product.id);
-  const sameCat = PRODUCTS.filter((p) => p.category === product.category && p.id !== product.id);
-  const fillers = PRODUCTS.filter((p) => p.id !== product.id && !sameCat.some((s) => s.id === p.id));
-  const related = [...sameCat, ...fillers].slice(0, 4);
+
+  const [related, setRelated] = useState<any[]>([]);
+  const { fetchData } = useFetch();
+
+  useEffect(() => {
+    fetchData("/api/v1/shop/products").then(res => {
+      if (res) {
+        const all = res.map((p: any) => ({
+          id: p._id,
+          name: p.productName,
+          price: p.price,
+          img: p.productImage,
+          category: p.category,
+          rating: 5
+        }));
+        const sameCat = all.filter((p: any) => p.category === product.category && p.id !== product.id);
+        const fillers = all.filter((p: any) => p.id !== product.id && !sameCat.some((s: any) => s.id === p.id));
+        setRelated([...sameCat, ...fillers].slice(0, 4));
+      }
+    });
+  }, [fetchData, product.category, product.id]);
 
   return (
     <section className="px-4 sm:px-6 lg:px-8 py-10">
