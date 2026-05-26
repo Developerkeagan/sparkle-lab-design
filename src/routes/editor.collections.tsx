@@ -38,7 +38,6 @@ function EditorCollections() {
       <Toolbar onSearch={setQ} addLabel="New collection" onAdd={() => { setEditing(null); setOpen(true); }} />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 relative pb-48">
-        {loading && items.length === 0 && <div className="col-span-full py-20 flex justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}
         {items.filter((i) => i.name.toLowerCase().includes(q.toLowerCase())).map((c) => (
           <Card key={c.id} className="group relative">
             <div className="aspect-[16/9] bg-gradient-to-br from-secondary to-accent/40 relative rounded-t-2xl overflow-hidden">
@@ -49,7 +48,7 @@ function EditorCollections() {
             </div>
             <div className="absolute top-2 right-2 z-20"><RowMenu actions={[
               { label: "Edit", onClick: () => { setEditing(c); setOpen(true); } },
-              { label: "Delete", danger: true, onClick: () => handleDelete(c.id) },
+              { label: "Delete", danger: true, onClick: () => { setItems((p) => p.filter((x) => x.id !== c.id)); toast.success("Deleted"); } },
             ]} /></div>
             <div className="p-4">
               <div className="font-semibold">{c.name}</div>
