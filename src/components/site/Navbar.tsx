@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Menu, X, ChevronDown, ShoppingBag, LogIn, LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
+import { Menu, X, ChevronDown, ShoppingBag, GraduationCap, LogIn, LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useAuth } from "@/lib/auth";
 
@@ -12,9 +12,9 @@ const services: { label: string; slug: string }[] = [
 ];
 
 const navLinks = [
-  { label: "Academy", to: "/academy" as const },
-  { label: "Collections", to: "/collections" as const },
-  { label: "Covid-19", to: "/covid-19" as const },
+  { label: "IP & Publications", to: "/ip-publications" as const },
+  { label: "R&D Portfolio", to: "/rd-portfolio" as const },
+  { label: "Careers", to: "/careers" as const },
   { label: "Gallery", to: "/gallery" as const },
   { label: "News", to: "/news" as const },
   { label: "Contact", to: "/contact" as const },
@@ -93,10 +93,17 @@ export function Navbar() {
 
           <Link
             to="/shop"
-            className="ml-3 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-5 py-2.5 text-sm font-semibold shadow-brand hover:scale-105 transition-transform"
+            className="ml-3 inline-flex items-center gap-2 rounded-full border border-border bg-card text-foreground px-4 py-2.5 text-sm font-semibold hover:bg-accent transition-colors"
           >
             <ShoppingBag className="h-4 w-4" />
             Shop
+          </Link>
+          <Link
+            to="/academy"
+            className="ml-2 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-5 py-2.5 text-sm font-semibold shadow-brand hover:scale-105 transition-transform"
+          >
+            <GraduationCap className="h-4 w-4" />
+            Academy
           </Link>
 
           {user ? (
@@ -157,9 +164,14 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
-            <Link to="/shop" onClick={() => setOpen(false)} className="mt-2 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-5 py-2.5 text-sm font-semibold">
-              <ShoppingBag className="h-4 w-4" /> Shop
-            </Link>
+            <div className="flex flex-wrap gap-2 pt-2">
+              <Link to="/shop" onClick={() => setOpen(false)} className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold">
+                <ShoppingBag className="h-4 w-4" /> Shop
+              </Link>
+              <Link to="/academy" onClick={() => setOpen(false)} className="inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-5 py-2 text-sm font-semibold">
+                <GraduationCap className="h-4 w-4" /> Academy
+              </Link>
+            </div>
             {user ? (
               <>
                 <Link to={user.role === "admin" ? "/admin" : "/editor"} onClick={() => setOpen(false)} className="mt-2 block px-3 py-2.5 rounded-lg text-foreground/80 hover:bg-accent">
