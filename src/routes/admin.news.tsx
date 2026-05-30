@@ -39,8 +39,8 @@ function NewsAdmin() {
           title: n.title,
           slug: n.slug,
           tag: n.tag,
-          excerpt: n.excerpt,
-          body: n.newsBody,
+          excerpt: n.description || n.excerpt || "",
+          body: typeof n.newsBody === 'object' ? n.newsBody?.sections?.[0]?.content : n.newsBody || "",
           cover: n.image,
           date: new Date(n.createdAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
         })));
@@ -53,21 +53,44 @@ function NewsAdmin() {
   async function handleSave() {
     if (!editing.title.trim()) return toast.error("Title is required");
     
-    const formData = new FormData();
-    formData.append("title", editing.title);
-    formData.append("tag", editing.tag);
-    formData.append("excerpt", editing.excerpt);
-    formData.append("newsBody", editing.body);
-    formData.append("slug", editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""));
-
-    if (coverFile) {
-      if (typeof coverFile !== "string") formData.append("image", coverFile);
-      else if (!editing.id) formData.append("image", coverFile);
-    }
-
     try {
+      let imageUrl = editing.cover;
+
+      // 1. Handle Image Upload via Gallery if a new file is selected
+      if (coverFile && typeof coverFile !== "string") {
+        const imgData = new FormData();
+        imgData.append("file", coverFile);
+        const uploadRes = await fetchData("/api/v1/gallery/upload", {
+          method: "POST",
+          body: imgData
+        });
+        if (uploadRes && uploadRes.data?.url) {
+          imageUrl = uploadRes.data.url;
+        }
+      }
+
+      // 2. Prepare JSON payload according to backend specification 4.6 and Section 3
+      const payload = {
+        title: editing.title,
+        headline: editing.title, // Required by backend
+        description: editing.excerpt || editing.title, // Required by backend (mapped from excerpt)
+        tag: editing.tag,
+        slug: editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
+        image: imageUrl,
+        newsBody: {
+          sections: [
+            { type: "paragraph", content: editing.body }
+          ]
+        }
+      };
+
       const url = editing.id ? `/api/v1/news/${editing.id}` : "/api/v1/news";
-      await fetchData(url, { method: editing.id ? "PUT" : "POST", body: formData });
+      await fetchData(url, { 
+        method: editing.id ? "PUT" : "POST", 
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload) 
+      });
+
       toast.success(editing.id ? "Article updated" : "Article published");
       setOpen(false);
       loadNews();

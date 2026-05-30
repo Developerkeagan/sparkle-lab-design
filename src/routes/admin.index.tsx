@@ -95,7 +95,7 @@ function Overview() {
 
         const [users, orders, products, academy, analytics] = await Promise.all([
           fetchSafe("/api/v1/users"),
-          fetchSafe("/api/v1/payments"), // Updated module base path
+          fetchSafe("/api/v1/payments"), // Reverted to documented module path for Orders
           fetchSafe("/api/v1/shop/products"), // Corrected based on Readme 4.3
           fetchSafe("/api/v1/academy"),
           fetchSafe("/api/v1/analytics/metrics"),
@@ -133,7 +133,7 @@ function Overview() {
         const totalUsersBefore = userList.filter(u => u.createdAt && new Date(u.createdAt) <= thirtyDaysAgo).length;
         const userPct = totalUsersBefore === 0 ? 100 : ((userList.length - totalUsersBefore) / totalUsersBefore) * 100;
         
-        const revGrowth = getGrowth(orderList, "totalAmount");
+        const revGrowth = getGrowth(orderList.filter(o => o.status?.toLowerCase() === "paid"), "totalAmount");
         const prodGrowth = getGrowth(productList);
         const studentGrowth = getGrowth(courseList, "students");
         
@@ -189,7 +189,7 @@ function Overview() {
       return;
     }
 
-    const headers = ["Order ID", "Customer Email", "Status", "Total Amount", "Date"];
+    const headers = ["Tracking ID", "Customer Email", "Status", "Total Amount", "Date"];
     const rows = metrics.orders.map(o => [
       o.id,
       o.email,
@@ -312,7 +312,7 @@ function Overview() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-left text-muted-foreground text-xs uppercase tracking-wider">
-                  <th className="px-2 py-2">Order</th>
+                  <th className="px-2 py-2">Tracking ID</th>
                   <th className="px-2 py-2">Customer</th>
                   <th className="px-2 py-2">Status</th>
                   <th className="px-2 py-2 text-right">Total</th>
@@ -375,10 +375,13 @@ function Stat({ icon: Icon, label, value, delta, up }: any) {
 
 function StatusPill({ s }: { s: string }) {
   const map: Record<string, string> = {
-    Paid: "bg-emerald-500/10 text-emerald-600",
-    Pending: "bg-amber-500/10 text-amber-600",
-    Shipped: "bg-blue-500/10 text-blue-600",
-    Refunded: "bg-red-500/10 text-red-500",
+    paid: "bg-emerald-500/10 text-emerald-600",
+    pending: "bg-amber-500/10 text-amber-600",
+    failed: "bg-red-500/10 text-red-500",
+    shipped: "bg-blue-500/10 text-blue-600",
+    refunded: "bg-red-500/10 text-red-500",
+    cancelled: "bg-muted text-muted-foreground",
   };
-  return <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold ${map[s] || "bg-muted text-muted-foreground"}`}>{s}</span>;
+  const status = s?.toLowerCase() || "pending";
+  return <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${map[status] || "bg-muted text-muted-foreground"}`}>{status}</span>;
 }

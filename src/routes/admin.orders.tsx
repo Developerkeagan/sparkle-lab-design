@@ -34,7 +34,7 @@ function AdminOrders() {
         createdAt: o.createdAt,
         items: o.items || [],
         totalAmount: o.totalAmount,
-        status: o.status || "Paid"
+        status: o.status || "pending"
       })));
     } catch (err) {}
   }, [fetchData]);
@@ -54,7 +54,7 @@ function AdminOrders() {
   }
 
   const filtered = orders.filter((o) =>
-    (filter === "All" || o.status === filter) &&
+    (filter === "All" || o.status?.toLowerCase() === filter.toLowerCase()) &&
     (o.id.toLowerCase().includes(q.toLowerCase()) || o.email.toLowerCase().includes(q.toLowerCase()))
   );
 
@@ -76,7 +76,7 @@ function AdminOrders() {
         <div className="overflow-x-auto pb-48">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-left text-muted-foreground text-xs uppercase">
-              <tr><th className="px-4 py-3">Order</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr>
+              <tr><th className="px-4 py-3">Tracking ID</th><th>Customer</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th><th></th></tr>
             </thead>
             <tbody className="divide-y divide-border">
               {filtered.map((o) => (
@@ -89,6 +89,13 @@ function AdminOrders() {
                   <td><StatusPill s={o.status} /></td>
                   <td className="pr-4"><RowMenu actions={[
                     { label: "View", onClick: () => toast.success(`Open ${o.id}`) },
+                    { 
+                      label: "Copy Tracking ID", 
+                      onClick: () => { 
+                        navigator.clipboard.writeText(o.id); 
+                        toast.success("Tracking ID copied to clipboard"); 
+                      } 
+                    },
                     { label: "Mark shipped", onClick: () => updateStatus(o.id, "Shipped") },
                     { label: "Refund", danger: true, onClick: () => updateStatus(o.id, "Refunded") },
                   ]} /></td>
@@ -105,11 +112,13 @@ function AdminOrders() {
 
 function StatusPill({ s }: { s: string }) {
   const map: Record<string, string> = {
-    Paid: "bg-emerald-500/10 text-emerald-600",
-    Pending: "bg-amber-500/10 text-amber-600",
-    Shipped: "bg-blue-500/10 text-blue-600",
-    Refunded: "bg-red-500/10 text-red-500",
-    Cancelled: "bg-muted text-muted-foreground",
+    paid: "bg-emerald-500/10 text-emerald-600",
+    pending: "bg-amber-500/10 text-amber-600",
+    failed: "bg-red-500/10 text-red-500",
+    shipped: "bg-blue-500/10 text-blue-600",
+    refunded: "bg-red-500/10 text-red-500",
+    cancelled: "bg-muted text-muted-foreground",
   };
-  return <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold ${map[s]}`}>{s}</span>;
+  const status = s?.toLowerCase() || "pending";
+  return <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${map[status] || "bg-muted text-muted-foreground"}`}>{status}</span>;
 }
