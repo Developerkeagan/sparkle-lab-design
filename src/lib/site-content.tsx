@@ -44,18 +44,21 @@ interface SiteContentValue {
   gallery: GalleryImage[];
   contact: ContactInfo;
   deal: DealOfWeek;
+  practicalDates: string[]; // ISO date strings, set by admin/editor
   saveNews: (n: NewsPost) => void;
   deleteNews: (id: string) => void;
   addGallery: (img: GalleryImage) => void;
   deleteGallery: (id: string) => void;
   updateContact: (c: ContactInfo) => void;
   updateDeal: (d: DealOfWeek) => void;
+  addPracticalDate: (iso: string) => void;
+  removePracticalDate: (iso: string) => void;
   resetAll: () => void;
 }
 
 const KEY = "ab.site.content.v1";
 
-const DEFAULTS: { news: NewsPost[]; gallery: GalleryImage[]; contact: ContactInfo; deal: DealOfWeek } = {
+const DEFAULTS: { news: NewsPost[]; gallery: GalleryImage[]; contact: ContactInfo; deal: DealOfWeek; practicalDates: string[] } = {
   news: [
     { id: "n1", slug: "science-camp-2026", tag: "Event", date: "May 12, 2026", title: "Science Camp 2026 Opens Registration", excerpt: "Our flagship 4-week holiday science camp returns for hands-on biotech discovery.", body: "Registration is now open for the 2026 edition of our flagship Science Camp. Over four weeks, students from secondary schools across West Africa will rotate through hands-on labs covering DNA extraction, microscopy, fermentation, and intro bioinformatics. Spots are limited — early-bird pricing closes June 30.", cover: hero },
     { id: "n2", slug: "diagnostics-cohort", tag: "Training", date: "Apr 28, 2026", title: "New Molecular Diagnostics Cohort", excerpt: "Internationally certified curriculum begins with 30 trainees from 6 countries.", body: "Our newest molecular diagnostics cohort kicked off this week with 30 trainees representing 6 African countries. The 12-week program covers PCR, qPCR, sequencing fundamentals and biosafety, leading to an internationally recognized certification.", cover: dna },
@@ -87,6 +90,7 @@ const DEFAULTS: { news: NewsPost[]; gallery: GalleryImage[]; contact: ContactInf
     oldPrice: 12000,
     discountLabel: "-30%",
   },
+  practicalDates: [],
 };
 
 const Ctx = createContext<SiteContentValue | null>(null);
@@ -135,10 +139,18 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, deal: d }));
   }, []);
 
+  const addPracticalDate = useCallback((iso: string) => {
+    setState((s) => s.practicalDates.includes(iso) ? s : { ...s, practicalDates: [...s.practicalDates, iso].sort() });
+  }, []);
+
+  const removePracticalDate = useCallback((iso: string) => {
+    setState((s) => ({ ...s, practicalDates: s.practicalDates.filter((d) => d !== iso) }));
+  }, []);
+
   const resetAll = useCallback(() => setState(DEFAULTS), []);
 
   return (
-    <Ctx.Provider value={{ ...state, saveNews, deleteNews, addGallery, deleteGallery, updateContact, updateDeal, resetAll }}>
+    <Ctx.Provider value={{ ...state, saveNews, deleteNews, addGallery, deleteGallery, updateContact, updateDeal, addPracticalDate, removePracticalDate, resetAll }}>
       {children}
     </Ctx.Provider>
   );
