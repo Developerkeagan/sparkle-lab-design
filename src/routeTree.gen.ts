@@ -67,6 +67,7 @@ import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAcademyRouteImport } from './routes/admin.academy'
 import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
 import { Route as ShopCategorySlugRouteImport } from './routes/shop.category.$slug'
+import { Route as AcademyReadCourseIdRouteImport } from './routes/academy.read.$courseId'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -358,11 +359,16 @@ const ShopCategorySlugRoute = ShopCategorySlugRouteImport.update({
   path: '/category/$slug',
   getParentRoute: () => ShopRoute,
 } as any)
+const AcademyReadCourseIdRoute = AcademyReadCourseIdRouteImport.update({
+  id: '/read/$courseId',
+  path: '/read/$courseId',
+  getParentRoute: () => AcademyRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/academy': typeof AcademyRoute
+  '/academy': typeof AcademyRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/careers': typeof CareersRoute
   '/collections': typeof CollectionsRoute
@@ -416,13 +422,14 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/editor/': typeof EditorIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/academy/read/$courseId': typeof AcademyReadCourseIdRoute
   '/shop/category/$slug': typeof ShopCategorySlugRoute
   '/shop/product/$id': typeof ShopProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/academy': typeof AcademyRoute
+  '/academy': typeof AcademyRouteWithChildren
   '/careers': typeof CareersRoute
   '/collections': typeof CollectionsRoute
   '/contact': typeof ContactRoute
@@ -473,6 +480,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/editor': typeof EditorIndexRoute
   '/shop': typeof ShopIndexRoute
+  '/academy/read/$courseId': typeof AcademyReadCourseIdRoute
   '/shop/category/$slug': typeof ShopCategorySlugRoute
   '/shop/product/$id': typeof ShopProductIdRoute
 }
@@ -480,7 +488,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/academy': typeof AcademyRoute
+  '/academy': typeof AcademyRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/careers': typeof CareersRoute
   '/collections': typeof CollectionsRoute
@@ -534,6 +542,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/editor/': typeof EditorIndexRoute
   '/shop/': typeof ShopIndexRoute
+  '/academy/read/$courseId': typeof AcademyReadCourseIdRoute
   '/shop/category/$slug': typeof ShopCategorySlugRoute
   '/shop/product/$id': typeof ShopProductIdRoute
 }
@@ -596,6 +605,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/editor/'
     | '/shop/'
+    | '/academy/read/$courseId'
     | '/shop/category/$slug'
     | '/shop/product/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -653,6 +663,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/editor'
     | '/shop'
+    | '/academy/read/$courseId'
     | '/shop/category/$slug'
     | '/shop/product/$id'
   id:
@@ -713,6 +724,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/editor/'
     | '/shop/'
+    | '/academy/read/$courseId'
     | '/shop/category/$slug'
     | '/shop/product/$id'
   fileRoutesById: FileRoutesById
@@ -720,7 +732,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AcademyRoute: typeof AcademyRoute
+  AcademyRoute: typeof AcademyRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
   CareersRoute: typeof CareersRoute
   CollectionsRoute: typeof CollectionsRoute
@@ -1147,8 +1159,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopCategorySlugRouteImport
       parentRoute: typeof ShopRoute
     }
+    '/academy/read/$courseId': {
+      id: '/academy/read/$courseId'
+      path: '/read/$courseId'
+      fullPath: '/academy/read/$courseId'
+      preLoaderRoute: typeof AcademyReadCourseIdRouteImport
+      parentRoute: typeof AcademyRoute
+    }
   }
 }
+
+interface AcademyRouteChildren {
+  AcademyReadCourseIdRoute: typeof AcademyReadCourseIdRoute
+}
+
+const AcademyRouteChildren: AcademyRouteChildren = {
+  AcademyReadCourseIdRoute: AcademyReadCourseIdRoute,
+}
+
+const AcademyRouteWithChildren =
+  AcademyRoute._addFileChildren(AcademyRouteChildren)
 
 interface AdminRouteChildren {
   AdminAcademyRoute: typeof AdminAcademyRoute
@@ -1274,7 +1304,7 @@ const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AcademyRoute: AcademyRoute,
+  AcademyRoute: AcademyRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
   CareersRoute: CareersRoute,
   CollectionsRoute: CollectionsRoute,

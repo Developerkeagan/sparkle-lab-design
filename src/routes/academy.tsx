@@ -3,9 +3,12 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { PageHero } from "@/components/site/PageHero";
 import { useReveal } from "@/hooks/use-reveal";
-import { GraduationCap, Clock, Users, Award, ArrowRight, PlayCircle, BookOpen, Star, Loader2 } from "lucide-react";
+import { GraduationCap, Clock, Users, Award, ArrowRight, PlayCircle, BookOpen, Star, Loader2, X, LogOut, Lock } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import useFetch from "@/hooks/useFetch";
+import { useAcademy } from "@/lib/academy";
+import { useSiteContent } from "@/lib/site-content";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/academy")({
   component: AcademyPage,
@@ -21,6 +24,13 @@ function AcademyPage() {
   useReveal();
   const [courses, setCourses] = useState<any[]>([]);
   const { loading, fetchData } = useFetch();
+  const academy = useAcademy();
+  const { practicalDates } = useSiteContent();
+  const [selected, setSelected] = useState<any | null>(null);
+  const [authTab, setAuthTab] = useState<"signin" | "signup">("signin");
+  const [authForm, setAuthForm] = useState({ name: "", email: "", password: "", confirm: "" });
+  const [authBusy, setAuthBusy] = useState(false);
+  const [practical, setPractical] = useState<string>("");
 
   useEffect(() => {
     fetchData("/api/v1/academy").then(res => {
@@ -43,14 +53,69 @@ function AcademyPage() {
 
   const totalStudents = useMemo(() => courses.reduce((acc, c) => acc + c.students, 0), [courses]);
 
+  function openBuy(c: any) {
+    setSelected(c);
+    setPractical("");
+    setAuthForm({ name: "", email: "", password: "", confirm: "" });
+    setAuthTab("signin");
+  }
+
+  async function submitAuth(e: React.FormEvent) {
+    e.preventDefault();
+    setAuthBusy(true);
+    try {
+      if (authTab === "signin") {
+        await academy.signIn(authForm.email, authForm.password);
+      } else {
+        if (!authForm.name.trim()) throw new Error("Name required");
+        if (authForm.password.length < 6) throw new Error("Password must be 6+ chars");
+        if (authForm.password !== authForm.confirm) throw new Error("Passwords do not match");
+        await academy.signUp({ name: authForm.name, email: authForm.email, password: authForm.password });
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Authentication failed");
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+
+  function confirmBuy() {
+    if (!selected) return;
+    const pages = [
+      `Welcome to ${selected.title}.\n\nThis course was designed to take you from concept to confident hands-on practice. Use Next and Back below to move through pages — your progress saves automatically.`,
+      `Module 1 — Foundations\n\nWe start with the fundamentals of ${selected.level.toLowerCase()} practice: lab safety, instrument familiarity, and the scientific reasoning behind each step you'll perform.`,
+      `Module 2 — Hands-on Workflow\n\nWalk through the full workflow end-to-end. You'll see annotated photos, common pitfalls, and the exact protocols our scientists use in production work.`,
+      `Module 3 — Quality & Troubleshooting\n\nLearn to read your own results, spot contamination signatures, and recover from the most common failures without restarting from scratch.`,
+      `Practical session\n\nAttend the in-person practical on the date you chose. Bring your reusable PPE; everything else is provided. A certificate is issued on completion.`,
+    ];
+    academy.enroll({
+      courseId: selected.id,
+      title: selected.title,
+      cover: selected.img,
+      price: selected.price,
+      pages,
+    });
+    if (practical) academy.setPracticalDate(selected.id, practical);
+    setSelected(null);
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <PageHero
         eyebrow="Applied Biotech Academy"
-        title={<>Learn biotech, <span className="gradient-text">the applied way</span></>}
-        subtitle="Industry-grade training designed and delivered by working scientists. Certifications recognized across West Africa."
+        title={<>Build the skills that <span className="gradient-text">launch your career</span></>}
+        subtitle="Train alongside working scientists, earn certifications recognised across West Africa, and walk out ready to run a real lab."
       />
+
+      {academy.user && (
+        <div className="max-w-7xl mx-auto px-4 -mt-4">
+          <div className="rounded-2xl border border-border bg-card px-4 py-3 flex items-center justify-between">
+            <div className="text-sm">Signed in as <span className="font-semibold">{academy.user.name}</span> · <span className="text-muted-foreground">{academy.user.email}</span></div>
+            <button onClick={academy.signOut} className="text-xs inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"><LogOut className="h-3.5 w-3.5" /> Sign out</button>
+          </div>
+        </div>
+      )}
 
       <section className="py-10 px-4">
         <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -108,6 +173,9 @@ function AcademyPage() {
                       <Link to="/contact" className="mt-4 w-full h-10 rounded-xl gradient-brand text-brand-foreground text-sm font-semibold shadow-soft hover:scale-[1.02] transition-transform inline-flex items-center justify-center">
                         Enroll now
                       </Link>
+                      <button onClick={() => openBuy(c)} className="mt-2 w-full h-10 rounded-xl border border-border text-sm font-semibold hover:bg-accent transition-colors inline-flex items-center justify-center gap-2">
+                        {academy.isEnrolled(c.id) ? (<><BookOpen className="h-4 w-4" /> Open in library</>) : (<><Lock className="h-4 w-4" /> Buy & read</>)}
+                      </button>
                     </div>
                   </article>
                 ))}
@@ -121,6 +189,104 @@ function AcademyPage() {
           </div>
         </div>
       </section>
+
+      {/* My Library */}
+      <section className="py-12 px-4 bg-accent/30">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-end justify-between mb-6">
+            <div>
+              <h2 className="font-display text-3xl font-bold">My Library</h2>
+              <p className="text-muted-foreground text-sm mt-1">Pick up where you left off.</p>
+            </div>
+          </div>
+          {!academy.user ? (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">Sign in to see the courses you own and continue reading.</div>
+          ) : academy.enrollments.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">You haven't bought a course yet. Pick one above to get started.</div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {academy.enrollments.map((e) => {
+                const pct = academy.progressPct(e.courseId);
+                return (
+                  <article key={e.courseId} className="rounded-2xl border border-border bg-card overflow-hidden shadow-soft">
+                    {e.cover && <div className="aspect-[16/9] overflow-hidden"><img src={e.cover} alt="" className="h-full w-full object-cover" /></div>}
+                    <div className="p-5">
+                      <h3 className="font-display font-bold text-lg leading-snug">{e.title}</h3>
+                      {e.practicalDate && <div className="mt-1 text-xs text-muted-foreground">Practical: {new Date(e.practicalDate).toLocaleDateString()}</div>}
+                      <div className="mt-3 h-1.5 rounded-full bg-secondary overflow-hidden"><div className="h-full gradient-brand" style={{ width: `${pct}%` }} /></div>
+                      <div className="mt-1 text-xs text-muted-foreground">{pct}% complete</div>
+                      <Link to="/academy/read/$courseId" params={{ courseId: e.courseId }} className="mt-4 w-full h-10 rounded-xl gradient-brand text-brand-foreground text-sm font-semibold inline-flex items-center justify-center gap-2">Continue reading <ArrowRight className="h-4 w-4" /></Link>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Buy / Auth modal */}
+      {selected && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm grid place-items-center px-4 animate-fade-in" onClick={() => setSelected(null)}>
+          <div className="w-full max-w-md rounded-2xl bg-card border border-border shadow-brand overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 border-b border-border">
+              <div className="font-display font-bold">{academy.user ? "Confirm purchase" : "Sign in to buy"}</div>
+              <button onClick={() => setSelected(null)} className="h-8 w-8 grid place-items-center rounded-full hover:bg-accent"><X className="h-4 w-4" /></button>
+            </div>
+
+            {!academy.user ? (
+              <div className="p-5">
+                <div className="flex gap-1 p-1 rounded-xl bg-secondary mb-4">
+                  <button onClick={() => setAuthTab("signin")} className={`flex-1 h-9 rounded-lg text-sm font-semibold ${authTab === "signin" ? "bg-background shadow-soft" : ""}`}>Sign in</button>
+                  <button onClick={() => setAuthTab("signup")} className={`flex-1 h-9 rounded-lg text-sm font-semibold ${authTab === "signup" ? "bg-background shadow-soft" : ""}`}>Create account</button>
+                </div>
+                <form onSubmit={submitAuth} className="space-y-3">
+                  {authTab === "signup" && (
+                    <input required placeholder="Full name" value={authForm.name} onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })} className="w-full h-11 px-3 rounded-xl bg-secondary text-sm border border-transparent focus:border-brand focus:outline-none" />
+                  )}
+                  <input required type="email" placeholder="Email" value={authForm.email} onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })} className="w-full h-11 px-3 rounded-xl bg-secondary text-sm border border-transparent focus:border-brand focus:outline-none" />
+                  <input required type="password" placeholder="Password" value={authForm.password} onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })} className="w-full h-11 px-3 rounded-xl bg-secondary text-sm border border-transparent focus:border-brand focus:outline-none" />
+                  {authTab === "signup" && (
+                    <input required type="password" placeholder="Confirm password" value={authForm.confirm} onChange={(e) => setAuthForm({ ...authForm, confirm: e.target.value })} className="w-full h-11 px-3 rounded-xl bg-secondary text-sm border border-transparent focus:border-brand focus:outline-none" />
+                  )}
+                  <button disabled={authBusy} type="submit" className="w-full h-11 rounded-xl gradient-brand text-brand-foreground text-sm font-bold disabled:opacity-60 inline-flex items-center justify-center">
+                    {authBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : authTab === "signin" ? "Sign in" : "Create account"}
+                  </button>
+                </form>
+              </div>
+            ) : (
+              <div className="p-5 space-y-4">
+                <div className="flex gap-3">
+                  {selected.img && <img src={selected.img} alt="" className="h-16 w-24 rounded-lg object-cover" />}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-display font-bold leading-snug">{selected.title}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{selected.level} · {selected.weeks} weeks</div>
+                  </div>
+                  <div className="font-display font-bold text-lg shrink-0">₦{Number(selected.price).toLocaleString()}</div>
+                </div>
+
+                {practicalDates.length > 0 && (
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground">Pick a practical date</label>
+                    <select value={practical} onChange={(e) => setPractical(e.target.value)} className="mt-1 w-full h-11 px-3 rounded-xl bg-secondary text-sm border border-transparent focus:border-brand focus:outline-none">
+                      <option value="">No preference</option>
+                      {practicalDates.map((d) => (
+                        <option key={d} value={d}>{new Date(d).toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {academy.isEnrolled(selected.id) ? (
+                  <Link to="/academy/read/$courseId" params={{ courseId: selected.id }} onClick={() => setSelected(null)} className="block w-full h-11 rounded-xl gradient-brand text-brand-foreground text-sm font-bold inline-flex items-center justify-center">Open reader</Link>
+                ) : (
+                  <button onClick={confirmBuy} className="w-full h-11 rounded-xl gradient-brand text-brand-foreground text-sm font-bold">Buy now</button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>
