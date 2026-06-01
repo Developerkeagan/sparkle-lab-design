@@ -67,6 +67,8 @@ import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAcademyRouteImport } from './routes/admin.academy'
 import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
 import { Route as ShopCategorySlugRouteImport } from './routes/shop.category.$slug'
+import { Route as EditorAcademyIdRouteImport } from './routes/editor.academy.$id'
+import { Route as AdminAcademyIdRouteImport } from './routes/admin.academy.$id'
 import { Route as AcademyReadCourseIdRouteImport } from './routes/academy.read.$courseId'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -359,6 +361,16 @@ const ShopCategorySlugRoute = ShopCategorySlugRouteImport.update({
   path: '/category/$slug',
   getParentRoute: () => ShopRoute,
 } as any)
+const EditorAcademyIdRoute = EditorAcademyIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => EditorAcademyRoute,
+} as any)
+const AdminAcademyIdRoute = AdminAcademyIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminAcademyRoute,
+} as any)
 const AcademyReadCourseIdRoute = AcademyReadCourseIdRouteImport.update({
   id: '/read/$courseId',
   path: '/read/$courseId',
@@ -385,7 +397,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/admin/academy': typeof AdminAcademyRoute
+  '/admin/academy': typeof AdminAcademyRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
   '/admin/contact': typeof AdminContactRoute
@@ -399,7 +411,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
-  '/editor/academy': typeof EditorAcademyRoute
+  '/editor/academy': typeof EditorAcademyRouteWithChildren
   '/editor/collections': typeof EditorCollectionsRoute
   '/editor/contact': typeof EditorContactRoute
   '/editor/deal': typeof EditorDealRoute
@@ -423,6 +435,8 @@ export interface FileRoutesByFullPath {
   '/editor/': typeof EditorIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/academy/read/$courseId': typeof AcademyReadCourseIdRoute
+  '/admin/academy/$id': typeof AdminAcademyIdRoute
+  '/editor/academy/$id': typeof EditorAcademyIdRoute
   '/shop/category/$slug': typeof ShopCategorySlugRoute
   '/shop/product/$id': typeof ShopProductIdRoute
 }
@@ -443,7 +457,7 @@ export interface FileRoutesByTo {
   '/rent-a-lab': typeof RentALabRoute
   '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/admin/academy': typeof AdminAcademyRoute
+  '/admin/academy': typeof AdminAcademyRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
   '/admin/contact': typeof AdminContactRoute
@@ -457,7 +471,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
-  '/editor/academy': typeof EditorAcademyRoute
+  '/editor/academy': typeof EditorAcademyRouteWithChildren
   '/editor/collections': typeof EditorCollectionsRoute
   '/editor/contact': typeof EditorContactRoute
   '/editor/deal': typeof EditorDealRoute
@@ -481,6 +495,8 @@ export interface FileRoutesByTo {
   '/editor': typeof EditorIndexRoute
   '/shop': typeof ShopIndexRoute
   '/academy/read/$courseId': typeof AcademyReadCourseIdRoute
+  '/admin/academy/$id': typeof AdminAcademyIdRoute
+  '/editor/academy/$id': typeof EditorAcademyIdRoute
   '/shop/category/$slug': typeof ShopCategorySlugRoute
   '/shop/product/$id': typeof ShopProductIdRoute
 }
@@ -505,7 +521,7 @@ export interface FileRoutesById {
   '/services': typeof ServicesRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/admin/academy': typeof AdminAcademyRoute
+  '/admin/academy': typeof AdminAcademyRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
   '/admin/contact': typeof AdminContactRoute
@@ -519,7 +535,7 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/shop': typeof AdminShopRoute
   '/admin/users': typeof AdminUsersRoute
-  '/editor/academy': typeof EditorAcademyRoute
+  '/editor/academy': typeof EditorAcademyRouteWithChildren
   '/editor/collections': typeof EditorCollectionsRoute
   '/editor/contact': typeof EditorContactRoute
   '/editor/deal': typeof EditorDealRoute
@@ -543,6 +559,8 @@ export interface FileRoutesById {
   '/editor/': typeof EditorIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/academy/read/$courseId': typeof AcademyReadCourseIdRoute
+  '/admin/academy/$id': typeof AdminAcademyIdRoute
+  '/editor/academy/$id': typeof EditorAcademyIdRoute
   '/shop/category/$slug': typeof ShopCategorySlugRoute
   '/shop/product/$id': typeof ShopProductIdRoute
 }
@@ -606,6 +624,8 @@ export interface FileRouteTypes {
     | '/editor/'
     | '/shop/'
     | '/academy/read/$courseId'
+    | '/admin/academy/$id'
+    | '/editor/academy/$id'
     | '/shop/category/$slug'
     | '/shop/product/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -664,6 +684,8 @@ export interface FileRouteTypes {
     | '/editor'
     | '/shop'
     | '/academy/read/$courseId'
+    | '/admin/academy/$id'
+    | '/editor/academy/$id'
     | '/shop/category/$slug'
     | '/shop/product/$id'
   id:
@@ -725,6 +747,8 @@ export interface FileRouteTypes {
     | '/editor/'
     | '/shop/'
     | '/academy/read/$courseId'
+    | '/admin/academy/$id'
+    | '/editor/academy/$id'
     | '/shop/category/$slug'
     | '/shop/product/$id'
   fileRoutesById: FileRoutesById
@@ -1159,6 +1183,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopCategorySlugRouteImport
       parentRoute: typeof ShopRoute
     }
+    '/editor/academy/$id': {
+      id: '/editor/academy/$id'
+      path: '/$id'
+      fullPath: '/editor/academy/$id'
+      preLoaderRoute: typeof EditorAcademyIdRouteImport
+      parentRoute: typeof EditorAcademyRoute
+    }
+    '/admin/academy/$id': {
+      id: '/admin/academy/$id'
+      path: '/$id'
+      fullPath: '/admin/academy/$id'
+      preLoaderRoute: typeof AdminAcademyIdRouteImport
+      parentRoute: typeof AdminAcademyRoute
+    }
     '/academy/read/$courseId': {
       id: '/academy/read/$courseId'
       path: '/read/$courseId'
@@ -1180,8 +1218,20 @@ const AcademyRouteChildren: AcademyRouteChildren = {
 const AcademyRouteWithChildren =
   AcademyRoute._addFileChildren(AcademyRouteChildren)
 
+interface AdminAcademyRouteChildren {
+  AdminAcademyIdRoute: typeof AdminAcademyIdRoute
+}
+
+const AdminAcademyRouteChildren: AdminAcademyRouteChildren = {
+  AdminAcademyIdRoute: AdminAcademyIdRoute,
+}
+
+const AdminAcademyRouteWithChildren = AdminAcademyRoute._addFileChildren(
+  AdminAcademyRouteChildren,
+)
+
 interface AdminRouteChildren {
-  AdminAcademyRoute: typeof AdminAcademyRoute
+  AdminAcademyRoute: typeof AdminAcademyRouteWithChildren
   AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminCollectionsRoute: typeof AdminCollectionsRoute
   AdminContactRoute: typeof AdminContactRoute
@@ -1199,7 +1249,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminAcademyRoute: AdminAcademyRoute,
+  AdminAcademyRoute: AdminAcademyRouteWithChildren,
   AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminCollectionsRoute: AdminCollectionsRoute,
   AdminContactRoute: AdminContactRoute,
@@ -1218,8 +1268,20 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface EditorAcademyRouteChildren {
+  EditorAcademyIdRoute: typeof EditorAcademyIdRoute
+}
+
+const EditorAcademyRouteChildren: EditorAcademyRouteChildren = {
+  EditorAcademyIdRoute: EditorAcademyIdRoute,
+}
+
+const EditorAcademyRouteWithChildren = EditorAcademyRoute._addFileChildren(
+  EditorAcademyRouteChildren,
+)
+
 interface EditorRouteChildren {
-  EditorAcademyRoute: typeof EditorAcademyRoute
+  EditorAcademyRoute: typeof EditorAcademyRouteWithChildren
   EditorCollectionsRoute: typeof EditorCollectionsRoute
   EditorContactRoute: typeof EditorContactRoute
   EditorDealRoute: typeof EditorDealRoute
@@ -1233,7 +1295,7 @@ interface EditorRouteChildren {
 }
 
 const EditorRouteChildren: EditorRouteChildren = {
-  EditorAcademyRoute: EditorAcademyRoute,
+  EditorAcademyRoute: EditorAcademyRouteWithChildren,
   EditorCollectionsRoute: EditorCollectionsRoute,
   EditorContactRoute: EditorContactRoute,
   EditorDealRoute: EditorDealRoute,
