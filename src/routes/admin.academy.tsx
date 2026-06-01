@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { Card, Toolbar, RowMenu, Modal, Field, ImageUpload, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
@@ -21,6 +21,7 @@ interface Course {
 }
 
 function AdminAcademy() {
+  const navigate = useNavigate();
   const [items, setItems] = useState<Course[]>([]);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
@@ -32,6 +33,7 @@ function AdminAcademy() {
   const [price, setPrice] = useState(180);
   const [description, setDescription] = useState("");
   const [cover, setCover] = useState<any>(null);
+  const [pdf, setPdf] = useState<File | null>(null);
 
   const { loading, fetchData } = useFetch();
 
@@ -71,11 +73,13 @@ function AdminAcademy() {
 
     if (typeof cover !== "string") formData.append("image", cover);
     else formData.append("image", cover);
+    if (pdf) formData.append("pdf", pdf);
 
     try {
       await fetchData("/api/v1/academy", { method: "POST", body: formData });
       toast.success("Course created");
       setOpen(false);
+      setPdf(null);
       loadCourses();
     } catch (err: any) {
       toast.error(err.message || "Failed to create course");
@@ -114,16 +118,15 @@ function AdminAcademy() {
             </thead>
             <tbody className="divide-y divide-border">
               {items.filter((i) => i.title.toLowerCase().includes(q.toLowerCase())).map((c) => (
-                <tr key={c.id} className="hover:bg-muted/40">
-                  <td className="px-4 py-3 font-medium">{c.title}</td>
+                <tr key={c.id} className="hover:bg-muted/40 cursor-pointer" onClick={() => navigate({ to: "/admin/academy/$id", params: { id: c.id } })}>
+                  <td className="px-4 py-3 font-medium text-primary hover:underline">{c.title}</td>
                   <td>{c.level}</td>
                   <td>{c.weeks} wks</td>
                   <td>{c.students.toLocaleString()}</td>
                   <td className="font-semibold">₦{c.price.toLocaleString()}</td>
                   <td><span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${c.status === "Live" ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground"}`}>{c.status}</span></td>
-                  <td className="pr-4"><RowMenu actions={[
-                    { label: "Edit content", onClick: () => toast.success("Open editor") },
-                    { label: "Manage students", onClick: () => toast.success("Roster opened") },
+                  <td className="pr-4" onClick={(e) => e.stopPropagation()}><RowMenu actions={[
+                    { label: "View students", onClick: () => navigate({ to: "/admin/academy/$id", params: { id: c.id } }) },
                     { label: "Delete", danger: true, onClick: () => handleDelete(c.id) },
                   ]} /></td>
                 </tr>
@@ -145,6 +148,10 @@ function AdminAcademy() {
             <Field label="Price (₦)"><input type="number" value={price} onChange={e => setPrice(+e.target.value)} className={inputCls} /></Field>
           </div>
           <Field label="Outline (One per line)"><textarea rows={4} className={textareaCls} value={description} onChange={e => setDescription(e.target.value)} placeholder="Introduction to diagnostics&#10;PCR design fundamentals&#10;..." /></Field>
+          <Field label="Course PDF (optional)">
+            <input type="file" accept="application/pdf" onChange={(e) => setPdf(e.target.files?.[0] || null)} className="block w-full text-sm text-foreground file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-secondary file:text-foreground file:font-semibold hover:file:bg-accent" />
+            {pdf && <div className="text-xs text-muted-foreground mt-1.5">{pdf.name}</div>}
+          </Field>
         </div>
       </Modal>
     </div>
