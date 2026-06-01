@@ -1,14 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
-import { Card, Field, inputCls, textareaCls, PrimaryBtn } from "@/components/dashboard/widgets";
+import { Card, Field, inputCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, X, CalendarPlus } from "lucide-react";
 import useFetch from "@/hooks/useFetch";
+import { useSiteContent } from "@/lib/site-content";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export const Route = createFileRoute("/admin/settings")({ component: SettingsPage });
 
 function SettingsPage() {
+  const { practicalDates, addPracticalDate, removePracticalDate } = useSiteContent();
+  const [calOpen, setCalOpen] = useState(false);
   const [form, setForm] = useState<Record<string, string>>({
     siteName: "",
     tagline: "",
@@ -99,6 +104,43 @@ function SettingsPage() {
           <Field label="Phone"><input className={inputCls} value={form.phone} onChange={e => update("phone", e.target.value)} /></Field>
           <Field label="Address"><input className={inputCls} value={form.address} onChange={e => update("address", e.target.value)} /></Field>
           <Field label="Working hours"><input className={inputCls} value={form.workingHours} onChange={e => update("workingHours", e.target.value)} /></Field>
+        </Card>
+
+        <Card className="p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-display font-bold">Academy practical dates</h3>
+              <p className="text-xs text-muted-foreground mt-0.5">Students pick one of these when buying a course.</p>
+            </div>
+            <Popover open={calOpen} onOpenChange={setCalOpen}>
+              <PopoverTrigger asChild>
+                <button className="h-9 px-3 rounded-xl gradient-brand text-brand-foreground text-xs font-bold inline-flex items-center gap-1.5"><CalendarPlus className="h-4 w-4" /> Add date</button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="single"
+                  onSelect={(d) => {
+                    if (d) {
+                      addPracticalDate(d.toISOString().slice(0, 10));
+                      setCalOpen(false);
+                      toast.success("Practical date added");
+                    }
+                  }}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div className="flex flex-wrap gap-2 min-h-[3rem]">
+            {practicalDates.length === 0 && <div className="text-xs text-muted-foreground">No dates yet. Add one above.</div>}
+            {practicalDates.map((d) => (
+              <span key={d} className="inline-flex items-center gap-1.5 pl-3 pr-1.5 h-8 rounded-full bg-secondary text-xs font-medium">
+                {new Date(d).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}
+                <button onClick={() => removePracticalDate(d)} className="h-6 w-6 grid place-items-center rounded-full hover:bg-background"><X className="h-3.5 w-3.5" /></button>
+              </span>
+            ))}
+          </div>
+          <GhostBtn onClick={() => practicalDates.forEach((d) => removePracticalDate(d))}>Clear all</GhostBtn>
         </Card>
       </div>
     </div>
