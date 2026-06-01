@@ -32,6 +32,7 @@ import { Route as ShopIndexRouteImport } from './routes/shop.index'
 import { Route as EditorIndexRouteImport } from './routes/editor.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ShopWishlistRouteImport } from './routes/shop.wishlist'
+import { Route as ShopTrackRouteImport } from './routes/shop.track'
 import { Route as ShopSearchRouteImport } from './routes/shop.search'
 import { Route as ShopDealsRouteImport } from './routes/shop.deals'
 import { Route as ShopCheckoutRouteImport } from './routes/shop.checkout'
@@ -180,6 +181,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const ShopWishlistRoute = ShopWishlistRouteImport.update({
   id: '/wishlist',
   path: '/wishlist',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopTrackRoute = ShopTrackRouteImport.update({
+  id: '/track',
+  path: '/track',
   getParentRoute: () => ShopRoute,
 } as any)
 const ShopSearchRoute = ShopSearchRouteImport.update({
@@ -405,6 +411,7 @@ export interface FileRoutesByFullPath {
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/deals': typeof ShopDealsRoute
   '/shop/search': typeof ShopSearchRoute
+  '/shop/track': typeof ShopTrackRoute
   '/shop/wishlist': typeof ShopWishlistRoute
   '/admin/': typeof AdminIndexRoute
   '/editor/': typeof EditorIndexRoute
@@ -461,6 +468,7 @@ export interface FileRoutesByTo {
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/deals': typeof ShopDealsRoute
   '/shop/search': typeof ShopSearchRoute
+  '/shop/track': typeof ShopTrackRoute
   '/shop/wishlist': typeof ShopWishlistRoute
   '/admin': typeof AdminIndexRoute
   '/editor': typeof EditorIndexRoute
@@ -521,6 +529,7 @@ export interface FileRoutesById {
   '/shop/checkout': typeof ShopCheckoutRoute
   '/shop/deals': typeof ShopDealsRoute
   '/shop/search': typeof ShopSearchRoute
+  '/shop/track': typeof ShopTrackRoute
   '/shop/wishlist': typeof ShopWishlistRoute
   '/admin/': typeof AdminIndexRoute
   '/editor/': typeof EditorIndexRoute
@@ -582,6 +591,7 @@ export interface FileRouteTypes {
     | '/shop/checkout'
     | '/shop/deals'
     | '/shop/search'
+    | '/shop/track'
     | '/shop/wishlist'
     | '/admin/'
     | '/editor/'
@@ -638,6 +648,7 @@ export interface FileRouteTypes {
     | '/shop/checkout'
     | '/shop/deals'
     | '/shop/search'
+    | '/shop/track'
     | '/shop/wishlist'
     | '/admin'
     | '/editor'
@@ -697,6 +708,7 @@ export interface FileRouteTypes {
     | '/shop/checkout'
     | '/shop/deals'
     | '/shop/search'
+    | '/shop/track'
     | '/shop/wishlist'
     | '/admin/'
     | '/editor/'
@@ -888,6 +900,13 @@ declare module '@tanstack/react-router' {
       path: '/wishlist'
       fullPath: '/shop/wishlist'
       preLoaderRoute: typeof ShopWishlistRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/track': {
+      id: '/shop/track'
+      path: '/track'
+      fullPath: '/shop/track'
+      preLoaderRoute: typeof ShopTrackRouteImport
       parentRoute: typeof ShopRoute
     }
     '/shop/search': {
@@ -1229,6 +1248,7 @@ interface ShopRouteChildren {
   ShopCheckoutRoute: typeof ShopCheckoutRoute
   ShopDealsRoute: typeof ShopDealsRoute
   ShopSearchRoute: typeof ShopSearchRoute
+  ShopTrackRoute: typeof ShopTrackRoute
   ShopWishlistRoute: typeof ShopWishlistRoute
   ShopIndexRoute: typeof ShopIndexRoute
   ShopCategorySlugRoute: typeof ShopCategorySlugRoute
@@ -1242,6 +1262,7 @@ const ShopRouteChildren: ShopRouteChildren = {
   ShopCheckoutRoute: ShopCheckoutRoute,
   ShopDealsRoute: ShopDealsRoute,
   ShopSearchRoute: ShopSearchRoute,
+  ShopTrackRoute: ShopTrackRoute,
   ShopWishlistRoute: ShopWishlistRoute,
   ShopIndexRoute: ShopIndexRoute,
   ShopCategorySlugRoute: ShopCategorySlugRoute,
@@ -1274,12 +1295,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

@@ -25,6 +25,7 @@ function ShopSubNav() {
   const links = [
     { label: "All Products", to: "/shop" as const },
     { label: "Deals", to: "/shop/deals" as const },
+    { label: "Track Order", to: "/shop/track" as const },
   ];
 
   function onSearchSubmit(e: React.FormEvent) {
