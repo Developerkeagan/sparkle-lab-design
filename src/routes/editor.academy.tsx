@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { Card, Toolbar, RowMenu, Modal, Field, ImageUpload, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
@@ -11,6 +11,7 @@ export const Route = createFileRoute("/editor/academy")({ component: EditorAcade
 interface Course { id: string; title: string; level: string; price: number; cover?: string; description: string; students: number; }
 
 function EditorAcademy() {
+  const navigate = useNavigate();
   const [items, setItems] = useState<Course[]>([]);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
@@ -21,6 +22,7 @@ function EditorAcademy() {
   const [price, setPrice] = useState(180);
   const [description, setDescription] = useState("");
   const [cover, setCover] = useState<any>(null);
+  const [pdf, setPdf] = useState<File | null>(null);
 
   const { loading, fetchData } = useFetch();
 
@@ -44,12 +46,13 @@ function EditorAcademy() {
     formData.append("price", String(price));
     formData.append("outline", JSON.stringify(description.split('\n').filter(Boolean)));
     if (cover) formData.append("image", cover);
+    if (pdf) formData.append("pdf", pdf);
 
     try {
       const url = editing ? `/api/v1/academy/${editing.id}` : "/api/v1/academy";
       await fetchData(url, { method: editing ? "PUT" : "POST", body: formData });
       toast.success(editing ? "Course updated" : "Course created");
-      setOpen(false); setEditing(null); loadCourses();
+      setOpen(false); setEditing(null); setPdf(null); loadCourses();
     } catch (err) {}
   }
 
@@ -68,12 +71,13 @@ function EditorAcademy() {
       <div className="overflow-x-auto pb-48"><table className="w-full text-sm">
       <thead className="bg-muted/50 text-left text-muted-foreground text-xs uppercase"><tr><th className="px-4 py-3">Course</th><th>Level</th><th>Price</th><th>Students</th><th></th></tr></thead>
       <tbody className="divide-y divide-border">{items.filter((i) => i.title.toLowerCase().includes(q.toLowerCase())).map((c) => (
-        <tr key={c.id} className="hover:bg-muted/40">
-          <td className="px-4 py-3 font-medium">{c.title}</td><td>{c.level}</td>
+        <tr key={c.id} className="hover:bg-muted/40 cursor-pointer" onClick={() => navigate({ to: "/editor/academy/$id", params: { id: c.id } })}>
+          <td className="px-4 py-3 font-medium text-primary hover:underline">{c.title}</td><td>{c.level}</td>
           <td className="font-semibold">₦{c.price.toLocaleString()}</td>
           <td>{c.students.toLocaleString()}</td>
-          <td className="pr-4"><RowMenu actions={[
+          <td className="pr-4" onClick={(e) => e.stopPropagation()}><RowMenu actions={[
             { label: "Edit", onClick: () => { setEditing(c); setTitle(c.title); setLevel(c.level); setPrice(c.price); setDescription(c.description); setCover(c.cover); setOpen(true); } },
+            { label: "View students", onClick: () => navigate({ to: "/editor/academy/$id", params: { id: c.id } }) },
             { label: "Delete", danger: true, onClick: () => handleDelete(c.id) }
           ]} /></td>
         </tr>
@@ -93,6 +97,10 @@ function EditorAcademy() {
           <Field label="Price (₦)"><input type="number" className={inputCls} value={price} onChange={e => setPrice(+e.target.value)} /></Field>
         </div>
         <Field label="Outline (One per line)"><textarea rows={4} className={textareaCls} value={description} onChange={e => setDescription(e.target.value)} /></Field>
+        <Field label="Course PDF (optional)">
+          <input type="file" accept="application/pdf" onChange={(e) => setPdf(e.target.files?.[0] || null)} className="block w-full text-sm text-foreground file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-secondary file:text-foreground file:font-semibold hover:file:bg-accent" />
+          {pdf && <div className="text-xs text-muted-foreground mt-1.5">{pdf.name}</div>}
+        </Field>
       </div>
     </Modal>
   </div>;
