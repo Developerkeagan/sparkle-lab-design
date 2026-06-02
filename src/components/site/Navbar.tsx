@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, ChevronDown, ShoppingBag, GraduationCap, LogIn, LayoutDashboard, LogOut, User as UserIcon } from "lucide-react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.jpg";
 import { useAuth } from "@/lib/auth";
 
 const services: { label: string; slug: string }[] = [
@@ -45,12 +45,8 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 lg:h-20">
         <Link to="/" className="flex items-center gap-2.5 group">
           <div className="relative">
-            <img src={logo} alt="Applied Biotech logo" className="h-9 w-9 rounded-lg" width={36} height={36} />
+            <img src={logo} alt="Applied Biotech logo" className="h-9" />
             <div className="absolute inset-0 rounded-lg gradient-brand opacity-0 group-hover:opacity-30 blur-md transition-opacity" />
-          </div>
-          <div className="leading-tight">
-            <div className="font-display font-bold text-foreground text-base tracking-tight">Applied Biotech</div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">Research · Training · Equipment</div>
           </div>
         </Link>
 

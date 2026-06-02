@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/logo.jpg";
 import { useSiteContent } from "@/lib/site-content";
 
 export function Footer() {
@@ -19,8 +19,7 @@ export function Footer() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 grid gap-10 md:grid-cols-4">
         <div className="md:col-span-1">
           <div className="flex items-center gap-2.5">
-            <img src={logo} alt="" className="h-9 w-9 rounded-lg bg-background/10 p-1" />
-            <span className="font-display font-bold">Applied Biotech</span>
+            <img src={logo} alt="" className="h-9 bg-background/10 p-1" />
           </div>
           <p className="mt-4 text-sm text-background/70 leading-relaxed">
             Pioneering innovative biotechnology pathways to provide healthier and well-being.
