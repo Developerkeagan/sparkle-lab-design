@@ -16,12 +16,17 @@ function GalleryPage() {
     <div className="min-h-screen bg-background">
       <PageHero eyebrow="Gallery" title={<>Inside our <span className="gradient-text">work</span></>} subtitle="Moments from the lab, the field and the classroom." />
       <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto max-w-7xl grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {gallery.map((g) => (
-            <div key={g.id} className="reveal group relative overflow-hidden rounded-2xl aspect-[4/3]">
-              <img src={g.url} alt={g.caption ?? ""} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
+            <article key={g.id} className="reveal group rounded-2xl bg-card border border-border overflow-hidden shadow-soft hover:shadow-brand transition-all hover:-translate-y-1">
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img src={g.url} alt={g.name ?? g.caption ?? ""} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+              </div>
+              <div className="p-5">
+                <h3 className="font-display font-bold text-lg leading-snug">{g.name || "Untitled"}</h3>
+                {g.description && <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{g.description}</p>}
+              </div>
+            </article>
           ))}
           {gallery.length === 0 && <p className="col-span-full text-center text-muted-foreground py-12">No photos uploaded yet.</p>}
         </div>

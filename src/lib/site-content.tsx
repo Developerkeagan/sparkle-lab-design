@@ -15,7 +15,7 @@ export type NewsPost = {
   cover?: string;
 };
 
-export type GalleryImage = { id: string; url: string; caption?: string };
+export type GalleryImage = { id: string; url: string; caption?: string; name?: string; description?: string };
 
 export type ContactInfo = {
   address: string;
@@ -66,9 +66,15 @@ const DEFAULTS: { news: NewsPost[]; gallery: GalleryImage[]; contact: ContactInf
     { id: "n4", slug: "ebsu-mou", tag: "Partnership", date: "Mar 15, 2026", title: "MOU Signed With Ebonyi State University", excerpt: "Collaboration on translational research and graduate fellowships.", body: "We're proud to announce a new MOU with Ebonyi State University for joint translational research and graduate fellowships across molecular diagnostics, bioinformatics and applied microbiology.", cover: hero },
   ],
   gallery: [
-    { id: "g1", url: hero }, { id: "g2", url: dna }, { id: "g3", url: pip },
-    { id: "g4", url: hero }, { id: "g5", url: pip }, { id: "g6", url: dna },
-    { id: "g7", url: dna }, { id: "g8", url: hero }, { id: "g9", url: pip },
+    { id: "g1", url: hero, name: "Main Lab Floor", description: "Our flagship molecular biology lab in Abuja — equipped for PCR, sequencing and cell culture work." },
+    { id: "g2", url: dna, name: "DNA Extraction Bench", description: "Where samples are prepped, quantified and queued for downstream genomics analysis." },
+    { id: "g3", url: pip, name: "Precision Pipetting", description: "Trainees practising micropipette technique during a hands-on Molecular Diagnostics cohort." },
+    { id: "g4", url: hero, name: "Cohort Briefing", description: "Pre-lab briefing for our international diagnostics fellowship — safety first, science second." },
+    { id: "g5", url: pip, name: "Reagent Prep", description: "Reagent preparation room where every batch is QC-verified before leaving for the field." },
+    { id: "g6", url: dna, name: "Sequencing Run", description: "A long-read sequencing run in progress — generating data for our pathogen surveillance work." },
+    { id: "g7", url: dna, name: "Mobile Lab Build", description: "Final fit-out of one of our deployable mobile labs heading out to a partner site." },
+    { id: "g8", url: hero, name: "Lab Inauguration", description: "Opening day for a partner-built molecular facility in Eastern Nigeria." },
+    { id: "g9", url: pip, name: "Practical Session", description: "Trainees running their first independent PCR — every plate is theirs to own." },
   ],
   contact: {
     address: "Plot 234, Biotech Way, Abuja, Nigeria",
