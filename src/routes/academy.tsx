@@ -399,3 +399,13 @@ function AcademyPage() {
     </div>
   );
 }
+
+function MiniStat({ I, k, v }: { I: typeof BookOpen; k: string; v: string }) {
+  return (
+    <div className="rounded-xl bg-background border border-border p-3">
+      <I className="h-4 w-4 text-brand" />
+      <div className="mt-1.5 font-display text-lg font-bold leading-none">{k}</div>
+      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1">{v}</div>
+    </div>
+  );
+}
