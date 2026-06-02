@@ -29,8 +29,9 @@ function Reader() {
     );
   }
 
-  const total = e.pages.length;
+  const total = (e.pageImages?.length ?? e.pages.length);
   const pct = progressPct(courseId);
+  const imageMode = !!e.pageImages && e.pageImages.length > 0;
 
   return (
     <div className="min-h-screen bg-background">
@@ -45,13 +46,25 @@ function Reader() {
           <div className="h-full gradient-brand transition-all" style={{ width: `${pct}%` }} />
         </div>
 
-        {e.cover && (
-          <img src={e.cover} alt="" className="mt-6 w-full rounded-2xl aspect-[16/8] object-cover" />
+        {imageMode ? (
+          <div className="mt-6 rounded-2xl overflow-hidden border border-border bg-card">
+            <img
+              key={e.currentPage}
+              src={e.pageImages![e.currentPage]}
+              alt={`Page ${e.currentPage + 1}`}
+              className="w-full h-auto object-contain bg-black animate-fade-in"
+            />
+          </div>
+        ) : (
+          <>
+            {e.cover && (
+              <img src={e.cover} alt="" className="mt-6 w-full rounded-2xl aspect-[16/8] object-cover" />
+            )}
+            <article className="prose prose-neutral dark:prose-invert mt-6 max-w-none whitespace-pre-line text-foreground leading-relaxed">
+              {e.pages[e.currentPage]}
+            </article>
+          </>
         )}
-
-        <article className="prose prose-neutral dark:prose-invert mt-6 max-w-none whitespace-pre-line text-foreground leading-relaxed">
-          {e.pages[e.currentPage]}
-        </article>
 
         <div className="mt-8 flex items-center justify-between">
           <button

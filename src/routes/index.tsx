@@ -44,6 +44,7 @@ function Index() {
       <Navbar />
       <Hero />
       <Marquee />
+      <QuickDoors />
       <FeaturedRotator />
       <PetalNavigator />
       <WhatWeDo />
@@ -502,6 +503,64 @@ function CTA() {
             Book your call <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function QuickDoors() {
+  return (
+    <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl grid gap-6 md:grid-cols-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}
+          className="group relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-700 text-white p-8 md:p-10 shadow-brand"
+        >
+          <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/10 blur-3xl group-hover:bg-white/20 transition" />
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-[10px] uppercase tracking-[0.2em] font-bold">
+            <GraduationCap className="h-3.5 w-3.5" /> Academy
+          </span>
+          <h3 className="mt-4 font-display text-3xl md:text-4xl font-extrabold leading-tight">Train with working scientists.</h3>
+          <p className="mt-3 text-white/85 max-w-md">Hands-on cohorts in molecular diagnostics, PCR, sequencing and bioinformatics. Read at your pace, book the practical, earn the certification.</p>
+          <div className="mt-6 flex flex-wrap gap-2 text-xs">
+            {["Self-paced reading", "1:1 coaching", "Practical labs", "Certificates"].map((t) => (
+              <span key={t} className="px-2.5 py-1 rounded-full bg-white/15">{t}</span>
+            ))}
+          </div>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link to="/academy" className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-white text-emerald-700 font-bold text-sm shadow-soft hover:scale-[1.03] transition-transform">
+              Explore courses <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/academy/dashboard" className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-white/30 text-white font-semibold text-sm hover:bg-white/10 transition-colors">
+              My dashboard
+            </Link>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }}
+          className="group relative rounded-3xl overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-8 md:p-10 shadow-brand"
+        >
+          <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/10 blur-3xl group-hover:bg-white/20 transition" />
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-[10px] uppercase tracking-[0.2em] font-bold">
+            <ShoppingBag className="h-3.5 w-3.5" /> Shop
+          </span>
+          <h3 className="mt-4 font-display text-3xl md:text-4xl font-extrabold leading-tight">Stock your bench in days.</h3>
+          <p className="mt-3 text-white/85 max-w-md">Tier-1 reagents, calibrated instruments, sovereign consumables — backed by local warranty and live technical support. Order today, ship tomorrow.</p>
+          <div className="mt-6 flex flex-wrap gap-2 text-xs">
+            {["PCR & RT-qPCR", "Cell culture", "NGS consumables", "Lab plasticware"].map((t) => (
+              <span key={t} className="px-2.5 py-1 rounded-full bg-white/15">{t}</span>
+            ))}
+          </div>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link to="/shop" className="inline-flex items-center gap-2 h-11 px-5 rounded-full bg-white text-blue-700 font-bold text-sm shadow-soft hover:scale-[1.03] transition-transform">
+              Shop now <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/shop/deals" className="inline-flex items-center gap-2 h-11 px-5 rounded-full border border-white/30 text-white font-semibold text-sm hover:bg-white/10 transition-colors">
+              See deals
+            </Link>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

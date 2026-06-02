@@ -7,7 +7,8 @@ export type Enrollment = {
   title: string;
   cover?: string;
   price: number;
-  pages: string[];        // page text content
+  pages: string[];        // page text content (fallback)
+  pageImages?: string[];  // image URLs — if present, reader shows images instead of text
   currentPage: number;
   practicalDate?: string; // ISO
   purchasedAt: number;
@@ -90,7 +91,11 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
   const isEnrolled = useCallback((id: string) => enrollments.some((e) => e.courseId === id), [enrollments]);
 
   const setPage = useCallback((courseId: string, page: number) => {
-    setEnrollments((prev) => prev.map((e) => e.courseId === courseId ? { ...e, currentPage: Math.max(0, Math.min(page, e.pages.length - 1)) } : e));
+    setEnrollments((prev) => prev.map((e) => {
+      if (e.courseId !== courseId) return e;
+      const total = (e.pageImages?.length ?? e.pages.length);
+      return { ...e, currentPage: Math.max(0, Math.min(page, total - 1)) };
+    }));
   }, []);
 
   const setPracticalDate = useCallback((courseId: string, iso: string) => {
@@ -99,8 +104,10 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
 
   const progressPct = useCallback((courseId: string) => {
     const e = enrollments.find((x) => x.courseId === courseId);
-    if (!e || e.pages.length <= 1) return e ? (e.currentPage > 0 ? 100 : 0) : 0;
-    return Math.round(((e.currentPage + 1) / e.pages.length) * 100);
+    if (!e) return 0;
+    const total = (e.pageImages?.length ?? e.pages.length);
+    if (total <= 1) return e.currentPage > 0 ? 100 : 0;
+    return Math.round(((e.currentPage + 1) / total) * 100);
   }, [enrollments]);
 
   const getEnrollment = useCallback((id: string) => enrollments.find((e) => e.courseId === id), [enrollments]);

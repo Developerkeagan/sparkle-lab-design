@@ -65,6 +65,7 @@ import { Route as AdminContactRouteImport } from './routes/admin.contact'
 import { Route as AdminCollectionsRouteImport } from './routes/admin.collections'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAcademyRouteImport } from './routes/admin.academy'
+import { Route as AcademyDashboardRouteImport } from './routes/academy.dashboard'
 import { Route as ShopProductIdRouteImport } from './routes/shop.product.$id'
 import { Route as ShopCategorySlugRouteImport } from './routes/shop.category.$slug'
 import { Route as EditorAcademyIdRouteImport } from './routes/editor.academy.$id'
@@ -351,6 +352,11 @@ const AdminAcademyRoute = AdminAcademyRouteImport.update({
   path: '/academy',
   getParentRoute: () => AdminRoute,
 } as any)
+const AcademyDashboardRoute = AcademyDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AcademyRoute,
+} as any)
 const ShopProductIdRoute = ShopProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
@@ -397,6 +403,7 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/academy/dashboard': typeof AcademyDashboardRoute
   '/admin/academy': typeof AdminAcademyRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -457,6 +464,7 @@ export interface FileRoutesByTo {
   '/rent-a-lab': typeof RentALabRoute
   '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/academy/dashboard': typeof AcademyDashboardRoute
   '/admin/academy': typeof AdminAcademyRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -521,6 +529,7 @@ export interface FileRoutesById {
   '/services': typeof ServicesRouteWithChildren
   '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/academy/dashboard': typeof AcademyDashboardRoute
   '/admin/academy': typeof AdminAcademyRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/collections': typeof AdminCollectionsRoute
@@ -586,6 +595,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/shop'
     | '/sitemap.xml'
+    | '/academy/dashboard'
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
@@ -646,6 +656,7 @@ export interface FileRouteTypes {
     | '/rent-a-lab'
     | '/services'
     | '/sitemap.xml'
+    | '/academy/dashboard'
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
@@ -709,6 +720,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/shop'
     | '/sitemap.xml'
+    | '/academy/dashboard'
     | '/admin/academy'
     | '/admin/analytics'
     | '/admin/collections'
@@ -1169,6 +1181,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAcademyRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/academy/dashboard': {
+      id: '/academy/dashboard'
+      path: '/dashboard'
+      fullPath: '/academy/dashboard'
+      preLoaderRoute: typeof AcademyDashboardRouteImport
+      parentRoute: typeof AcademyRoute
+    }
     '/shop/product/$id': {
       id: '/shop/product/$id'
       path: '/product/$id'
@@ -1208,10 +1227,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AcademyRouteChildren {
+  AcademyDashboardRoute: typeof AcademyDashboardRoute
   AcademyReadCourseIdRoute: typeof AcademyReadCourseIdRoute
 }
 
 const AcademyRouteChildren: AcademyRouteChildren = {
+  AcademyDashboardRoute: AcademyDashboardRoute,
   AcademyReadCourseIdRoute: AcademyReadCourseIdRoute,
 }
 
