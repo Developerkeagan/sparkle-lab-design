@@ -44,6 +44,7 @@ function Index() {
       <Navbar />
       <Hero />
       <Marquee />
+      <QuickDoors />
       <FeaturedRotator />
       <PetalNavigator />
       <WhatWeDo />
