@@ -1,9 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/Footer";
 import { PageHero } from "@/components/site/PageHero";
 import { useReveal } from "@/hooks/use-reveal";
-import { GraduationCap, Clock, Users, Award, ArrowRight, PlayCircle, BookOpen, Star, Loader2, X, LogOut, Lock } from "lucide-react";
+import { GraduationCap, Clock, Users, Award, ArrowRight, PlayCircle, BookOpen, Star, Loader2, X, LogOut, Lock, LayoutDashboard, MessageCircle, UserPlus } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import useFetch from "@/hooks/useFetch";
 import { useAcademy } from "@/lib/academy";
@@ -22,6 +22,7 @@ export const Route = createFileRoute("/academy")({
 
 function AcademyPage() {
   useReveal();
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<any[]>([]);
   const { loading, fetchData } = useFetch();
   const academy = useAcademy();
@@ -31,6 +32,11 @@ function AcademyPage() {
   const [authForm, setAuthForm] = useState({ name: "", email: "", password: "", confirm: "" });
   const [authBusy, setAuthBusy] = useState(false);
   const [practical, setPractical] = useState<string>("");
+
+  // Embedded mini-dashboard auth form (independent from the buy modal)
+  const [miniTab, setMiniTab] = useState<"signin" | "signup">("signin");
+  const [miniForm, setMiniForm] = useState({ name: "", email: "", password: "", confirm: "" });
+  const [miniBusy, setMiniBusy] = useState(false);
 
   useEffect(() => {
     fetchData("/api/v1/academy").then(res => {
@@ -88,15 +94,37 @@ function AcademyPage() {
       `Module 3 — Quality & Troubleshooting\n\nLearn to read your own results, spot contamination signatures, and recover from the most common failures without restarting from scratch.`,
       `Practical session\n\nAttend the in-person practical on the date you chose. Bring your reusable PPE; everything else is provided. A certificate is issued on completion.`,
     ];
+    const pageImages = selected.img ? [selected.img, selected.img, selected.img, selected.img, selected.img] : undefined;
     academy.enroll({
       courseId: selected.id,
       title: selected.title,
       cover: selected.img,
       price: selected.price,
       pages,
+      pageImages,
     });
     if (practical) academy.setPracticalDate(selected.id, practical);
     setSelected(null);
+  }
+
+  async function submitMini(e: React.FormEvent) {
+    e.preventDefault();
+    setMiniBusy(true);
+    try {
+      if (miniTab === "signin") {
+        await academy.signIn(miniForm.email, miniForm.password);
+      } else {
+        if (!miniForm.name.trim()) throw new Error("Name required");
+        if (miniForm.password.length < 6) throw new Error("Password must be 6+ chars");
+        if (miniForm.password !== miniForm.confirm) throw new Error("Passwords do not match");
+        await academy.signUp({ name: miniForm.name, email: miniForm.email, password: miniForm.password });
+      }
+      navigate({ to: "/academy/dashboard" });
+    } catch (err: any) {
+      toast.error(err.message || "Authentication failed");
+    } finally {
+      setMiniBusy(false);
+    }
   }
 
   return (
@@ -108,14 +136,93 @@ function AcademyPage() {
         subtitle="Train alongside working scientists, earn certifications recognised across West Africa, and walk out ready to run a real lab."
       />
 
-      {academy.user && (
-        <div className="max-w-7xl mx-auto px-4 -mt-4">
-          <div className="rounded-2xl border border-border bg-card px-4 py-3 flex items-center justify-between">
-            <div className="text-sm">Signed in as <span className="font-semibold">{academy.user.name}</span> · <span className="text-muted-foreground">{academy.user.email}</span></div>
-            <button onClick={academy.signOut} className="text-xs inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"><LogOut className="h-3.5 w-3.5" /> Sign out</button>
+      {/* Mini-Dashboard / Auth section */}
+      <section className="py-10 px-4">
+        <div className="max-w-7xl mx-auto rounded-3xl border border-border bg-card shadow-soft overflow-hidden grid lg:grid-cols-[1.1fr_1fr]">
+          <div className="p-8 bg-gradient-to-br from-brand/10 via-transparent to-accent-cyan/10">
+            <span className="text-xs uppercase tracking-[0.2em] text-brand font-semibold">Your Mini Dashboard</span>
+            <h2 className="mt-2 font-display text-2xl sm:text-3xl font-extrabold leading-tight">
+              {academy.user ? `Welcome back, ${academy.user.name.split(" ")[0]}.` : "Sign in to your Academy"}
+            </h2>
+            <p className="mt-3 text-sm text-muted-foreground max-w-md">
+              {academy.user
+                ? "Your courses, your progress, your practical dates — all in one place. Open the full dashboard or jump back into your last lesson."
+                : "Create an account to enrol in courses, track your reading progress, book practicals and request 1:1 coaching from working scientists."}
+            </p>
+
+            {academy.user ? (
+              <div className="mt-6 space-y-4">
+                <div className="grid grid-cols-3 gap-3">
+                  <MiniStat I={BookOpen} k={String(academy.enrollments.length)} v="Courses" />
+                  <MiniStat I={Award} k={`${academy.enrollments.length === 0 ? 0 : Math.round(academy.enrollments.reduce((a, e) => a + academy.progressPct(e.courseId), 0) / academy.enrollments.length)}%`} v="Avg progress" />
+                  <MiniStat I={Clock} k={String(academy.enrollments.filter((e) => e.practicalDate).length)} v="Practicals" />
+                </div>
+                {academy.enrollments[0] && (
+                  <div className="rounded-2xl border border-border bg-background p-4">
+                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Last page read</div>
+                    <div className="mt-1 font-semibold leading-snug truncate">{academy.enrollments[0].title}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">Page {academy.enrollments[0].currentPage + 1} of {academy.enrollments[0].pageImages?.length ?? academy.enrollments[0].pages.length}</div>
+                    <Link to="/academy/read/$courseId" params={{ courseId: academy.enrollments[0].courseId }} className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-brand hover:underline">Continue reading <ArrowRight className="h-4 w-4" /></Link>
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/academy/dashboard" className="inline-flex items-center gap-2 h-11 px-5 rounded-xl gradient-brand text-brand-foreground text-sm font-bold shadow-soft">
+                    <LayoutDashboard className="h-4 w-4" /> Open my dashboard
+                  </Link>
+                  <Link to="/contact" className="inline-flex items-center gap-2 h-11 px-5 rounded-xl border border-border text-sm font-semibold hover:bg-accent">
+                    <MessageCircle className="h-4 w-4" /> Request a coach
+                  </Link>
+                  <button onClick={academy.signOut} className="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-sm text-muted-foreground hover:text-foreground">
+                    <LogOut className="h-4 w-4" /> Sign out
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
+                <li className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-brand" /> Resume any lesson from your last page</li>
+                <li className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-brand" /> Book practical lab sessions on your schedule</li>
+                <li className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-brand" /> Request a coach for 1:1 guidance, anytime</li>
+              </ul>
+            )}
+          </div>
+
+          <div className="p-8 border-t lg:border-t-0 lg:border-l border-border">
+            {academy.user ? (
+              <div className="h-full flex flex-col justify-center">
+                <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl gradient-brand text-brand-foreground font-bold text-lg">
+                  {academy.user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                </div>
+                <div className="mt-4 font-display text-lg font-bold">{academy.user.name}</div>
+                <div className="text-sm text-muted-foreground">{academy.user.email}</div>
+                <Link to="/academy/dashboard" className="mt-6 inline-flex items-center justify-center gap-2 h-11 rounded-xl gradient-brand text-brand-foreground text-sm font-bold">
+                  Go to dashboard <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            ) : (
+              <>
+                <div className="flex gap-1 p-1 rounded-xl bg-secondary">
+                  <button onClick={() => setMiniTab("signin")} className={`flex-1 h-9 rounded-lg text-sm font-semibold ${miniTab === "signin" ? "bg-background shadow-soft" : ""}`}>Sign in</button>
+                  <button onClick={() => setMiniTab("signup")} className={`flex-1 h-9 rounded-lg text-sm font-semibold ${miniTab === "signup" ? "bg-background shadow-soft" : ""}`}>Create account</button>
+                </div>
+                <form onSubmit={submitMini} className="mt-4 space-y-3">
+                  {miniTab === "signup" && (
+                    <input required placeholder="Full name" value={miniForm.name} onChange={(e) => setMiniForm({ ...miniForm, name: e.target.value })} className="w-full h-11 px-3 rounded-xl bg-secondary text-sm border border-transparent focus:border-brand focus:outline-none" />
+                  )}
+                  <input required type="email" placeholder="Email" value={miniForm.email} onChange={(e) => setMiniForm({ ...miniForm, email: e.target.value })} className="w-full h-11 px-3 rounded-xl bg-secondary text-sm border border-transparent focus:border-brand focus:outline-none" />
+                  <input required type="password" placeholder="Password" value={miniForm.password} onChange={(e) => setMiniForm({ ...miniForm, password: e.target.value })} className="w-full h-11 px-3 rounded-xl bg-secondary text-sm border border-transparent focus:border-brand focus:outline-none" />
+                  {miniTab === "signup" && (
+                    <input required type="password" placeholder="Confirm password" value={miniForm.confirm} onChange={(e) => setMiniForm({ ...miniForm, confirm: e.target.value })} className="w-full h-11 px-3 rounded-xl bg-secondary text-sm border border-transparent focus:border-brand focus:outline-none" />
+                  )}
+                  <button disabled={miniBusy} type="submit" className="w-full h-11 rounded-xl gradient-brand text-brand-foreground text-sm font-bold disabled:opacity-60 inline-flex items-center justify-center gap-2">
+                    {miniBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : miniTab === "signin" ? <>Sign in & open dashboard <ArrowRight className="h-4 w-4" /></> : <><UserPlus className="h-4 w-4" /> Create account</>}
+                  </button>
+                </form>
+                <p className="mt-3 text-[11px] text-muted-foreground text-center">By continuing you agree to our terms of service.</p>
+              </>
+            )}
           </div>
         </div>
-      )}
+      </section>
 
       <section className="py-10 px-4">
         <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
