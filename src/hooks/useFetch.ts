@@ -47,7 +47,17 @@ function useFetch<T = any>(): UseFetchResult<T> {
       }
 
       if (!response.ok) {
-        throw new Error(result.message || `Error: ${response.status}`);
+        let errBody;
+        try {
+          errBody = await response.json();
+        } catch {
+          errBody = await response.text().catch(() => null);
+        }
+        const msg =
+          (errBody && (errBody.message || errBody.error || JSON.stringify(errBody))) ||
+          response.statusText ||
+          `HTTP ${response.status}`;
+        throw new Error(msg);
       }
 
       setData(result);

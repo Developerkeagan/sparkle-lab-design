@@ -95,7 +95,7 @@ function Overview() {
 
         const [users, orders, products, academy, analytics] = await Promise.all([
           fetchSafe("/api/v1/users"),
-          fetchSafe("/api/v1/payments"), // Reverted to documented module path for Orders
+          fetchSafe("/api/v1/payments/orders-ledger"), // Corrected to match README 4.10
           fetchSafe("/api/v1/shop/products"), // Corrected based on Readme 4.3
           fetchSafe("/api/v1/academy"),
           fetchSafe("/api/v1/analytics/metrics"),
@@ -133,12 +133,12 @@ function Overview() {
         const totalUsersBefore = userList.filter(u => u.createdAt && new Date(u.createdAt) <= thirtyDaysAgo).length;
         const userPct = totalUsersBefore === 0 ? 100 : ((userList.length - totalUsersBefore) / totalUsersBefore) * 100;
         
-        const revGrowth = getGrowth(orderList.filter(o => o.status?.toLowerCase() === "paid"), "totalAmount");
+        const revGrowth = getGrowth(orderList.filter(o => String(o.status || "").toLowerCase().trim() === "paid"), "totalAmount");
         const prodGrowth = getGrowth(productList);
         const studentGrowth = getGrowth(courseList, "students");
         
         // Calculate Purchases (Paid orders) and User Engagement stats
-        const purchases = orderList.filter(o => o.status?.toLowerCase() === "paid").length;
+        const purchases = orderList.filter(o => String(o.status || "").toLowerCase().trim() === "paid").length;
         const cartItems = userList.reduce((acc, u) => acc + (u.cart?.length || 0), 0);
         const wishlistItems = userList.reduce((acc, u) => acc + (u.wishlist?.length || 0), 0);
 
@@ -220,7 +220,7 @@ function Overview() {
       )}
 
       <PageHeader
-        title={`Welcome back, ${user?.name.split(" ")[0]}`}
+        title={`Welcome back, ${(user?.name || "").split(" ")[0] || "User"}`}
         subtitle="Here's what's happening across the academy, shop and site today."
         actions={
           <button 
@@ -382,6 +382,6 @@ function StatusPill({ s }: { s: string }) {
     refunded: "bg-red-500/10 text-red-500",
     cancelled: "bg-muted text-muted-foreground",
   };
-  const status = s?.toLowerCase() || "pending";
+  const status = String(s || "").toLowerCase().trim() || "pending";
   return <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${map[status] || "bg-muted text-muted-foreground"}`}>{status}</span>;
 }

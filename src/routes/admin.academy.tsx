@@ -25,12 +25,14 @@ function AdminAcademy() {
   const [items, setItems] = useState<Course[]>([]);
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Course | null>(null);
 
   // Form state
   const [title, setTitle] = useState("");
   const [level, setLevel] = useState("Beginner");
   const [weeks, setWeeks] = useState(4);
   const [price, setPrice] = useState(180);
+  const [status, setStatus] = useState("Live");
   const [description, setDescription] = useState("");
   const [cover, setCover] = useState<any>(null);
   const [pdf, setPdf] = useState<File | null>(null);
@@ -58,32 +60,62 @@ function AdminAcademy() {
 
   useEffect(() => { loadCourses(); }, [loadCourses]);
 
-  async function handleCreate() {
+  const resetForm = useCallback(() => {
+    setEditing(null);
+    setTitle("");
+    setLevel("Beginner");
+    setWeeks(4);
+    setPrice(180);
+    setStatus("Live");
+    setDescription("");
+    setCover(null);
+    setPdf(null);
+    setOpen(false);
+  }, []);
+
+  async function handleSave() {
     if (!title.trim()) return toast.error("Course title required");
-    if (!cover) return toast.error("Course cover image required");
+    if (!editing && !cover) return toast.error("Course cover image required");
     
     const formData = new FormData();
     formData.append("courseTitle", title);
     formData.append("levelDescription", level);
     formData.append("price", String(price));
+    formData.append("weeks", String(weeks));
+    formData.append("status", status);
+    formData.append("headline", title);
+    formData.append("description", description);
     
     // Map syllabus text to the required Array of Strings
     const outlineArray = description.split('\n').map(s => s.trim()).filter(Boolean);
-    formData.append("outline", JSON.stringify(outlineArray));
+    outlineArray.forEach(line => formData.append("outline", line));
 
-    if (typeof cover !== "string") formData.append("image", cover);
-    else formData.append("image", cover);
-    if (pdf) formData.append("pdf", pdf);
+    if (cover) {
+      if (typeof cover !== "string") formData.append("image", cover);
+      else if (!editing) formData.append("image", cover);
+    }
+    
+    // Per backend README section 4.5: pdfFile is the expected key for course literature
+    if (pdf) formData.append("pdfFile", pdf);
 
     try {
-      await fetchData("/api/v1/academy", { method: "POST", body: formData });
-      toast.success("Course created");
-      setOpen(false);
-      setPdf(null);
+      const url = editing ? `/api/v1/academy/${editing.id}` : "/api/v1/academy";
+      const method = editing ? "PUT" : "POST";
+      
+      await fetchData(url, { method, body: formData });
+      toast.success(editing ? "Course updated" : "Course created");
+      resetForm();
       loadCourses();
     } catch (err: any) {
-      toast.error(err.message || "Failed to create course");
+      toast.error(err.message || `Failed to ${editing ? 'update' : 'create'} course`);
     }
+  }
+
+  function startEdit(c: Course) {
+    setEditing(c);
+    setTitle(c.title); setLevel(c.level); setWeeks(c.weeks); setPrice(c.price);
+    setStatus(c.status); setDescription(c.description); setCover(c.coverImage);
+    setOpen(true);
   }
 
   async function handleDelete(id: string) {
@@ -105,7 +137,7 @@ function AdminAcademy() {
         <Stat icon={Users} label="Avg. completion" value="94%" />
       </div>
 
-      <Toolbar onSearch={setQ} addLabel="New course" onAdd={() => setOpen(true)} />
+      <Toolbar onSearch={setQ} addLabel="New course" onAdd={() => { resetForm(); setOpen(true); }} />
 
       <Card className="relative overflow-visible">
         {loading && items.length === 0 && (
@@ -126,7 +158,7 @@ function AdminAcademy() {
                   <td className="font-semibold">₦{c.price.toLocaleString()}</td>
                   <td><span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${c.status === "Live" ? "bg-emerald-500/10 text-emerald-600" : "bg-muted text-muted-foreground"}`}>{c.status}</span></td>
                   <td className="pr-4" onClick={(e) => e.stopPropagation()}><RowMenu actions={[
-                    { label: "View students", onClick: () => navigate({ to: "/admin/academy/$id", params: { id: c.id } }) },
+                    { label: "Edit", onClick: () => startEdit(c) },
                     { label: "Delete", danger: true, onClick: () => handleDelete(c.id) },
                   ]} /></td>
                 </tr>
@@ -137,14 +169,23 @@ function AdminAcademy() {
         </div>
       </Card>
 
-      <Modal open={open} onClose={() => setOpen(false)} title="New course"
-        footer={<><GhostBtn onClick={() => setOpen(false)}>Cancel</GhostBtn><PrimaryBtn disabled={loading} onClick={handleCreate}>{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create"}</PrimaryBtn></>}>
+      <Modal open={open} onClose={resetForm} title={editing ? "Edit Course" : "New Course"}
+        footer={<><GhostBtn onClick={resetForm}>Cancel</GhostBtn><PrimaryBtn disabled={loading} onClick={handleSave}>{loading ? <Loader2 className="h-4 w-4 animate-spin" /> : editing ? "Save Changes" : "Create"}</PrimaryBtn></>}>
         <div className="space-y-4">
           <ImageUpload label="Course cover" value={cover} onChange={setCover} aspect="aspect-[16/9]" />
           <Field label="Course title"><input className={inputCls} value={title} onChange={e => setTitle(e.target.value)} placeholder="E.g. Advanced Microbiology" /></Field>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 gap-3">
             <Field label="Level"><select className={inputCls} value={level} onChange={e => setLevel(e.target.value)}><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></Field>
-            <Field label="Weeks"><input type="number" value={weeks} onChange={e => setWeeks(+e.target.value)} className={inputCls} /></Field>
+            <Field label="Status">
+              <select className={inputCls} value={status} onChange={e => setStatus(e.target.value)}>
+                <option value="Live">Live</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Draft">Draft</option>
+              </select>
+            </Field>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Duration (Weeks)"><input type="number" value={weeks} onChange={e => setWeeks(+e.target.value)} className={inputCls} /></Field>
             <Field label="Price (₦)"><input type="number" value={price} onChange={e => setPrice(+e.target.value)} className={inputCls} /></Field>
           </div>
           <Field label="Outline (One per line)"><textarea rows={4} className={textareaCls} value={description} onChange={e => setDescription(e.target.value)} placeholder="Introduction to diagnostics&#10;PCR design fundamentals&#10;..." /></Field>

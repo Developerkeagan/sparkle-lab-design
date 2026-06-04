@@ -14,7 +14,7 @@ export const Route = createFileRoute("/editor/profile")({ component: () => {
     <PageHeader title="My Profile" subtitle="Update your editor profile and credentials." />
     <div className="grid lg:grid-cols-3 gap-6">
       <Card className="p-6 text-center">
-        <div className="h-28 w-28 rounded-full gradient-brand grid place-items-center text-brand-foreground text-3xl font-bold mx-auto">{user?.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}</div>
+        <div className="h-28 w-28 rounded-full gradient-brand grid place-items-center text-brand-foreground text-3xl font-bold mx-auto">{(user?.name || "User").split(" ").map((n) => n[0]).slice(0, 2).join("")}</div>
         <div className="mt-4 font-display font-bold text-lg">{user?.name}</div>
         <div className="text-sm text-muted-foreground">{user?.email}</div>
         <div className="mt-2 inline-flex text-xs px-2 py-1 rounded-full bg-primary/10 text-primary font-semibold uppercase">{user?.role}</div>

@@ -39,7 +39,7 @@ function AccountPage() {
       <div className="mx-auto max-w-5xl">
         <div className="bg-card border border-border rounded-3xl p-8 flex items-center gap-5">
           <div className="h-16 w-16 rounded-full gradient-brand grid place-items-center text-brand-foreground font-display font-bold text-xl">
-            {user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+            {(user?.name || "User").split(" ").map((n) => n[0]).slice(0, 2).join("")}
           </div>
           <div>
             <h1 className="font-display text-2xl font-bold">{user.name}</h1>

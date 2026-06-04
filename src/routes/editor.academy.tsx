@@ -44,9 +44,18 @@ function EditorAcademy() {
     formData.append("courseTitle", title);
     formData.append("levelDescription", level);
     formData.append("price", String(price));
-    formData.append("outline", JSON.stringify(description.split('\n').filter(Boolean)));
-    if (cover) formData.append("image", cover);
-    if (pdf) formData.append("pdf", pdf);
+    formData.append("headline", title);
+    formData.append("description", description);
+
+    const outlineArray = description.split('\n').map(s => s.trim()).filter(Boolean);
+    outlineArray.forEach(line => formData.append("outline", line));
+
+    if (cover) {
+      if (typeof cover !== "string") formData.append("image", cover);
+      else if (!editing) formData.append("image", cover);
+    }
+
+    if (pdf) formData.append("pdfFile", pdf);
 
     try {
       const url = editing ? `/api/v1/academy/${editing.id}` : "/api/v1/academy";

@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { Card, Toolbar, RowMenu, Modal, Field, ImageUpload, inputCls, textareaCls, PrimaryBtn, GhostBtn } from "@/components/dashboard/widgets";
 import { toast } from "sonner";
-import { Loader2, Newspaper } from "lucide-react";
+import { Loader2, Newspaper, Hash, Calendar, FileText, TrendingUp } from "lucide-react";
 import useFetch from "@/hooks/useFetch";
 
 export const Route = createFileRoute("/admin/news")({ component: NewsAdmin });
@@ -36,7 +36,7 @@ function NewsAdmin() {
       if (res) {
         setItems(res.map((n: any) => ({
           id: n._id,
-          title: n.title,
+          title: n.headline || n.title,
           slug: n.slug,
           tag: n.tag,
           excerpt: n.description || n.excerpt || "",
@@ -94,15 +94,20 @@ function NewsAdmin() {
       toast.success(editing.id ? "Article updated" : "Article published");
       setOpen(false);
       loadNews();
-    } catch (err) {}
+    } catch (err: any) {
+      toast.error(err.message || "Failed to save article");
+    }
   }
 
   async function handleDelete(id: string) {
+    if (!confirm("Are you sure you want to delete this article?")) return;
     try {
       await fetchData(`/api/v1/news/${id}`, { method: "DELETE" });
       toast.success("Article deleted");
       loadNews();
-    } catch (err) {}
+    } catch (err: any) {
+      toast.error(err.message || "Delete failed");
+    }
   }
 
   const filtered = items.filter((n) => (n.title + n.tag + n.excerpt).toLowerCase().includes(q.toLowerCase()));
@@ -110,6 +115,14 @@ function NewsAdmin() {
   return (
     <div className="space-y-6">
       <PageHeader title="News & Announcements" subtitle="Manage public articles and lab updates." />
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <Stat icon={FileText} label="Total Articles" value={items.length} />
+        <Stat icon={Hash} label="Tags Used" value={new Set(items.map(i => i.tag)).size} />
+        <Stat icon={Calendar} label="Latest Post" value={items[0]?.date || "N/A"} />
+        <Stat icon={TrendingUp} label="Reach" value="Live" />
+      </div>
+
       <Toolbar onSearch={setQ} addLabel="New article" onAdd={() => { setEditing(empty); setCoverFile(null); setOpen(true); }} />
 
       <Card className="relative overflow-visible">
@@ -156,4 +169,11 @@ function NewsAdmin() {
       </Modal>
     </div>
   );
+}
+
+function Stat({ icon: Icon, label, value }: any) {
+  return <Card className="p-4 flex items-center gap-3">
+    <span className="h-10 w-10 rounded-xl bg-primary/10 text-primary grid place-items-center"><Icon className="h-5 w-5" /></span>
+    <div><div className="text-xs text-muted-foreground">{label}</div><div className="font-display font-bold text-lg">{value}</div></div>
+  </Card>;
 }

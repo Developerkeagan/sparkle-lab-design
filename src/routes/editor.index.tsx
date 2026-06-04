@@ -10,7 +10,7 @@ function EditorOverview() {
   const { user } = useAuth();
   return (
     <div className="space-y-6">
-      <PageHeader title={`Hello, ${user?.name.split(" ")[0]}`} subtitle="Pick up where you left off — your drafts and recent edits are below." />
+      <PageHeader title={`Hello, ${(user?.name || "").split(" ")[0] || "Editor"}`} subtitle="Pick up where you left off — your drafts and recent edits are below." />
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[{ i: GraduationCap, l: "Courses managed", v: "12" }, { i: ShoppingBag, l: "Products edited", v: "48" }, { i: Layers, l: "Collections", v: "6" }, { i: FileText, l: "Drafts pending", v: "4" }].map((s) => (
           <Card key={s.l} className="p-5"><span className="h-10 w-10 rounded-xl bg-primary/10 text-primary grid place-items-center"><s.i className="h-5 w-5" /></span><div className="mt-3 font-display text-2xl font-bold">{s.v}</div><div className="text-xs text-muted-foreground">{s.l}</div></Card>

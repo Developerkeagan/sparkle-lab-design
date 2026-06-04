@@ -57,8 +57,9 @@ function LoginPage() {
         // Normalize user object for frontend consistency
         const normalizedUser = {
           ...result.user,
-          name: result.user.fullName, // Frontend components expect 'name'
-          role: result.user.role.toLowerCase() as "admin" | "editor",
+          name: result.user.fullName || result.user.username || "User", // Frontend components expect 'name', provide fallback
+          email: result.user.email || "", // Ensure email is always a string
+          role: (result.user.role || "editor").toLowerCase() as "admin" | "editor",
         };
 
         await authLogin(result.token, normalizedUser);
@@ -66,7 +67,7 @@ function LoginPage() {
         // Force the router to re-run loaders and guards with the new auth state
         await router.invalidate();
         
-        toast.success(`Welcome back, ${normalizedUser.name.split(" ")[0]}`);
+        toast.success(`Welcome back, ${(normalizedUser.name || "").split(" ")[0] || "User"}`);
         
         const target = normalizedUser.role === "admin" ? "/admin/users" : "/editor";
         navigate({ to: target as any, replace: true });

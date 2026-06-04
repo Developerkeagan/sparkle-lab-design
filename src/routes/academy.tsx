@@ -26,7 +26,7 @@ function AcademyPage() {
   const [courses, setCourses] = useState<any[]>([]);
   const { loading, fetchData } = useFetch();
   const academy = useAcademy();
-  const { practicalDates } = useSiteContent();
+  const [dbDates, setDbDates] = useState<string[]>([]);
   const [selected, setSelected] = useState<any | null>(null);
   const [authTab, setAuthTab] = useState<"signin" | "signup">("signin");
   const [authForm, setAuthForm] = useState({ name: "", email: "", password: "", confirm: "" });
@@ -41,7 +41,8 @@ function AcademyPage() {
   useEffect(() => {
     fetchData("/api/v1/academy").then(res => {
       if (res) {
-        const normalized = res.map((c: any) => ({
+        const list = Array.isArray(res) ? res : res.data || [];
+        const normalized = list.map((c: any) => ({
           id: c._id,
           title: c.courseTitle,
           level: c.levelDescription,
@@ -57,6 +58,26 @@ function AcademyPage() {
     });
   }, [fetchData]);
 
+  useEffect(() => {
+    fetchData("/api/v1/content/settings/practical-dates").then(res => {
+      if (res) setDbDates(res);
+    });
+  }, [fetchData]);
+
+  // Sync enrollments from backend when user is logged in
+  useEffect(() => {
+    if (academy.user) {
+      fetchData("/api/v1/academy/my-enrollments")
+        .then(res => {
+          if (res && Array.isArray(res)) {
+            // Synchronize global academy state with server data
+            res.forEach(e => academy.enroll(e));
+          }
+        })
+        .catch(() => {}); 
+    }
+  }, [fetchData, academy.user?.email]);
+
   const totalStudents = useMemo(() => courses.reduce((acc, c) => acc + c.students, 0), [courses]);
 
   function openBuy(c: any) {
@@ -68,60 +89,127 @@ function AcademyPage() {
 
   async function submitAuth(e: React.FormEvent) {
     e.preventDefault();
+    if (authTab === "signup" && authForm.password !== authForm.confirm) {
+      return toast.error("Passwords do not match");
+    }
+
     setAuthBusy(true);
     try {
-      if (authTab === "signin") {
-        await academy.signIn(authForm.email, authForm.password);
-      } else {
-        if (!authForm.name.trim()) throw new Error("Name required");
-        if (authForm.password.length < 6) throw new Error("Password must be 6+ chars");
-        if (authForm.password !== authForm.confirm) throw new Error("Passwords do not match");
-        await academy.signUp({ name: authForm.name, email: authForm.email, password: authForm.password });
+      const endpoint = authTab === "signin" ? "/api/v1/academy/auth/login" : "/api/v1/academy/auth/register";
+      const userEmail = String(authForm.email || "").trim();
+
+      const payload = authTab === "signin" 
+        ? { email: userEmail, username: userEmail, password: authForm.password } 
+        : { 
+            fullName: String(authForm.name || "").trim(), 
+            username: userEmail, 
+            email: userEmail, 
+            password: authForm.password,
+            confirmPassword: authForm.confirm 
+          };
+
+      console.log("Auth endpoint:", endpoint, "payload:", payload);
+      const res = await fetchData(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (res && res.user) {
+        const u = res.user;
+        const normalizedUser = {
+          ...u,
+          name: String(u.fullName || u.name || u.username || "Student"), 
+          email: String(u.email || u.username || "").toLowerCase().trim(), 
+          role: String(u.role || "student").toLowerCase().trim(), 
+        };
+        console.log("[Academy Auth] Normalization:", normalizedUser);
+
+        if (typeof academy.signInFromServer === "function") {
+          await academy.signInFromServer(normalizedUser, res.token);
+        } else {
+          // Fallback to legacy signIn(email, password) using email only to avoid calling .toLowerCase on an object
+          await academy.signIn(String(normalizedUser.email || ""), "");
+        }
+        toast.success(authTab === "signin" ? "Welcome back!" : "Account created successfully");
       }
     } catch (err: any) {
-      toast.error(err.message || "Authentication failed");
+      console.error("Sign-in/Sign-up error (submitAuth):", err); // Log error to console
+      toast.error(err.message || "Authentication server error"); // Display toast for user
     } finally {
       setAuthBusy(false);
     }
   }
 
-  function confirmBuy() {
+  async function confirmBuy() {
     if (!selected) return;
-    const pages = [
-      `Welcome to ${selected.title}.\n\nThis course was designed to take you from concept to confident hands-on practice. Use Next and Back below to move through pages — your progress saves automatically.`,
-      `Module 1 — Foundations\n\nWe start with the fundamentals of ${selected.level.toLowerCase()} practice: lab safety, instrument familiarity, and the scientific reasoning behind each step you'll perform.`,
-      `Module 2 — Hands-on Workflow\n\nWalk through the full workflow end-to-end. You'll see annotated photos, common pitfalls, and the exact protocols our scientists use in production work.`,
-      `Module 3 — Quality & Troubleshooting\n\nLearn to read your own results, spot contamination signatures, and recover from the most common failures without restarting from scratch.`,
-      `Practical session\n\nAttend the in-person practical on the date you chose. Bring your reusable PPE; everything else is provided. A certificate is issued on completion.`,
-    ];
-    const pageImages = selected.img ? [selected.img, selected.img, selected.img, selected.img, selected.img] : undefined;
-    academy.enroll({
-      courseId: selected.id,
-      title: selected.title,
-      cover: selected.img,
-      price: selected.price,
-      pages,
-      pageImages,
-    });
-    if (practical) academy.setPracticalDate(selected.id, practical);
-    setSelected(null);
+    try {
+      const res = await fetchData("/api/v1/academy/enroll", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          courseId: selected.id, 
+          practicalDate: practical || null 
+        })
+      });
+
+      if (res) {
+        academy.enroll(res); // Update local store with backend response
+        toast.success("Enrollment confirmed");
+        setSelected(null);
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Could not process enrollment");
+    }
   }
 
   async function submitMini(e: React.FormEvent) {
     e.preventDefault();
+    if (miniTab === "signup" && miniForm.password !== miniForm.confirm) {
+      return toast.error("Passwords do not match");
+    }
+
     setMiniBusy(true);
     try {
-      if (miniTab === "signin") {
-        await academy.signIn(miniForm.email, miniForm.password);
-      } else {
-        if (!miniForm.name.trim()) throw new Error("Name required");
-        if (miniForm.password.length < 6) throw new Error("Password must be 6+ chars");
-        if (miniForm.password !== miniForm.confirm) throw new Error("Passwords do not match");
-        await academy.signUp({ name: miniForm.name, email: miniForm.email, password: miniForm.password });
+      const endpoint = miniTab === "signin" ? "/api/v1/academy/auth/login" : "/api/v1/academy/auth/register";
+      const userEmail = String(miniForm.email || "").trim();
+
+      const payload = miniTab === "signin" 
+        ? { email: userEmail, username: userEmail, password: miniForm.password } 
+        : { 
+            fullName: String(miniForm.name || "").trim(), 
+            username: userEmail, 
+            email: userEmail, 
+            password: miniForm.password,
+            confirmPassword: miniForm.confirm 
+          };
+
+      const res = await fetchData(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      if (res && res.user) {
+        const u = res.user;
+        const normalizedUser = {
+          ...u,
+          name: String(u.fullName || u.name || u.username || "Student"), 
+          email: String(u.email || u.username || "").toLowerCase().trim(), 
+          role: String(u.role || "student").toLowerCase().trim(), 
+        };
+        console.log("[Academy Mini Auth] Normalization:", normalizedUser);
+
+        if (typeof academy.signInFromServer === "function") {
+          await academy.signInFromServer(normalizedUser, res.token);
+        } else {
+          await academy.signIn(String(normalizedUser.email || ""), "");
+        }
+        navigate({ to: "/academy/dashboard" });
       }
-      navigate({ to: "/academy/dashboard" });
     } catch (err: any) {
-      toast.error(err.message || "Authentication failed");
+      console.error("Sign-in/Sign-up error (submitMini):", err); // Log error to console
+      toast.error(err.message || "Authentication failed"); // Display toast for user
     } finally {
       setMiniBusy(false);
     }
@@ -142,7 +230,7 @@ function AcademyPage() {
           <div className="p-8 bg-gradient-to-br from-brand/10 via-transparent to-accent-cyan/10">
             <span className="text-xs uppercase tracking-[0.2em] text-brand font-semibold">Your Mini Dashboard</span>
             <h2 className="mt-2 font-display text-2xl sm:text-3xl font-extrabold leading-tight">
-              {academy.user ? `Welcome back, ${academy.user.name.split(" ")[0]}.` : "Sign in to your Academy"}
+              {academy.user ? `Welcome back, ${(academy.user.name || "").split(" ")[0] || "Student"}.` : "Sign in to your Academy"}
             </h2>
             <p className="mt-3 text-sm text-muted-foreground max-w-md">
               {academy.user
@@ -190,7 +278,7 @@ function AcademyPage() {
             {academy.user ? (
               <div className="h-full flex flex-col justify-center">
                 <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl gradient-brand text-brand-foreground font-bold text-lg">
-                  {academy.user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                  {(academy.user.name || "User").split(" ").map((n) => n[0]).slice(0, 2).join("")}
                 </div>
                 <div className="mt-4 font-display text-lg font-bold">{academy.user.name}</div>
                 <div className="text-sm text-muted-foreground">{academy.user.email}</div>
@@ -275,11 +363,11 @@ function AcademyPage() {
                         <div className="flex items-center gap-1 text-amber-500 text-sm font-medium">
                           <Star className="h-4 w-4 fill-current" /> {c.rating.toFixed(1)}
                         </div>
-                        <div className="font-display text-xl font-bold">${c.price}</div>
+                        <div className="font-display text-xl font-bold">₦{Number(c.price).toLocaleString()}</div>
                       </div>
-                      <Link to="/contact" className="mt-4 w-full h-10 rounded-xl gradient-brand text-brand-foreground text-sm font-semibold shadow-soft hover:scale-[1.02] transition-transform inline-flex items-center justify-center">
+                      <button onClick={() => openBuy(c)} className="mt-4 w-full h-10 rounded-xl gradient-brand text-brand-foreground text-sm font-semibold shadow-soft hover:scale-[1.02] transition-transform inline-flex items-center justify-center">
                         Enroll now
-                      </Link>
+                      </button>
                       <button onClick={() => openBuy(c)} className="mt-2 w-full h-10 rounded-xl border border-border text-sm font-semibold hover:bg-accent transition-colors inline-flex items-center justify-center gap-2">
                         {academy.isEnrolled(c.id) ? (<><BookOpen className="h-4 w-4" /> Open in library</>) : (<><Lock className="h-4 w-4" /> Buy & read</>)}
                       </button>
@@ -372,12 +460,12 @@ function AcademyPage() {
                   <div className="font-display font-bold text-lg shrink-0">₦{Number(selected.price).toLocaleString()}</div>
                 </div>
 
-                {practicalDates.length > 0 && (
+                {dbDates.length > 0 && (
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground">Pick a practical date</label>
                     <select value={practical} onChange={(e) => setPractical(e.target.value)} className="mt-1 w-full h-11 px-3 rounded-xl bg-secondary text-sm border border-transparent focus:border-brand focus:outline-none">
                       <option value="">No preference</option>
-                      {practicalDates.map((d) => (
+                      {dbDates.map((d) => (
                         <option key={d} value={d}>{new Date(d).toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</option>
                       ))}
                     </select>

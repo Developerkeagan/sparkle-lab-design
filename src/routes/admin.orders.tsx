@@ -27,7 +27,7 @@ function AdminOrders() {
 
   const loadOrders = useCallback(async () => {
     try {
-      const result = await fetchData("/api/v1/payments");
+      const result = await fetchData("/api/v1/payments/orders-ledger"); // Corrected path
       if (result) setOrders(result.map((o: any) => ({
         id: o._id,
         email: o.email,
@@ -43,7 +43,7 @@ function AdminOrders() {
 
   async function updateStatus(id: string, next: string) {
     try {
-      await fetchData(`/api/v1/payments/${id}/status`, {
+      await fetchData(`/api/v1/payments/orders/${id}/status-update`, { // Corrected path
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: next })
@@ -54,8 +54,8 @@ function AdminOrders() {
   }
 
   const filtered = orders.filter((o) =>
-    (filter === "All" || o.status?.toLowerCase() === filter.toLowerCase()) &&
-    (o.id.toLowerCase().includes(q.toLowerCase()) || o.email.toLowerCase().includes(q.toLowerCase()))
+    (filter === "All" || String(o.status || "").toLowerCase() === filter.toLowerCase()) &&
+    (String(o.id || "").toLowerCase().includes(q.toLowerCase()) || String(o.email || "").toLowerCase().includes(q.toLowerCase()))
   );
 
   return (
@@ -119,6 +119,6 @@ function StatusPill({ s }: { s: string }) {
     refunded: "bg-red-500/10 text-red-500",
     cancelled: "bg-muted text-muted-foreground",
   };
-  const status = s?.toLowerCase() || "pending";
+  const status = String(s || "").toLowerCase().trim() || "pending";
   return <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${map[status] || "bg-muted text-muted-foreground"}`}>{status}</span>;
 }

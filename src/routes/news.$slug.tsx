@@ -35,7 +35,7 @@ function NewsDetail() {
           {post.cover && <img src={post.cover} alt={post.title} className="mt-8 rounded-2xl w-full aspect-[16/9] object-cover" />}
           <p className="mt-8 text-lg md:text-xl text-foreground/80 leading-relaxed font-medium">{post.excerpt}</p>
           <div className="mt-6 space-y-5 text-base md:text-lg text-foreground/90 leading-[1.8]">
-            {post.body.split(/\n\s*\n/).map((para, i) => (
+            {(post.body || "").split(/\n\s*\n/).map((para, i) => (
               <p key={i} className="whitespace-pre-line">{para}</p>
             ))}
           </div>

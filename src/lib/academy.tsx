@@ -26,6 +26,7 @@ interface AcademyValue {
   setPracticalDate: (courseId: string, iso: string) => void;
   progressPct: (courseId: string) => number;
   getEnrollment: (courseId: string) => Enrollment | undefined;
+  signInFromServer: (user: AcademyUser, token?: string) => Promise<AcademyUser>;
 }
 
 const Ctx = createContext<AcademyValue | null>(null);
@@ -112,8 +113,22 @@ export function AcademyProvider({ children }: { children: ReactNode }) {
 
   const getEnrollment = useCallback((id: string) => enrollments.find((e) => e.courseId === id), [enrollments]);
 
+  const signInFromServer = useCallback(async (serverUser: AcademyUser, token?: string) => {
+    const next: AcademyUser = {
+      email: String(serverUser.email || serverUser.username || "").toLowerCase().trim(),
+      name: String(serverUser.name || serverUser.fullName || serverUser.username || "Student"),
+      // include any other fields your app expects, e.g. role
+      role: String((serverUser as any).role || "student").toLowerCase()
+    } as AcademyUser;
+    try { localStorage.setItem(USER_KEY, JSON.stringify(next)); } catch {}
+    setUser(next);
+    // Optionally persist token if your app uses it (e.g. localStorage.setItem(TOKEN_KEY, token))
+    toast.success(`Welcome back, ${next.name.split(" ")[0] || "Student"}`);
+    return next;
+  }, []);
+
   return (
-    <Ctx.Provider value={{ user, enrollments, signIn, signUp, signOut, enroll, isEnrolled, setPage, setPracticalDate, progressPct, getEnrollment }}>
+    <Ctx.Provider value={{ user, enrollments, signIn, signUp, signOut, enroll, isEnrolled, setPage, setPracticalDate, progressPct, getEnrollment, signInFromServer }}>
       {children}
     </Ctx.Provider>
   );

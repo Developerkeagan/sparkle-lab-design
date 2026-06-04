@@ -59,7 +59,7 @@ function AcademyDashboard() {
         <div className="flex-1" />
         <Link to="/academy" className="hidden sm:inline-flex text-xs text-muted-foreground hover:text-foreground">Back to Academy</Link>
         <div className="h-9 w-9 rounded-full gradient-brand text-brand-foreground grid place-items-center text-xs font-bold">
-          {user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+          {(user.name || "User").split(" ").map((n) => n[0]).slice(0, 2).join("")}
         </div>
       </header>
 
@@ -100,7 +100,7 @@ function AcademyDashboard() {
         {/* Main */}
         <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
           {tab === "overview" && (
-            <Section title="Welcome back" subtitle={`Pick up where you left off, ${user.name.split(" ")[0]}.`}>
+            <Section title="Welcome back" subtitle={`Pick up where you left off, ${(user.name || "").split(" ")[0] || "Student"}.`}>
               <div className="grid sm:grid-cols-3 gap-4">
                 <Stat I={BookOpen} k={String(enrollments.length)} v="Courses owned" />
                 <Stat I={Award} k={`${totalProgress}%`} v="Average progress" />
@@ -169,7 +169,7 @@ function AcademyDashboard() {
               <div className="rounded-2xl bg-card border border-border p-6 max-w-xl">
                 <div className="flex items-center gap-4">
                   <div className="h-16 w-16 rounded-full gradient-brand text-brand-foreground grid place-items-center text-xl font-bold">
-                    {user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                    {(user.name || "User").split(" ").map((n) => n[0]).slice(0, 2).join("")}
                   </div>
                   <div>
                     <div className="font-display font-bold text-lg">{user.name}</div>

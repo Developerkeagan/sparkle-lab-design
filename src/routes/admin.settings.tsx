@@ -12,8 +12,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 export const Route = createFileRoute("/admin/settings")({ component: SettingsPage });
 
 function SettingsPage() {
-  const { practicalDates, addPracticalDate, removePracticalDate } = useSiteContent();
   const [calOpen, setCalOpen] = useState(false);
+  const [dbDates, setDbDates] = useState<string[]>([]);
   const [form, setForm] = useState<Record<string, string>>({
     siteName: "",
     tagline: "",
@@ -37,6 +37,9 @@ function SettingsPage() {
               updated.phone = item.value.phone || "";
               updated.email = item.value.email || "";
               updated.workingHours = item.value.workingHours || "";
+            }
+            if (item.key === "academy_practical_dates") {
+              setDbDates(item.value || []);
             }
             // Map hero_home to Site Name and Tagline
             if (item.key === "hero_home" && typeof item.value === "object") {
@@ -88,6 +91,28 @@ function SettingsPage() {
     }
   }
 
+  async function handleAddDate(date: string) {
+    try {
+      await fetchData("/api/v1/content/settings/practical-dates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ targetDateStringValue: date })
+      });
+      loadSettings();
+    } catch (err) {}
+  }
+
+  async function handleRemoveDate(date: string) {
+    try {
+      await fetchData("/api/v1/content/settings/practical-dates/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lookupDateStringValue: date })
+      });
+      loadSettings();
+    } catch (err) {}
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader 
@@ -121,7 +146,7 @@ function SettingsPage() {
                   mode="single"
                   onSelect={(d) => {
                     if (d) {
-                      addPracticalDate(d.toISOString().slice(0, 10));
+                      handleAddDate(d.toISOString().slice(0, 10));
                       setCalOpen(false);
                       toast.success("Practical date added");
                     }
@@ -132,15 +157,14 @@ function SettingsPage() {
             </Popover>
           </div>
           <div className="flex flex-wrap gap-2 min-h-[3rem]">
-            {practicalDates.length === 0 && <div className="text-xs text-muted-foreground">No dates yet. Add one above.</div>}
-            {practicalDates.map((d) => (
+            {dbDates.length === 0 && <div className="text-xs text-muted-foreground">No dates yet. Add one above.</div>}
+            {dbDates.map((d) => (
               <span key={d} className="inline-flex items-center gap-1.5 pl-3 pr-1.5 h-8 rounded-full bg-secondary text-xs font-medium">
                 {new Date(d).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })}
-                <button onClick={() => removePracticalDate(d)} className="h-6 w-6 grid place-items-center rounded-full hover:bg-background"><X className="h-3.5 w-3.5" /></button>
+                <button onClick={() => handleRemoveDate(d)} className="h-6 w-6 grid place-items-center rounded-full hover:bg-background"><X className="h-3.5 w-3.5" /></button>
               </span>
             ))}
           </div>
-          <GhostBtn onClick={() => practicalDates.forEach((d) => removePracticalDate(d))}>Clear all</GhostBtn>
         </Card>
       </div>
     </div>

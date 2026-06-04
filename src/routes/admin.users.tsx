@@ -78,7 +78,7 @@ export const Route = createFileRoute("/admin/users")({ component: () => {
       <div className="overflow-x-auto pb-48">
         <table className="w-full text-sm min-w-[800px]">
         <thead className="bg-muted/50 text-left text-muted-foreground text-xs uppercase"><tr><th className="px-4 py-3">User</th><th>Role</th><th>Status</th><th>Joined</th><th></th></tr></thead>
-        <tbody className="divide-y divide-border">{users.filter((u) => (u.fullName + u.email).toLowerCase().includes(q.toLowerCase())).map((u) => (
+        <tbody className="divide-y divide-border">{users.filter((u) => (String(u.fullName || "") + String(u.email || "")).toLowerCase().includes(q.toLowerCase())).map((u) => (
           <tr key={u.id} className="hover:bg-muted/40">
             <td className="px-4 py-3 flex items-center gap-3">
               <span className="h-9 w-9 rounded-full gradient-brand grid place-items-center text-brand-foreground text-xs font-bold">{u.fullName.split(" ").map((n) => n[0]).slice(0, 2).join("")}</span>
