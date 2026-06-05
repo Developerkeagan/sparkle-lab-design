@@ -72,73 +72,71 @@ function CartPage() {
           )}
         </div>
 
-        {cart.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="mx-auto h-20 w-20 rounded-full bg-secondary grid place-items-center mb-6"><ShoppingBag className="h-10 w-10 text-muted-foreground" /></div>
-            <h2 className="font-display text-3xl font-bold">Your cart is empty</h2>
-            <p className="mt-2 text-muted-foreground">Start adding lab essentials to see them here.</p>
-            <Link to="/shop" className="mt-6 inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-6 py-3 text-sm font-bold shadow-brand hover:scale-105 transition-transform">
-              Continue shopping <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        ) : (
-          <div className="grid lg:grid-cols-[1fr_360px] gap-8">
-            <div className="space-y-3">
-              {loading && products.length === 0 ? (
-                Array.from({ length: cart.length }).map((_, idx) => (
-                  <div key={idx} className="bg-card border border-border rounded-2xl p-3 sm:p-4 flex gap-4 animate-pulse">
-                    <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-xl bg-muted shrink-0" />
-                    <div className="flex-1 min-w-0 flex flex-col justify-between">
-                      <div className="h-4 bg-muted rounded w-3/4" />
-                      <div className="h-3 bg-muted rounded w-1/2 mt-1" />
-                      <div className="flex items-center justify-between gap-3 pt-3">
-                        <div className="h-8 w-24 bg-muted rounded-full" />
-                        <div className="h-6 w-20 bg-muted rounded" />
-                        <div className="h-8 w-8 bg-muted rounded-full" />
-                      </div>
+        <div className="grid lg:grid-cols-[1fr_360px] gap-8">
+          <div className="space-y-3">
+            {loading && products.length === 0 ? (
+              Array.from({ length: Math.max(cart.length, 1) }).map((_, idx) => (
+                <div key={idx} className="bg-card border border-border rounded-2xl p-3 sm:p-4 flex gap-4 animate-pulse">
+                  <div className="h-24 w-24 sm:h-28 sm:w-28 rounded-xl bg-muted shrink-0" />
+                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    <div className="h-4 bg-muted rounded w-3/4" />
+                    <div className="h-3 bg-muted rounded w-1/2 mt-1" />
+                    <div className="flex items-center justify-between gap-3 pt-3">
+                      <div className="h-8 w-24 bg-muted rounded-full" />
+                      <div className="h-6 w-20 bg-muted rounded" />
+                      <div className="h-8 w-8 bg-muted rounded-full" />
                     </div>
                   </div>
-                ))
-              ) : (
-                items.map((it) => (
-                  <div key={it.id} className="bg-card border border-border rounded-2xl p-3 sm:p-4 flex gap-4">
-                    <Link to="/shop/product/$id" params={{ id: it.id }} className="h-24 w-24 sm:h-28 sm:w-28 rounded-xl overflow-hidden bg-secondary shrink-0">
-                      <img src={it.img} alt={it.name} className="w-full h-full object-cover" />
-                    </Link>
-                    <div className="flex-1 min-w-0 flex flex-col">
-                      <Link to="/shop/product/$id" params={{ id: it.id }} className="font-semibold text-foreground line-clamp-2 hover:text-brand">{it.name}</Link>
-                      <div className="text-xs text-muted-foreground capitalize mt-0.5">{it.category}</div>
-                      <div className="mt-auto flex items-center justify-between gap-3 pt-3">
-                        <div className="inline-flex items-center rounded-full border border-border">
-                          <button onClick={() => setQty(it.id, it.qty - 1)} className="h-8 w-8 grid place-items-center hover:bg-accent rounded-l-full"><Minus className="h-3.5 w-3.5" /></button>
-                          <span className="px-3 text-sm font-semibold tabular-nums">{it.qty}</span>
-                          <button onClick={() => setQty(it.id, it.qty + 1)} className="h-8 w-8 grid place-items-center hover:bg-accent rounded-r-full"><Plus className="h-3.5 w-3.5" /></button>
-                        </div>
-                        <div className="font-display font-bold">{fmt(it.price * it.qty)}</div>
-                        <button onClick={() => removeFromCart(it.id)} aria-label="Remove" className="h-8 w-8 grid place-items-center rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            <aside className="bg-card border border-border rounded-2xl p-6 h-fit lg:sticky lg:top-36">
-              <h3 className="font-display font-bold text-lg">Order summary</h3>
-              <div className="mt-4 space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span className="font-semibold">{fmt(cartTotal)}</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">Shipping</span><span className="font-semibold">{shipping === 0 ? "Free" : fmt(shipping)}</span></div>
-                <div className="border-t border-border pt-3 flex justify-between text-base"><span className="font-semibold">Total</span><span className="font-display font-bold text-brand">{fmt(total)}</span></div>
+                </div>
+              ))
+            ) : cart.length === 0 ? (
+              <div className="text-center py-20 bg-card border border-dashed border-border rounded-3xl">
+                <div className="mx-auto h-16 w-16 rounded-full bg-secondary grid place-items-center mb-4"><ShoppingBag className="h-8 w-8 text-muted-foreground" /></div>
+                <h2 className="font-display text-xl font-bold">Your cart is empty</h2>
+                <p className="mt-1 text-sm text-muted-foreground">Start adding lab essentials to see them here.</p>
+                <Link to="/shop" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand hover:underline">
+                  Browse products <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
-              <Link to="/shop/checkout" className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full gradient-brand text-brand-foreground px-6 py-3 text-sm font-bold shadow-brand hover:scale-[1.02] transition-transform">
-                Checkout <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link to="/shop" className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold hover:bg-accent">
-                Continue shopping
-              </Link>
-            </aside>
+            ) : (
+              items.map((it) => (
+                <div key={it.id} className="bg-card border border-border rounded-2xl p-3 sm:p-4 flex gap-4">
+                  <Link to="/shop/product/$id" params={{ id: it.id }} className="h-24 w-24 sm:h-28 sm:w-28 rounded-xl overflow-hidden bg-secondary shrink-0">
+                    <img src={it.img} alt={it.name} className="w-full h-full object-cover" />
+                  </Link>
+                  <div className="flex-1 min-w-0 flex flex-col">
+                    <Link to="/shop/product/$id" params={{ id: it.id }} className="font-semibold text-foreground line-clamp-2 hover:text-brand">{it.name}</Link>
+                    <div className="text-xs text-muted-foreground capitalize mt-0.5">{it.category}</div>
+                    <div className="mt-auto flex items-center justify-between gap-3 pt-3">
+                      <div className="inline-flex items-center rounded-full border border-border">
+                        <button onClick={() => setQty(it.id, it.qty - 1)} className="h-8 w-8 grid place-items-center hover:bg-accent rounded-l-full"><Minus className="h-3.5 w-3.5" /></button>
+                        <span className="px-3 text-sm font-semibold tabular-nums">{it.qty}</span>
+                        <button onClick={() => setQty(it.id, it.qty + 1)} className="h-8 w-8 grid place-items-center hover:bg-accent rounded-r-full"><Plus className="h-3.5 w-3.5" /></button>
+                      </div>
+                      <div className="font-display font-bold">{fmt(it.price * it.qty)}</div>
+                      <button onClick={() => removeFromCart(it.id)} aria-label="Remove" className="h-8 w-8 grid place-items-center rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-        )}
+
+          <aside className="bg-card border border-border rounded-2xl p-6 h-fit lg:sticky lg:top-36">
+            <h3 className="font-display font-bold text-lg">Order summary</h3>
+            <div className="mt-4 space-y-2 text-sm">
+              <div className="flex justify-between"><span className="text-muted-foreground">Subtotal</span><span className="font-semibold">{fmt(cartTotal)}</span></div>
+              <div className="flex justify-between"><span className="text-muted-foreground">Shipping</span><span className="font-semibold">{shipping === 0 ? "Free" : fmt(shipping)}</span></div>
+              <div className="border-t border-border pt-3 flex justify-between text-base"><span className="font-semibold">Total</span><span className="font-display font-bold text-brand">{fmt(total)}</span></div>
+            </div>
+            <Link to="/shop/checkout" className={`mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full gradient-brand text-brand-foreground px-6 py-3 text-sm font-bold shadow-brand hover:scale-[1.02] transition-transform ${cart.length === 0 ? 'opacity-50 pointer-events-none' : ''}`}>
+              Checkout <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/shop" className="mt-2 w-full inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-3 text-sm font-semibold hover:bg-accent">
+              Continue shopping
+            </Link>
+          </aside>
+        </div>
       </div>
     </section>
   );
