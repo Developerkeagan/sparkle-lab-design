@@ -87,8 +87,9 @@ function AdminAcademy() {
     formData.append("description", description);
     
     // Map syllabus text to the required Array of Strings
+    // Per README 4.5: outline (JSON Formatted Text Array String)
     const outlineArray = description.split('\n').map(s => s.trim()).filter(Boolean);
-    outlineArray.forEach(line => formData.append("outline", line));
+    formData.append("outline", JSON.stringify(outlineArray));
 
     if (cover) {
       if (typeof cover !== "string") formData.append("image", cover);

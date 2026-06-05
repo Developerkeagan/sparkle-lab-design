@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect, useCallback } from "react";
 import { PageHero } from "@/components/site/PageHero";
 import { Footer } from "@/components/site/Footer";
 import { useReveal } from "@/hooks/use-reveal";
-import { Calendar, ArrowRight } from "lucide-react";
-import { useSiteContent } from "@/lib/site-content";
+import { Calendar, ArrowRight, Loader2 } from "lucide-react";
+import useFetch from "@/hooks/useFetch";
 
 export const Route = createFileRoute("/news")({
   component: NewsPage,
@@ -12,13 +13,35 @@ export const Route = createFileRoute("/news")({
 
 function NewsPage() {
   useReveal();
-  const { news } = useSiteContent();
+  const [items, setItems] = useState<any[]>([]);
+  const { loading, fetchData } = useFetch();
+
+  const loadNews = useCallback(async () => {
+    try {
+      const res = await fetchData("/api/v1/news");
+      if (res) {
+        setItems(res.map((n: any) => ({
+          id: n._id,
+          title: n.headline || n.title,
+          slug: n.slug,
+          tag: n.tag,
+          excerpt: n.description || n.excerpt || "",
+          cover: n.image,
+          date: new Date(n.createdAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
+        })));
+      }
+    } catch (err) {}
+  }, [fetchData]);
+
+  useEffect(() => { loadNews(); }, [loadNews]);
+
   return (
     <div className="min-h-screen bg-background">
       <PageHero eyebrow="News" title={<>What's <span className="gradient-text">happening</span></>} subtitle="Stories, events, training cohorts and industry updates from our team." />
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 relative min-h-[400px]">
+        {loading && items.length === 0 && <div className="absolute inset-0 flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}
         <div className="mx-auto max-w-6xl grid gap-6 md:grid-cols-2">
-          {news.map((n) => (
+          {items.map((n) => (
             <Link
               key={n.id}
               to="/news/$slug"
@@ -41,7 +64,7 @@ function NewsPage() {
               </div>
             </Link>
           ))}
-          {news.length === 0 && <p className="text-center text-muted-foreground col-span-full py-12">No news yet.</p>}
+          {!loading && items.length === 0 && <p className="text-center text-muted-foreground col-span-full py-12">No news yet.</p>}
         </div>
       </section>
       <Footer />

@@ -1,10 +1,41 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 import logo from "@/assets/logo.jpg";
-import { useSiteContent } from "@/lib/site-content";
+import { useState, useEffect, useCallback } from "react";
+import useFetch from "@/hooks/useFetch";
 
 export function Footer() {
-  const { contact } = useSiteContent();
+  const { fetchData } = useFetch();
+  const [contact, setContact] = useState({
+    address: "Applied Biotech Hub, Nigeria",
+    phone: "+234 000 000 0000",
+    email: "info@appliedbiotech.ng",
+    facebook: "",
+    twitter: "",
+    linkedin: "",
+    instagram: "",
+  });
+
+  const loadContact = useCallback(async () => {
+    try {
+      const res = await fetchData("/api/v1/content");
+      if (res && Array.isArray(res)) {
+        const data = res.find((i: any) => i.key === "contact_info");
+        if (data?.value) setContact({
+          address: data.value.address || "Applied Biotech Hub, Nigeria",
+          phone: data.value.phone || "+234 000 000 0000",
+          email: data.value.email || "info@appliedbiotech.ng",
+          facebook: data.value.facebookUrl || "",
+          twitter: data.value.twitterUrl || "",
+          linkedin: data.value.linkedinUrl || "",
+          instagram: data.value.instagramUrl || "",
+        });
+      }
+    } catch (err) {}
+  }, [fetchData]);
+
+  useEffect(() => { loadContact(); }, [loadContact]);
+
   const socials: { I: typeof Facebook; href: string }[] = [
     { I: Facebook, href: contact.facebook },
     { I: Twitter, href: contact.twitter },

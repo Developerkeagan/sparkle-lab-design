@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { PageHero } from "@/components/site/PageHero";
 import { Footer } from "@/components/site/Footer";
 import { useReveal } from "@/hooks/use-reveal";
@@ -21,32 +21,58 @@ function RentALabPage() {
   useReveal();
   const { loading, fetchData } = useFetch();
   const [done, setDone] = useState(false);
+  const [info, setInfo] = useState({
+    email: "info@appliedbiotech.ng"
+  });
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const loadContact = useCallback(async () => {
+    try {
+      const res = await fetchData("/api/v1/content");
+      if (res && Array.isArray(res)) {
+        const data = res.find((i: any) => i.key === "contact_info");
+        if (data?.value?.email) setInfo({ email: data.value.email });
+      }
+    } catch (err) {}
+  }, [fetchData]);
+
+  useEffect(() => { loadContact(); }, [loadContact]);
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    const payload = {
-      fullName: fd.get("name"),
-      email: fd.get("email"),
-      organization: fd.get("org"),
-      researchScope: fd.get("scope"),
-      duration: fd.get("duration"),
-      reportingSupport: fd.get("reporting") === "on",
-      message: fd.get("message"),
-      subject: "Rent-A-Lab enquiry",
-    };
-    try {
-      const res = await fetchData("/api/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (res) {
-        toast.success("Request sent — the lab team will reach out.");
-        setDone(true);
-        (e.target as HTMLFormElement).reset();
-      }
-    } catch { toast.error("Failed to send request"); }
+    const name = fd.get("name");
+    const email = fd.get("email");
+    const org = fd.get("org") || "N/A";
+    const scope = fd.get("scope");
+    const duration = fd.get("duration");
+    const reporting = fd.get("reporting") === "on" ? "Yes" : "No";
+    const notes = fd.get("message") || "None";
+
+    // Professional message arrangement for the Lab Management team
+    const bodyText = `APPLIED BIOTECH INTERNATIONAL - RENT-A-LAB REQUEST\n` +
+      `==================================================\n\n` +
+      `STUDENT / RESEARCHER DETAILS\n` +
+      `----------------------------\n` +
+      `Full Name:    ${name}\n` +
+      `Email:        ${email}\n` +
+      `Organization: ${org}\n\n` +
+      `PROJECT SPECIFICATIONS\n` +
+      `----------------------------\n` +
+      `Research Scope:    ${scope}\n` +
+      `Intended Duration: ${duration}\n` +
+      `Reporting Support: ${reporting}\n\n` +
+      `ADDITIONAL NOTES\n` +
+      `----------------------------\n` +
+      `${notes}\n\n` +
+      `==================================================\n` +
+      `Submission Source: ${window.location.origin}/rent-a-lab`;
+
+    const subject = `Rent-A-Lab Enquiry: ${name} (${org})`;
+    const mailtoUrl = `mailto:${info.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}`;
+    window.location.href = mailtoUrl;
+    
+    toast.success("Opening your email client...");
+    setDone(true);
   }
 
   return (

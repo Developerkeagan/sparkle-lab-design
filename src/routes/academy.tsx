@@ -316,7 +316,7 @@ function AcademyPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
             { icon: GraduationCap, k: `${courses.length}+`, v: "Certified courses" },
-            { icon: Users, k: `${totalStudents.toLocaleString()}+`, v: "Students trained" },
+            { icon: Users, k: "1000+", v: "Students trained" },
             { icon: Award, k: "94%", v: "Completion rate" },
             { icon: BookOpen, k: "30+", v: "Expert instructors" },
           ].map((s) => (
@@ -369,7 +369,7 @@ function AcademyPage() {
                         Enroll now
                       </button>
                       <button onClick={() => openBuy(c)} className="mt-2 w-full h-10 rounded-xl border border-border text-sm font-semibold hover:bg-accent transition-colors inline-flex items-center justify-center gap-2">
-                        {academy.isEnrolled(c.id) ? (<><BookOpen className="h-4 w-4" /> Open in library</>) : (<><Lock className="h-4 w-4" /> Buy & read</>)}
+                        {academy.isEnrolled(c.id) ? (<><BookOpen className="h-4 w-4" /> Open in library</>) : (<><Lock className="h-4 w-4" /> Purchase</>)}
                       </button>
                     </div>
                   </article>

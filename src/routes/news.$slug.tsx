@@ -1,16 +1,21 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Footer } from "@/components/site/Footer";
-import { useSiteContent } from "@/lib/site-content";
-import { ArrowLeft, Calendar } from "lucide-react";
+import { Navbar } from "@/components/site/Navbar";
+import { ArrowLeft, Calendar, Loader2 } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import useFetch from "@/hooks/useFetch";
 
 export const Route = createFileRoute("/news/$slug")({
   component: NewsDetail,
   head: ({ params }) => ({ meta: [{ title: `${params?.slug ?? "Article"} · Applied Biotech News` }] }),
   notFoundComponent: () => (
-    <div className="min-h-screen grid place-items-center p-10 text-center">
-      <div>
-        <h1 className="font-display text-3xl font-bold">Article not found</h1>
-        <Link to="/news" className="mt-4 inline-block text-brand font-semibold">← Back to news</Link>
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="grid place-items-center p-10 text-center pt-32">
+        <div>
+          <h1 className="font-display text-3xl font-bold">Article not found</h1>
+          <Link to="/news" className="mt-4 inline-block text-brand font-semibold">← Back to news</Link>
+        </div>
       </div>
     </div>
   ),
@@ -18,13 +23,59 @@ export const Route = createFileRoute("/news/$slug")({
 
 function NewsDetail() {
   const { slug } = Route.useParams();
-  const { news } = useSiteContent();
-  const post = news.find((n) => n.slug === slug);
-  if (!post) throw notFound();
-  const others = news.filter((n) => n.id !== post.id).slice(0, 3);
+  const [post, setPost] = useState<any>(null);
+  const [others, setOthers] = useState<any[]>([]);
+  const { loading, fetchData } = useFetch();
+
+  const loadData = useCallback(async () => {
+    try {
+      const res = await fetchData("/api/v1/news");
+      if (res) {
+        const normalized = res.map((n: any) => ({
+          id: n._id,
+          title: n.headline || n.title,
+          slug: n.slug,
+          tag: n.tag,
+          excerpt: n.description || n.excerpt || "",
+          // Align with backend rich text format or simple string
+          body: typeof n.newsBody === 'object' ? n.newsBody?.sections?.[0]?.content : n.newsBody || "",
+          cover: n.image,
+          date: new Date(n.createdAt).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" })
+        }));
+        
+        const found = normalized.find((n: any) => n.slug === slug);
+        if (found) {
+          setPost(found);
+          setOthers(normalized.filter((n: any) => n.id !== found.id).slice(0, 3));
+        } else {
+          setPost("NOT_FOUND");
+        }
+      }
+    } catch (err) {
+      setPost("NOT_FOUND");
+    }
+  }, [fetchData, slug]);
+
+  useEffect(() => { loadData(); }, [loadData]);
+
+  if (loading && !post) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (post === "NOT_FOUND" || (!post && !loading)) {
+    throw notFound();
+  }
+
+  if (!post || post === "ERROR") return null;
+
   return (
     <div className="min-h-screen bg-background">
-      <article className="px-4 sm:px-6 lg:px-8 py-12">
+      <Navbar />
+      <article className="px-4 sm:px-6 lg:px-8 pt-28 pb-12">
         <div className="mx-auto max-w-3xl">
           <Link to="/news" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6"><ArrowLeft className="h-4 w-4" /> All news</Link>
           <div className="flex items-center gap-3 text-xs">
@@ -35,7 +86,7 @@ function NewsDetail() {
           {post.cover && <img src={post.cover} alt={post.title} className="mt-8 rounded-2xl w-full aspect-[16/9] object-cover" />}
           <p className="mt-8 text-lg md:text-xl text-foreground/80 leading-relaxed font-medium">{post.excerpt}</p>
           <div className="mt-6 space-y-5 text-base md:text-lg text-foreground/90 leading-[1.8]">
-            {(post.body || "").split(/\n\s*\n/).map((para, i) => (
+            {(post.body || "").split(/\n\s*\n/).map((para: string, i: number) => (
               <p key={i} className="whitespace-pre-line">{para}</p>
             ))}
           </div>

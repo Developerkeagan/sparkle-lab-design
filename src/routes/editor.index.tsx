@@ -1,18 +1,52 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState, useEffect, useCallback } from "react";
 import { PageHeader } from "@/components/dashboard/DashboardShell";
 import { Card } from "@/components/dashboard/widgets";
 import { useAuth } from "@/lib/auth";
-import { GraduationCap, ShoppingBag, Layers, FileText, ArrowRight, Edit3 } from "lucide-react";
+import { GraduationCap, ShoppingBag, Layers, FileText, ArrowRight, Loader2 } from "lucide-react";
+import useFetch from "@/hooks/useFetch";
 
 export const Route = createFileRoute("/editor/")({ component: EditorOverview });
 
 function EditorOverview() {
   const { user } = useAuth();
+  const { loading, fetchData } = useFetch();
+  const [stats, setStats] = useState({
+    courses: 0,
+    products: 0,
+    collections: 0,
+    drafts: 4
+  });
+
+  const loadStats = useCallback(async () => {
+    const fetchSafe = async (url: string) => {
+      try { return await fetchData(url); } catch { return null; }
+    };
+
+    const [courses, products, collections] = await Promise.all([
+      fetchSafe("/api/v1/academy"),
+      fetchSafe("/api/v1/shop/products"),
+      fetchSafe("/api/v1/collections")
+    ]);
+
+    setStats({
+      courses: courses?.length || 0,
+      products: products?.length || 0,
+      collections: collections?.length || 0,
+      drafts: 4
+    });
+  }, [fetchData]);
+
+  useEffect(() => { loadStats(); }, [loadStats]);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {loading && stats.courses === 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/60 backdrop-blur-sm"><Loader2 className="h-10 w-10 animate-spin text-primary" /></div>
+      )}
       <PageHeader title={`Hello, ${(user?.name || "").split(" ")[0] || "Editor"}`} subtitle="Pick up where you left off — your drafts and recent edits are below." />
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[{ i: GraduationCap, l: "Courses managed", v: "12" }, { i: ShoppingBag, l: "Products edited", v: "48" }, { i: Layers, l: "Collections", v: "6" }, { i: FileText, l: "Drafts pending", v: "4" }].map((s) => (
+        {[{ i: GraduationCap, l: "Courses managed", v: stats.courses }, { i: ShoppingBag, l: "Products edited", v: stats.products }, { i: Layers, l: "Collections", v: stats.collections }, { i: FileText, l: "Drafts pending", v: stats.drafts }].map((s) => (
           <Card key={s.l} className="p-5"><span className="h-10 w-10 rounded-xl bg-primary/10 text-primary grid place-items-center"><s.i className="h-5 w-5" /></span><div className="mt-3 font-display text-2xl font-bold">{s.v}</div><div className="text-xs text-muted-foreground">{s.l}</div></Card>
         ))}
       </div>

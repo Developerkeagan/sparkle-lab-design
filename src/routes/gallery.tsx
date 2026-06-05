@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect, useCallback } from "react";
 import { PageHero } from "@/components/site/PageHero";
 import { Footer } from "@/components/site/Footer";
 import { useReveal } from "@/hooks/use-reveal";
-import { useSiteContent } from "@/lib/site-content";
+import { Loader2 } from "lucide-react";
+import useFetch from "@/hooks/useFetch";
 
 export const Route = createFileRoute("/gallery")({
   component: GalleryPage,
@@ -11,24 +13,43 @@ export const Route = createFileRoute("/gallery")({
 
 function GalleryPage() {
   useReveal();
-  const { gallery } = useSiteContent();
+  const [items, setItems] = useState<any[]>([]);
+  const { loading, fetchData } = useFetch();
+
+  const loadGallery = useCallback(async () => {
+    try {
+      const res = await fetchData("/api/v1/gallery");
+      if (res) {
+        setItems(res.map((i: any) => ({
+          id: i._id,
+          url: i.url,
+          name: i.name || "Untitled",
+          description: i.description || "",
+        })));
+      }
+    } catch (err) {}
+  }, [fetchData]);
+
+  useEffect(() => { loadGallery(); }, [loadGallery]);
+
   return (
     <div className="min-h-screen bg-background">
       <PageHero eyebrow="Gallery" title={<>Inside our <span className="gradient-text">work</span></>} subtitle="Moments from the lab, the field and the classroom." />
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 relative min-h-[400px]">
+        {loading && items.length === 0 && <div className="absolute inset-0 flex items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>}
         <div className="mx-auto max-w-7xl grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {gallery.map((g) => (
+          {items.map((g) => (
             <article key={g.id} className="reveal group rounded-2xl bg-card border border-border overflow-hidden shadow-soft hover:shadow-brand transition-all hover:-translate-y-1">
               <div className="relative aspect-[4/3] overflow-hidden">
-                <img src={g.url} alt={g.name ?? g.caption ?? ""} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                <img src={g.url} alt={g.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
               </div>
               <div className="p-5">
-                <h3 className="font-display font-bold text-lg leading-snug">{g.name || "Untitled"}</h3>
+                <h3 className="font-display font-bold text-lg leading-snug">{g.name}</h3>
                 {g.description && <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{g.description}</p>}
               </div>
             </article>
           ))}
-          {gallery.length === 0 && <p className="col-span-full text-center text-muted-foreground py-12">No photos uploaded yet.</p>}
+          {!loading && items.length === 0 && <p className="col-span-full text-center text-muted-foreground py-12">No photos uploaded yet.</p>}
         </div>
       </section>
       <Footer />

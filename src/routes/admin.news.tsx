@@ -52,44 +52,30 @@ function NewsAdmin() {
 
   async function handleSave() {
     if (!editing.title.trim()) return toast.error("Title is required");
+    if (!editing.body.trim()) return toast.error("Article content is required");
     
     try {
-      let imageUrl = editing.cover;
+      const formData = new FormData();
+      
+      // Aligning with Backend README Section 4.6: Multipart Fields Matrix
+      formData.append("title", editing.title);
+      formData.append("tag", editing.tag);
+      formData.append("excerpt", editing.excerpt || "");
+      formData.append("body", editing.body);
+      
+      // Generate or use existing slug
+      const slug = editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      formData.append("slug", slug);
 
-      // 1. Handle Image Upload via Gallery if a new file is selected
+      // Handle binary asset if a new file was selected
       if (coverFile && typeof coverFile !== "string") {
-        const imgData = new FormData();
-        imgData.append("file", coverFile);
-        const uploadRes = await fetchData("/api/v1/gallery/upload", {
-          method: "POST",
-          body: imgData
-        });
-        if (uploadRes && uploadRes.data?.url) {
-          imageUrl = uploadRes.data.url;
-        }
+        formData.append("coverImage", coverFile);
       }
 
-      // 2. Prepare JSON payload according to backend specification 4.6 and Section 3
-      const payload = {
-        title: editing.title,
-        headline: editing.title, // Required by backend
-        description: editing.excerpt || editing.title, // Required by backend (mapped from excerpt)
-        tag: editing.tag,
-        slug: editing.slug || editing.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
-        image: imageUrl,
-        newsBody: {
-          sections: [
-            { type: "paragraph", content: editing.body }
-          ]
-        }
-      };
-
       const url = editing.id ? `/api/v1/news/${editing.id}` : "/api/v1/news";
-      await fetchData(url, { 
-        method: editing.id ? "PUT" : "POST", 
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload) 
-      });
+      const method = editing.id ? "PUT" : "POST";
+      
+      await fetchData(url, { method, body: formData });
 
       toast.success(editing.id ? "Article updated" : "Article published");
       setOpen(false);

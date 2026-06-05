@@ -50,42 +50,20 @@ function AdminGallery() {
     if (!file) return toast.error("Please select a file to upload");
     setUploading(true);
     try {
-      // 1. Upload the image to get the Cloudinary URL (server may return different shapes)
+      // Aligning with Backend README Section 4.7: Single Atomic Multipart Request
       const formData = new FormData();
-      formData.append("file", file);
-      const uploadRes = await fetchData("/api/v1/gallery/upload", {
-        method: "POST",
-        body: formData
-      });
+      formData.append("galleryImage", file);
+      formData.append("name", name || (file instanceof File ? file.name : "Media Asset"));
+      formData.append("description", description);
 
-      // Accept common response shapes from upload endpoint
-      const imageUrl =
-        uploadRes?.data?.url ||
-        uploadRes?.data?.secure_url ||
-        uploadRes?.url ||
-        uploadRes?.secure_url ||
-        (typeof uploadRes === "string" ? uploadRes : undefined);
-
-      if (!imageUrl) throw new Error("Upload succeeded but returned no URL");
-
-      // 2. Create the permanent gallery record with metadata
-      await fetchData("/api/v1/gallery", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          url: imageUrl,
-          name: name || (file instanceof File ? file.name : "Media Asset"),
-          description: description
-        })
-      });
+      await fetchData("/api/v1/gallery/upload", { method: "POST", body: formData });
 
       toast.success("Media asset uploaded and cataloged");
       setOpen(false);
       setFile(null); setName(""); setDescription("");
-      await loadGallery();
+      loadGallery();
     } catch (err: any) {
-      console.error("Gallery upload error:", err);
-      toast.error(err?.message || "Upload failed");
+      toast.error(err.message || "Upload failed");
     } finally {
       setUploading(false);
     }

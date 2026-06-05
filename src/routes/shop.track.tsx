@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Package, Truck, CheckCircle2, Clock, Search } from "lucide-react";
+import { Package, Truck, CheckCircle2, Clock, Search, Loader2, AlertCircle } from "lucide-react";
+import useFetch from "@/hooks/useFetch";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/shop/track")({
   component: TrackPage,
@@ -23,14 +25,37 @@ const STEPS = [
 function TrackPage() {
   const [code, setCode] = useState("");
   const [status, setStatus] = useState<null | { code: string; step: number; eta: string }>(null);
+  const { loading, fetchData } = useFetch();
 
-  function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     const c = code.trim();
     if (!c) return;
-    // Deterministic mock based on the code
-    const step = Math.min(4, Math.max(0, c.length % 5));
-    setStatus({ code: c.toUpperCase(), step, eta: "2–3 business days" });
+
+    try {
+      // Per README Section 4.10: GET /api/v1/payments/track/:code
+      const res = await fetchData(`/api/v1/payments/track/${c}`);
+      if (res) {
+        const backendStatus = String(res.status || "pending").toLowerCase();
+        
+        // Mapping backend Enum range values to UI steps
+        const mapping: Record<string, number> = {
+          pending: 0,
+          paid: 0,
+          processing: 1,
+          shipped: 2,
+          out: 3, // Inferred status
+          delivered: 4,
+          failed: -1
+        };
+
+        const step = mapping[backendStatus] ?? 0;
+        setStatus({ code: c.toUpperCase(), step, eta: res.eta || "2–3 business days" });
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Tracking code not found. Please check your email.");
+      setStatus(null);
+    }
   }
 
   return (
@@ -49,10 +74,21 @@ function TrackPage() {
               className="w-full h-11 pl-9 pr-3 rounded-xl bg-secondary border border-transparent focus:border-brand focus:outline-none text-sm"
             />
           </div>
-          <button type="submit" className="h-11 px-5 rounded-xl gradient-brand text-brand-foreground text-sm font-bold">Track</button>
+          <button disabled={loading} type="submit" className="h-11 px-5 rounded-xl gradient-brand text-brand-foreground text-sm font-bold disabled:opacity-70 inline-flex items-center gap-2">
+            {loading && <Loader2 className="h-4 w-4 animate-spin" />} Track
+          </button>
         </form>
 
-        {status && (
+        {status && status.step === -1 ? (
+          <div className="mt-8 rounded-2xl border border-destructive/20 bg-destructive/5 p-8 text-center">
+            <div className="mx-auto h-12 w-12 rounded-full bg-destructive/10 text-destructive grid place-items-center mb-4">
+              <AlertCircle className="h-6 w-6" />
+            </div>
+            <h2 className="font-display text-xl font-bold">Order Problem</h2>
+            <p className="mt-2 text-muted-foreground text-sm">There was an issue processing your order (ID: {status.code}). Please contact our support team immediately.</p>
+            <a href="/contact" className="mt-6 inline-block text-brand font-bold hover:underline">Contact Support</a>
+          </div>
+        ) : status && (
           <div className="mt-8 rounded-2xl border border-border bg-card p-6 shadow-soft animate-fade-in">
             <div className="flex items-center justify-between mb-6">
               <div>
