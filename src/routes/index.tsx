@@ -59,9 +59,9 @@ function Index() {
 }
 
 const HERO_SLIDES = [
-  { headline: "Powering biotech innovation", sub: "Join the lab pushing African research onto the global stage. Move from spectator to contributor — your discovery, our infrastructure.", img: heroVirus, alt: "Abstract virus morphology with DNA strands", cta: { label: "Explore Our R&D", to: "/rd-portfolio" as const } },
-  { headline: "Building the next generation of scientists", sub: "Train your hands, sharpen your mind. Hands-on courses where you do the pipetting, run the PCR and walk away a certified molecular scientist.", img: heroPipette, alt: "Gloved hand pipetting into a microfuge tube", cta: { label: "Start Learning", to: "/academy" as const } },
-  { headline: "Leading the bioeconomy revolution", sub: "Equip your lab, scale your impact. Source sovereign reagents, deploy mobile labs and ship your science further than ever before.", img: heroBioeconomy, alt: "Glowing DNA helix with bio-circuit patterns", cta: { label: "Equip Your Lab", to: "/shop" as const } },
+  { headline: "Leading the biotechnology revolution in Africa", sub: "Train, equip and partner with a lab that already turns African biology into world-class results. Pick a path and step in.", img: heroVirus, alt: "Abstract virus morphology with DNA strands", cta: { label: "Explore Our R&D", to: "/rd-portfolio" as const } },
+  { headline: "Powering the bioeconomy in Africa", sub: "Source sovereign reagents, deploy validated assays and certify your team on benches built for real diagnostic work.", img: heroPipette, alt: "Gloved hand pipetting into a microfuge tube", cta: { label: "Start Learning", to: "/academy" as const } },
+  { headline: "Championing biotechnology solutions in Africa", sub: "From PCR consumables to full institutional lab builds, we put the tools, training and talent in your hands.", img: heroBioeconomy, alt: "Glowing DNA helix with bio-circuit patterns", cta: { label: "Equip Your Lab", to: "/shop" as const } },
 ];
 
 function Hero() {
