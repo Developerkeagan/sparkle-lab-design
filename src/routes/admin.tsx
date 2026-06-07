@@ -3,7 +3,7 @@ import { DashboardShell, type NavGroup } from "@/components/dashboard/DashboardS
 import { useAuth } from "@/lib/auth";
 import {
   LayoutDashboard, Layers, ShoppingBag, Settings, Globe, User, Users,
-  GraduationCap, BarChart3, ShieldAlert, Receipt, MessageSquare, Newspaper, Image, Phone, Tag,
+  GraduationCap, BarChart3, ShieldAlert, Receipt, Newspaper, Image, Phone, Tag,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
