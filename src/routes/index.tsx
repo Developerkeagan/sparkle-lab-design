@@ -7,6 +7,7 @@ import { useReveal } from "@/hooks/use-reveal";
 import {
   ArrowRight, ChevronRight, Sparkles, FlaskConical, ShoppingBag, GraduationCap,
   BrainCircuit, Lightbulb, Play, Shield, Cpu, Award, Atom, Newspaper, Mail, Microscope,
+  CheckCircle2, Building2, Beaker, Tag as TagIcon,
 } from "lucide-react";
 import useFetch from "@/hooks/useFetch";
 import heroVirus from "@/assets/hero-virus.jpg";
@@ -45,8 +46,10 @@ function Index() {
       <Hero />
       <Marquee />
       <QuickDoors />
-      <FeaturedRotator />
       <PetalNavigator />
+      <ConsultSection />
+      <DealOfWeek />
+      <FeaturedRotator />
       <WhatWeDo />
       <Welcome />
       <News />
@@ -222,58 +225,201 @@ function FeaturedRotator() {
 }
 
 function PetalNavigator() {
-  const petals = [
-    { label: "Shop", to: "/shop" as const, color: "#3b82f6", I: ShoppingBag },
-    { label: "Academy", to: "/academy" as const, color: "#10b981", I: GraduationCap },
-    { label: "R&D", to: "/rd-portfolio" as const, color: "#8b5cf6", I: Microscope },
-    { label: "Services", to: "/services" as const, color: "#f59e0b", I: FlaskConical },
-    { label: "News", to: "/news" as const, color: "#ec4899", I: Newspaper },
-    { label: "Contact", to: "/contact" as const, color: "#06b6d4", I: Mail },
+  const petals: { label: string; sub: string; color: string; I: typeof ShoppingBag; action: { type: "link"; to: any } | { type: "scroll"; id: string } }[] = [
+    { label: "Shop here", sub: "Reagents & instruments", color: "#2563eb", I: ShoppingBag, action: { type: "link", to: "/shop" } },
+    { label: "Academy", sub: "Train & get certified", color: "#16a34a", I: GraduationCap, action: { type: "link", to: "/academy" } },
+    { label: "Consult", sub: "Strategy & advisory", color: "#dc2626", I: BrainCircuit, action: { type: "scroll", id: "consult" } },
+    { label: "Rent a lab", sub: "Bench time, on demand", color: "#94a3b8", I: Beaker, action: { type: "link", to: "/rent-a-lab" } },
   ];
+  function handle(p: typeof petals[number]) {
+    if (p.action.type === "scroll") {
+      const el = document.getElementById(p.action.id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background via-secondary/30 to-background">
       <div className="mx-auto max-w-6xl text-center">
-        <span className="text-xs uppercase tracking-[0.25em] text-brand font-semibold">Pick Your Path</span>
-        <h2 className="mt-3 font-display text-3xl md:text-5xl font-extrabold">Where will you <span className="gradient-text">make your mark?</span></h2>
-        <p className="mt-4 text-muted-foreground max-w-xl mx-auto">Six entries into the Applied Biotech ecosystem. Pick a petal and step inside.</p>
+        <span className="text-xs uppercase tracking-[0.25em] text-brand font-semibold">Engage with us</span>
+        <h2 className="mt-3 font-display text-3xl md:text-5xl font-extrabold">Pick a petal, <span className="gradient-text">take an action.</span></h2>
+        <p className="mt-4 text-muted-foreground max-w-xl mx-auto">Four direct ways to start working with Applied Biotech today.</p>
       </div>
-      <div className="relative mx-auto mt-14 h-[460px] sm:h-[520px] w-full max-w-[520px]">
+      <div className="relative mx-auto mt-16 h-[480px] sm:h-[560px] w-full max-w-[560px]">
         {petals.map((p, idx) => {
           const angle = (idx / petals.length) * Math.PI * 2 - Math.PI / 2;
-          const radius = 170;
+          const radius = 165;
           const x = Math.cos(angle) * radius;
           const y = Math.sin(angle) * radius;
+          const rot = (angle * 180) / Math.PI + 90;
+          const inner = (
+            <motion.div
+              whileHover={{ scale: 1.06 }}
+              className="group relative grid h-[170px] w-[130px] place-items-center text-white font-semibold shadow-brand transition-all"
+              style={{
+                background: `radial-gradient(circle at 50% 25%, ${p.color}ee, ${p.color}cc 55%, ${p.color}66)`,
+                borderRadius: "50% 50% 50% 50% / 70% 70% 30% 30%",
+                transform: `rotate(${rot}deg)`,
+              }}
+            >
+              <div className="flex flex-col items-center gap-1.5 px-2 text-center" style={{ transform: `rotate(${-rot}deg)` }}>
+                <p.I className="h-6 w-6 transition-transform group-hover:rotate-12" />
+                <span className="text-sm font-bold tracking-wide leading-tight">{p.label}</span>
+                <span className="text-[10px] uppercase tracking-wider opacity-85 leading-tight">{p.sub}</span>
+              </div>
+              <div className="absolute inset-0 ring-1 ring-white/25 group-hover:ring-white/60 transition" style={{ borderRadius: "inherit" }} />
+            </motion.div>
+          );
           return (
             <motion.div
               key={p.label}
               className="absolute left-1/2 top-1/2"
-              style={{ x: x - 70, y: y - 70 }}
-              initial={{ opacity: 0, scale: 0.4 }}
+              style={{ x: x - 65, y: y - 85 }}
+              initial={{ opacity: 0, scale: 0.3 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.08, type: "spring", stiffness: 120 }}
+              transition={{ delay: idx * 0.1, type: "spring", stiffness: 110 }}
             >
-              <Link
-                to={p.to}
-                className="group relative grid h-[140px] w-[140px] place-items-center rounded-full text-white font-semibold shadow-brand transition-transform hover:scale-110"
-                style={{ background: `radial-gradient(circle at 30% 30%, ${p.color}, ${p.color}cc 60%, ${p.color}77)` }}
-              >
-                <div className="flex flex-col items-center gap-1.5">
-                  <p.I className="h-6 w-6 transition-transform group-hover:rotate-12" />
-                  <span className="text-sm font-bold tracking-wide">{p.label}</span>
-                </div>
-                <div className="absolute inset-0 rounded-full ring-1 ring-white/20 group-hover:ring-white/60 transition" />
-              </Link>
+              {p.action.type === "link" ? (
+                <Link to={p.action.to}>{inner}</Link>
+              ) : (
+                <button onClick={() => handle(p)} className="block">{inner}</button>
+              )}
             </motion.div>
           );
         })}
         <motion.div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-28 w-28 rounded-full gradient-brand grid place-items-center shadow-brand"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-32 w-32 rounded-full gradient-brand grid place-items-center shadow-brand"
           animate={{ rotate: 360 }}
-          transition={{ duration: 22, ease: "linear", repeat: Infinity }}
+          transition={{ duration: 28, ease: "linear", repeat: Infinity }}
         >
-          <div className="h-24 w-24 rounded-full bg-background grid place-items-center">
-            <div className="font-display font-extrabold text-brand text-center leading-tight text-sm">Applied<br/>Biotech</div>
+          <Link to="/contact" className="h-28 w-28 rounded-full bg-background grid place-items-center hover:bg-secondary transition-colors" style={{ animation: "spin 28s linear infinite reverse" }}>
+            <div className="text-center">
+              <div className="font-display font-extrabold text-brand text-base leading-none">Engage</div>
+              <div className="font-display font-extrabold text-brand text-base leading-none mt-0.5">Us</div>
+              <div className="text-[9px] uppercase tracking-wider text-muted-foreground mt-1">Tap to talk</div>
+            </div>
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function ConsultSection() {
+  const bullets = [
+    "Identify opportunities others miss",
+    "Connect research with real-world applications",
+    "Access expert guidance on biotechnology innovation",
+    "Build stronger commercialisation and growth strategies",
+    "Navigate challenges with confidence",
+    "Position your organisation at the forefront of biotech",
+  ];
+  return (
+    <section id="consult" className="relative py-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand/5 via-background to-accent-cyan/5" />
+      <div className="mx-auto max-w-7xl grid lg:grid-cols-[1.1fr_1fr] gap-14 items-center">
+        <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/10 text-brand text-xs font-semibold uppercase tracking-[0.2em]">
+            <BrainCircuit className="h-3.5 w-3.5" /> Consultancy
+          </span>
+          <h2 className="mt-5 font-display text-3xl md:text-5xl font-extrabold leading-[1.05]">
+            Turn your biotechnology vision into <span className="gradient-text">reality.</span>
+          </h2>
+          <p className="mt-5 text-muted-foreground leading-relaxed text-base md:text-lg">
+            The next breakthrough in biotechnology will not come from ideas alone. It will come from the organisations that know how to turn innovation into impact.
+          </p>
+          <p className="mt-4 text-muted-foreground leading-relaxed">
+            Whether you are a researcher seeking commercialisation pathways, a startup looking for strategic direction, or an organisation exploring biotechnology opportunities, our consulting services help you move faster, make smarter decisions and unlock greater value from your innovations.
+          </p>
+          <div className="mt-7 grid sm:grid-cols-2 gap-3">
+            {bullets.map((b) => (
+              <div key={b} className="flex items-start gap-2.5 text-sm">
+                <CheckCircle2 className="h-5 w-5 text-brand shrink-0 mt-0.5" />
+                <span className="text-foreground/85 leading-snug">{b}</span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-7 text-foreground/85 italic">
+            Your next breakthrough deserves more than potential. It deserves a strategy.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link to="/contact" className="inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-7 py-4 font-semibold shadow-brand hover:scale-[1.03] transition-transform">
+              Book a consultation <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/services/$slug" params={{ slug: "consulting" }} className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-4 font-semibold hover:bg-accent">
+              Read full scope
+            </Link>
+          </div>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative">
+          <div className="absolute -top-6 -left-6 h-24 w-24 rounded-full gradient-brand opacity-20 blur-2xl" />
+          <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded-full bg-accent-cyan opacity-20 blur-2xl" />
+          <div className="relative rounded-3xl overflow-hidden border border-border shadow-brand aspect-[4/5]">
+            <img src={profPortrait} alt="Strategy session at Applied Biotech" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent" />
+            <div className="absolute bottom-6 left-6 right-6 text-background">
+              <div className="text-[10px] uppercase tracking-[0.25em] opacity-80">Africa's leading biotech champions</div>
+              <div className="mt-1 font-display font-bold text-xl leading-tight">20 years of turning ambitious ideas into measurable results.</div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function DealOfWeek() {
+  const { fetchData } = useFetch();
+  const [deal, setDeal] = useState<any | null>(null);
+  useEffect(() => {
+    fetchData("/api/v1/shop/deal-of-the-week").then((d) => { if (d && d.product) setDeal(d); }).catch(() => {});
+  }, [fetchData]);
+  if (!deal) return null;
+  const productId = deal.product?._id || deal.product;
+  const productImage = deal.product?.productImage;
+  return (
+    <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
+          className="relative rounded-[2rem] bg-foreground text-background p-8 md:p-14 overflow-hidden shadow-brand">
+          <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full gradient-brand opacity-30 blur-3xl" />
+          <div className="absolute -bottom-24 -left-20 w-80 h-80 rounded-full bg-accent-cyan opacity-20 blur-3xl" />
+          <div className="relative grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
+            <div>
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-cyan/20 text-accent-cyan text-[10px] uppercase tracking-[0.25em] font-bold">
+                <TagIcon className="h-3.5 w-3.5" /> {deal.eyebrow || "Deal of the week"}
+              </span>
+              <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-background">
+                {deal.headline || "This week's featured deal"}
+              </h2>
+              <p className="mt-4 text-background/75 max-w-xl leading-relaxed">{deal.blurb}</p>
+              <div className="mt-6 flex flex-wrap items-center gap-4">
+                <div className="font-display text-4xl font-extrabold text-accent-cyan">₦{Number(deal.salePrice || 0).toLocaleString()}</div>
+                {deal.oldPrice ? <div className="text-background/50 line-through text-base">₦{Number(deal.oldPrice).toLocaleString()}</div> : null}
+                {deal.discountLabel ? <span className="px-3 py-1 rounded-full bg-accent-cyan text-foreground text-xs font-bold">{deal.discountLabel}</span> : null}
+              </div>
+              <div className="mt-7 flex flex-wrap gap-3">
+                {productId ? (
+                  <Link to="/shop/product/$id" params={{ id: String(productId) }} className="inline-flex items-center gap-2 rounded-full bg-background text-foreground px-7 py-4 font-semibold hover:scale-[1.03] transition-transform">
+                    Grab the deal <ArrowRight className="h-4 w-4" />
+                  </Link>
+                ) : (
+                  <Link to="/shop" className="inline-flex items-center gap-2 rounded-full bg-background text-foreground px-7 py-4 font-semibold hover:scale-[1.03] transition-transform">
+                    Visit the shop <ArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
+                <Link to="/shop/deals" className="inline-flex items-center gap-2 rounded-full border border-background/30 text-background px-6 py-4 font-semibold hover:bg-background/10">
+                  See all deals
+                </Link>
+              </div>
+            </div>
+            {productImage && (
+              <div className="relative">
+                <div className="aspect-square rounded-3xl overflow-hidden bg-background/5 border border-background/10">
+                  <img src={productImage} alt={deal.headline || "Featured product"} className="w-full h-full object-cover" />
+                </div>
+              </div>
+            )}
           </div>
         </motion.div>
       </div>
