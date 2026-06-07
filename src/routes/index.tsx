@@ -14,7 +14,6 @@ import heroVirus from "@/assets/hero-virus.jpg";
 import heroPipette from "@/assets/hero-pipette.jpg";
 import heroBioeconomy from "@/assets/hero-bioeconomy.jpg";
 import aquapure from "@/assets/aquapure.jpg";
-import mobileLab from "@/assets/mobile-lab.jpg";
 import profPortrait from "@/assets/prof-portrait.jpg";
 import biotechGrid from "@/assets/biotech-grid.jpg";
 import { useSiteContent } from "@/lib/site-content";
