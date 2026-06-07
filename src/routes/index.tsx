@@ -7,13 +7,13 @@ import { useReveal } from "@/hooks/use-reveal";
 import {
   ArrowRight, ChevronRight, Sparkles, FlaskConical, ShoppingBag, GraduationCap,
   BrainCircuit, Lightbulb, Play, Shield, Cpu, Award, Atom, Newspaper, Mail, Microscope,
+  CheckCircle2, Building2, Beaker, Tag as TagIcon,
 } from "lucide-react";
 import useFetch from "@/hooks/useFetch";
 import heroVirus from "@/assets/hero-virus.jpg";
 import heroPipette from "@/assets/hero-pipette.jpg";
 import heroBioeconomy from "@/assets/hero-bioeconomy.jpg";
 import aquapure from "@/assets/aquapure.jpg";
-import mobileLab from "@/assets/mobile-lab.jpg";
 import profPortrait from "@/assets/prof-portrait.jpg";
 import biotechGrid from "@/assets/biotech-grid.jpg";
 import { useSiteContent } from "@/lib/site-content";
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Applied Biotech — Build the Future of African Biotechnology" },
+      { title: "Applied Biotech, Build the Future of African Biotechnology" },
       { name: "description", content: "Train as a scientist, equip your lab, partner on breakthrough research and help shape the bio-economy with Applied Biotech." },
     ],
   }),
@@ -45,8 +45,10 @@ function Index() {
       <Hero />
       <Marquee />
       <QuickDoors />
-      <FeaturedRotator />
       <PetalNavigator />
+      <ConsultSection />
+      <DealOfWeek />
+      <FeaturedRotator />
       <WhatWeDo />
       <Welcome />
       <News />
@@ -59,9 +61,9 @@ function Index() {
 }
 
 const HERO_SLIDES = [
-  { headline: "Powering biotech innovation", sub: "Join the lab pushing African research onto the global stage. Move from spectator to contributor — your discovery, our infrastructure.", img: heroVirus, alt: "Abstract virus morphology with DNA strands", cta: { label: "Explore Our R&D", to: "/rd-portfolio" as const } },
-  { headline: "Building the next generation of scientists", sub: "Train your hands, sharpen your mind. Hands-on courses where you do the pipetting, run the PCR and walk away a certified molecular scientist.", img: heroPipette, alt: "Gloved hand pipetting into a microfuge tube", cta: { label: "Start Learning", to: "/academy" as const } },
-  { headline: "Leading the bioeconomy revolution", sub: "Equip your lab, scale your impact. Source sovereign reagents, deploy mobile labs and ship your science further than ever before.", img: heroBioeconomy, alt: "Glowing DNA helix with bio-circuit patterns", cta: { label: "Equip Your Lab", to: "/shop" as const } },
+  { headline: "Leading the biotechnology revolution in Africa", sub: "Train, equip and partner with a lab that already turns African biology into world-class results. Pick a path and step in.", img: heroVirus, alt: "Abstract virus morphology with DNA strands", cta: { label: "Explore Our R&D", to: "/rd-portfolio" as const } },
+  { headline: "Powering the bioeconomy in Africa", sub: "Source sovereign reagents, deploy validated assays and certify your team on benches built for real diagnostic work.", img: heroPipette, alt: "Gloved hand pipetting into a microfuge tube", cta: { label: "Start Learning", to: "/academy" as const } },
+  { headline: "Championing biotechnology solutions in Africa", sub: "From PCR consumables to full institutional lab builds, we put the tools, training and talent in your hands.", img: heroBioeconomy, alt: "Glowing DNA helix with bio-circuit patterns", cta: { label: "Equip Your Lab", to: "/shop" as const } },
 ];
 
 function Hero() {
@@ -164,9 +166,8 @@ function Marquee() {
 }
 
 const FEATURED_SLIDES = [
-  { eyebrow: "Run Cleaner Reactions", headline: "Get AquaPure™ — the water your PCR deserves.", body: "Validated nuclease-free water that ends your contamination headaches. Use it across master mixes, NGS prep and cell culture and watch your yields jump.", img: aquapure, cta: { label: "Order AquaPure", to: "/shop" as const } },
-  { eyebrow: "Deploy Science Anywhere", headline: "Take your lab where the outbreak is.", body: "Rugged, solar-powered, self-sustaining mobile labs that put PCR, sequencing and surveillance in the hands of frontline teams in 30 days flat.", img: mobileLab, cta: { label: "Plan a Deployment", to: "/contact" as const } },
-  { eyebrow: "Lead the Bioeconomy", headline: "Patent your breakthrough — we'll help you scale it.", body: "Locally-sourced biological assets, validated, protected and ready for market. From climate-resilient bioinoculants to sovereign diagnostic kits.", img: heroBioeconomy, cta: { label: "See R&D Pipeline", to: "/rd-portfolio" as const } },
+  { eyebrow: "Run Cleaner Reactions", headline: "Get AquaPure, the water your PCR deserves.", body: "Validated nuclease-free water that ends contamination headaches. Use it across master mixes, NGS prep and cell culture and watch your yields jump.", img: aquapure, cta: { label: "Order AquaPure", to: "/shop" as const } },
+  { eyebrow: "Lead the Bioeconomy", headline: "Patent your breakthrough, we will help you scale it.", body: "Locally sourced biological assets, validated, protected and ready for market. From climate resilient bioinoculants to sovereign diagnostic kits.", img: heroBioeconomy, cta: { label: "See R&D Pipeline", to: "/rd-portfolio" as const } },
 ];
 
 function FeaturedRotator() {
@@ -223,58 +224,201 @@ function FeaturedRotator() {
 }
 
 function PetalNavigator() {
-  const petals = [
-    { label: "Shop", to: "/shop" as const, color: "#3b82f6", I: ShoppingBag },
-    { label: "Academy", to: "/academy" as const, color: "#10b981", I: GraduationCap },
-    { label: "R&D", to: "/rd-portfolio" as const, color: "#8b5cf6", I: Microscope },
-    { label: "Services", to: "/services" as const, color: "#f59e0b", I: FlaskConical },
-    { label: "News", to: "/news" as const, color: "#ec4899", I: Newspaper },
-    { label: "Contact", to: "/contact" as const, color: "#06b6d4", I: Mail },
+  const petals: { label: string; sub: string; color: string; I: typeof ShoppingBag; action: { type: "link"; to: any } | { type: "scroll"; id: string } }[] = [
+    { label: "Shop here", sub: "Reagents & instruments", color: "#2563eb", I: ShoppingBag, action: { type: "link", to: "/shop" } },
+    { label: "Academy", sub: "Train & get certified", color: "#16a34a", I: GraduationCap, action: { type: "link", to: "/academy" } },
+    { label: "Consult", sub: "Strategy & advisory", color: "#dc2626", I: BrainCircuit, action: { type: "scroll", id: "consult" } },
+    { label: "Rent a lab", sub: "Bench time, on demand", color: "#94a3b8", I: Beaker, action: { type: "link", to: "/rent-a-lab" } },
   ];
+  function handle(p: typeof petals[number]) {
+    if (p.action.type === "scroll") {
+      const el = document.getElementById(p.action.id);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8">
+    <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background via-secondary/30 to-background">
       <div className="mx-auto max-w-6xl text-center">
-        <span className="text-xs uppercase tracking-[0.25em] text-brand font-semibold">Pick Your Path</span>
-        <h2 className="mt-3 font-display text-3xl md:text-5xl font-extrabold">Where will you <span className="gradient-text">make your mark?</span></h2>
-        <p className="mt-4 text-muted-foreground max-w-xl mx-auto">Six entries into the Applied Biotech ecosystem. Pick a petal and step inside.</p>
+        <span className="text-xs uppercase tracking-[0.25em] text-brand font-semibold">Engage with us</span>
+        <h2 className="mt-3 font-display text-3xl md:text-5xl font-extrabold">Pick a petal, <span className="gradient-text">take an action.</span></h2>
+        <p className="mt-4 text-muted-foreground max-w-xl mx-auto">Four direct ways to start working with Applied Biotech today.</p>
       </div>
-      <div className="relative mx-auto mt-14 h-[460px] sm:h-[520px] w-full max-w-[520px]">
+      <div className="relative mx-auto mt-16 h-[480px] sm:h-[560px] w-full max-w-[560px]">
         {petals.map((p, idx) => {
           const angle = (idx / petals.length) * Math.PI * 2 - Math.PI / 2;
-          const radius = 170;
+          const radius = 165;
           const x = Math.cos(angle) * radius;
           const y = Math.sin(angle) * radius;
+          const rot = (angle * 180) / Math.PI + 90;
+          const inner = (
+            <motion.div
+              whileHover={{ scale: 1.06 }}
+              className="group relative grid h-[170px] w-[130px] place-items-center text-white font-semibold shadow-brand transition-all"
+              style={{
+                background: `radial-gradient(circle at 50% 25%, ${p.color}ee, ${p.color}cc 55%, ${p.color}66)`,
+                borderRadius: "50% 50% 50% 50% / 70% 70% 30% 30%",
+                transform: `rotate(${rot}deg)`,
+              }}
+            >
+              <div className="flex flex-col items-center gap-1.5 px-2 text-center" style={{ transform: `rotate(${-rot}deg)` }}>
+                <p.I className="h-6 w-6 transition-transform group-hover:rotate-12" />
+                <span className="text-sm font-bold tracking-wide leading-tight">{p.label}</span>
+                <span className="text-[10px] uppercase tracking-wider opacity-85 leading-tight">{p.sub}</span>
+              </div>
+              <div className="absolute inset-0 ring-1 ring-white/25 group-hover:ring-white/60 transition" style={{ borderRadius: "inherit" }} />
+            </motion.div>
+          );
           return (
             <motion.div
               key={p.label}
               className="absolute left-1/2 top-1/2"
-              style={{ x: x - 70, y: y - 70 }}
-              initial={{ opacity: 0, scale: 0.4 }}
+              style={{ x: x - 65, y: y - 85 }}
+              initial={{ opacity: 0, scale: 0.3 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: idx * 0.08, type: "spring", stiffness: 120 }}
+              transition={{ delay: idx * 0.1, type: "spring", stiffness: 110 }}
             >
-              <Link
-                to={p.to}
-                className="group relative grid h-[140px] w-[140px] place-items-center rounded-full text-white font-semibold shadow-brand transition-transform hover:scale-110"
-                style={{ background: `radial-gradient(circle at 30% 30%, ${p.color}, ${p.color}cc 60%, ${p.color}77)` }}
-              >
-                <div className="flex flex-col items-center gap-1.5">
-                  <p.I className="h-6 w-6 transition-transform group-hover:rotate-12" />
-                  <span className="text-sm font-bold tracking-wide">{p.label}</span>
-                </div>
-                <div className="absolute inset-0 rounded-full ring-1 ring-white/20 group-hover:ring-white/60 transition" />
-              </Link>
+              {p.action.type === "link" ? (
+                <Link to={p.action.to}>{inner}</Link>
+              ) : (
+                <button onClick={() => handle(p)} className="block">{inner}</button>
+              )}
             </motion.div>
           );
         })}
         <motion.div
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-28 w-28 rounded-full gradient-brand grid place-items-center shadow-brand"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-32 w-32 rounded-full gradient-brand grid place-items-center shadow-brand"
           animate={{ rotate: 360 }}
-          transition={{ duration: 22, ease: "linear", repeat: Infinity }}
+          transition={{ duration: 28, ease: "linear", repeat: Infinity }}
         >
-          <div className="h-24 w-24 rounded-full bg-background grid place-items-center">
-            <div className="font-display font-extrabold text-brand text-center leading-tight text-sm">Applied<br/>Biotech</div>
+          <Link to="/contact" className="h-28 w-28 rounded-full bg-background grid place-items-center hover:bg-secondary transition-colors" style={{ animation: "spin 28s linear infinite reverse" }}>
+            <div className="text-center">
+              <div className="font-display font-extrabold text-brand text-base leading-none">Engage</div>
+              <div className="font-display font-extrabold text-brand text-base leading-none mt-0.5">Us</div>
+              <div className="text-[9px] uppercase tracking-wider text-muted-foreground mt-1">Tap to talk</div>
+            </div>
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function ConsultSection() {
+  const bullets = [
+    "Identify opportunities others miss",
+    "Connect research with real-world applications",
+    "Access expert guidance on biotechnology innovation",
+    "Build stronger commercialisation and growth strategies",
+    "Navigate challenges with confidence",
+    "Position your organisation at the forefront of biotech",
+  ];
+  return (
+    <section id="consult" className="relative py-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand/5 via-background to-accent-cyan/5" />
+      <div className="mx-auto max-w-7xl grid lg:grid-cols-[1.1fr_1fr] gap-14 items-center">
+        <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}>
+          <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/10 text-brand text-xs font-semibold uppercase tracking-[0.2em]">
+            <BrainCircuit className="h-3.5 w-3.5" /> Consultancy
+          </span>
+          <h2 className="mt-5 font-display text-3xl md:text-5xl font-extrabold leading-[1.05]">
+            Turn your biotechnology vision into <span className="gradient-text">reality.</span>
+          </h2>
+          <p className="mt-5 text-muted-foreground leading-relaxed text-base md:text-lg">
+            The next breakthrough in biotechnology will not come from ideas alone. It will come from the organisations that know how to turn innovation into impact.
+          </p>
+          <p className="mt-4 text-muted-foreground leading-relaxed">
+            Whether you are a researcher seeking commercialisation pathways, a startup looking for strategic direction, or an organisation exploring biotechnology opportunities, our consulting services help you move faster, make smarter decisions and unlock greater value from your innovations.
+          </p>
+          <div className="mt-7 grid sm:grid-cols-2 gap-3">
+            {bullets.map((b) => (
+              <div key={b} className="flex items-start gap-2.5 text-sm">
+                <CheckCircle2 className="h-5 w-5 text-brand shrink-0 mt-0.5" />
+                <span className="text-foreground/85 leading-snug">{b}</span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-7 text-foreground/85 italic">
+            Your next breakthrough deserves more than potential. It deserves a strategy.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <Link to="/contact" className="inline-flex items-center gap-2 rounded-full gradient-brand text-brand-foreground px-7 py-4 font-semibold shadow-brand hover:scale-[1.03] transition-transform">
+              Book a consultation <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/services/$slug" params={{ slug: "consulting" }} className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-4 font-semibold hover:bg-accent">
+              Read full scope
+            </Link>
+          </div>
+        </motion.div>
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8 }} className="relative">
+          <div className="absolute -top-6 -left-6 h-24 w-24 rounded-full gradient-brand opacity-20 blur-2xl" />
+          <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded-full bg-accent-cyan opacity-20 blur-2xl" />
+          <div className="relative rounded-3xl overflow-hidden border border-border shadow-brand aspect-[4/5]">
+            <img src={profPortrait} alt="Strategy session at Applied Biotech" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent" />
+            <div className="absolute bottom-6 left-6 right-6 text-background">
+              <div className="text-[10px] uppercase tracking-[0.25em] opacity-80">Africa's leading biotech champions</div>
+              <div className="mt-1 font-display font-bold text-xl leading-tight">20 years of turning ambitious ideas into measurable results.</div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function DealOfWeek() {
+  const { fetchData } = useFetch();
+  const [deal, setDeal] = useState<any | null>(null);
+  useEffect(() => {
+    fetchData("/api/v1/shop/deal-of-the-week").then((d) => { if (d && d.product) setDeal(d); }).catch(() => {});
+  }, [fetchData]);
+  if (!deal) return null;
+  const productId = deal.product?._id || deal.product;
+  const productImage = deal.product?.productImage;
+  return (
+    <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
+          className="relative rounded-[2rem] bg-foreground text-background p-8 md:p-14 overflow-hidden shadow-brand">
+          <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full gradient-brand opacity-30 blur-3xl" />
+          <div className="absolute -bottom-24 -left-20 w-80 h-80 rounded-full bg-accent-cyan opacity-20 blur-3xl" />
+          <div className="relative grid lg:grid-cols-[1.1fr_1fr] gap-10 items-center">
+            <div>
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-cyan/20 text-accent-cyan text-[10px] uppercase tracking-[0.25em] font-bold">
+                <TagIcon className="h-3.5 w-3.5" /> {deal.eyebrow || "Deal of the week"}
+              </span>
+              <h2 className="mt-4 font-display text-3xl md:text-5xl font-extrabold leading-[1.05] text-background">
+                {deal.headline || "This week's featured deal"}
+              </h2>
+              <p className="mt-4 text-background/75 max-w-xl leading-relaxed">{deal.blurb}</p>
+              <div className="mt-6 flex flex-wrap items-center gap-4">
+                <div className="font-display text-4xl font-extrabold text-accent-cyan">₦{Number(deal.salePrice || 0).toLocaleString()}</div>
+                {deal.oldPrice ? <div className="text-background/50 line-through text-base">₦{Number(deal.oldPrice).toLocaleString()}</div> : null}
+                {deal.discountLabel ? <span className="px-3 py-1 rounded-full bg-accent-cyan text-foreground text-xs font-bold">{deal.discountLabel}</span> : null}
+              </div>
+              <div className="mt-7 flex flex-wrap gap-3">
+                {productId ? (
+                  <Link to="/shop/product/$id" params={{ id: String(productId) }} className="inline-flex items-center gap-2 rounded-full bg-background text-foreground px-7 py-4 font-semibold hover:scale-[1.03] transition-transform">
+                    Grab the deal <ArrowRight className="h-4 w-4" />
+                  </Link>
+                ) : (
+                  <Link to="/shop" className="inline-flex items-center gap-2 rounded-full bg-background text-foreground px-7 py-4 font-semibold hover:scale-[1.03] transition-transform">
+                    Visit the shop <ArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
+                <Link to="/shop/deals" className="inline-flex items-center gap-2 rounded-full border border-background/30 text-background px-6 py-4 font-semibold hover:bg-background/10">
+                  See all deals
+                </Link>
+              </div>
+            </div>
+            {productImage && (
+              <div className="relative">
+                <div className="aspect-square rounded-3xl overflow-hidden bg-background/5 border border-background/10">
+                  <img src={productImage} alt={deal.headline || "Featured product"} className="w-full h-full object-cover" />
+                </div>
+              </div>
+            )}
           </div>
         </motion.div>
       </div>
@@ -285,19 +429,19 @@ function PetalNavigator() {
 function WhatWeDo() {
   const cards = [
     { n: "01", I: Atom, t: "Drive a discovery that matters",
-      d: "Plug into the genomics, molecular epidemiology and bio-innovation work moving African public health forward. Bring your hypothesis — we'll bring the bench, the bioinformatics and twenty years of experience.",
+      d: "Plug into the genomics, molecular epidemiology and bio-innovation work moving African public health forward. Bring your hypothesis, we'll bring the bench, the bioinformatics and twenty years of experience.",
       cta: "Co-build a project", to: "/rd-portfolio" as const },
     { n: "02", I: ShoppingBag, t: "Stock your bench in days, not months",
       d: "Stop waiting on customs. Order Tier-1 reagents, calibrated instruments and ready-to-ship consumables backed by local warranty, cold-chain integrity and live technical support.",
       cta: "Browse the shop", to: "/shop" as const },
     { n: "03", I: GraduationCap, t: "Become a certified molecular scientist",
-      d: "Pipette, plate, run and analyse — on real benches, with real samples. Walk out with an internationally-recognised certification and the muscle memory of a working lab scientist.",
+      d: "Pipette, plate, run and analyse, on real benches, with real samples. Walk out with an internationally-recognised certification and the muscle memory of a working lab scientist.",
       cta: "Enrol today", to: "/academy" as const },
     { n: "04", I: BrainCircuit, t: "Build the lab you've been sketching",
-      d: "Design, fund and stand up the molecular facility your institution needs — from grant strategy to biosafety zoning to accreditation. We've done it across five hubs and we'll do it with you.",
+      d: "Design, fund and stand up the molecular facility your institution needs, from grant strategy to biosafety zoning to accreditation. We've done it across five hubs and we'll do it with you.",
       cta: "Brief our advisors", to: "/contact" as const },
     { n: "05", I: Lightbulb, t: "Turn local biology into a global asset",
-      d: "Got an idea for a bioinoculant, a kit or a sovereign reagent? We help you validate it, patent it and bring it to market — proudly built on African biodiversity.",
+      d: "Got an idea for a bioinoculant, a kit or a sovereign reagent? We help you validate it, patent it and bring it to market, proudly built on African biodiversity.",
       cta: "Pitch your innovation", to: "/ip-publications" as const },
   ];
   return (
@@ -313,7 +457,7 @@ function WhatWeDo() {
             Five ways to plug in and <span className="gradient-text">change the bench.</span>
           </h2>
           <p className="mt-5 text-muted-foreground text-lg">
-            Whether you're learning, building, supplying or scaling — there's a door for you here.
+            Whether you're learning, building, supplying or scaling, there's a door for you here.
           </p>
         </div>
         <div className="mt-14 max-w-3xl mx-auto flex flex-col gap-10">
@@ -359,7 +503,7 @@ function Welcome() {
         <div className="reveal">
           <span className="text-xs uppercase tracking-[0.25em] text-brand font-semibold">Founder · CEO</span>
           <h2 className="mt-3 font-display text-3xl md:text-5xl font-extrabold leading-[1.05]">
-            Hear why we built this — from <span className="gradient-text">Prof. Nwadiuto Esiobu</span>
+            Hear why we built this, from <span className="gradient-text">Prof. Nwadiuto Esiobu</span>
           </h2>
           <p className="mt-5 text-muted-foreground leading-relaxed">
             A two-minute message on what brought us here, who we're building for, and how you can be part of the next chapter.
@@ -374,7 +518,7 @@ function Welcome() {
               <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1`} title="Welcome from Prof. Nwadiuto Esiobu" allow="autoplay; encrypted-media" allowFullScreen className="absolute inset-0 w-full h-full" />
             ) : (
               <button onClick={() => setPlaying(true)} className="absolute inset-0 w-full h-full">
-                <img src={profPortrait} alt="Prof. Nwadiuto Esiobu — Founder & CEO of Applied Biotech" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={profPortrait} alt="Prof. Nwadiuto Esiobu, Founder & CEO of Applied Biotech" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent" />
                 <div className="absolute inset-0 grid place-items-center">
                   <div className="h-20 w-20 rounded-full bg-background/95 grid place-items-center shadow-brand group-hover:scale-110 transition-transform">
@@ -437,7 +581,7 @@ function News() {
 
 function Pillars() {
   const pillars = [
-    { I: Sparkles, t: "Bench you can trust", d: "Calibrated assays, validated SOPs and zero contamination tolerance — every single run." },
+    { I: Sparkles, t: "Bench you can trust", d: "Calibrated assays, validated SOPs and zero contamination tolerance, every single run." },
     { I: Cpu, t: "Labs that show up", d: "Designed, built and maintained end-to-end. No abandoned facilities, no broken kit." },
     { I: Award, t: "Certifications that travel", d: "Train here, work anywhere. CMD-recognised curriculum trusted across the continent." },
     { I: Shield, t: "Twenty years of receipts", d: "A scientific bench backed by two decades of peer-reviewed, field-proven research." },
@@ -546,7 +690,7 @@ function QuickDoors() {
             <ShoppingBag className="h-3.5 w-3.5" /> Shop
           </span>
           <h3 className="mt-4 font-display text-3xl md:text-4xl font-extrabold leading-tight">Stock your bench in days.</h3>
-          <p className="mt-3 text-white/85 max-w-md">Tier-1 reagents, calibrated instruments, sovereign consumables — backed by local warranty and live technical support. Order today, ship tomorrow.</p>
+          <p className="mt-3 text-white/85 max-w-md">Tier-1 reagents, calibrated instruments, sovereign consumables, backed by local warranty and live technical support. Order today, ship tomorrow.</p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs">
             {["PCR & RT-qPCR", "Cell culture", "NGS consumables", "Lab plasticware"].map((t) => (
               <span key={t} className="px-2.5 py-1 rounded-full bg-white/15">{t}</span>

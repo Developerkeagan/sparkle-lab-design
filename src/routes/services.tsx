@@ -12,7 +12,7 @@ export const Route = createFileRoute("/services")({
   head: () => ({
     meta: [
       { title: "Services · Applied Biotech" },
-      { name: "description", content: "Molecular lab services, equipment & reagents, training and institute, and consulting — engineered for institutions." },
+      { name: "description", content: "Molecular lab services, equipment & reagents, training and institute, and consulting, engineered for institutions." },
     ],
   }),
 });
@@ -39,7 +39,7 @@ function ServicesPage() {
             End-to-end science, <span className="gradient-text">delivered.</span>
           </h1>
           <p className="mt-5 text-lg text-muted-foreground max-w-3xl mx-auto">
-            Four interlocking clusters — each one engineered to remove a structural barrier between you and discovery.
+            Four interlocking clusters, each one engineered to remove a structural barrier between you and discovery.
           </p>
         </div>
         <div className="relative mt-12 mx-auto max-w-6xl grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -56,7 +56,7 @@ function ServicesPage() {
         </div>
       </section>
 
-      {/* CLUSTER 1 — Molecular Lab Services */}
+      {/* CLUSTER 1, Molecular Lab Services */}
       <Cluster id="molecular-lab" n="Cluster 01" title="Molecular Lab Services" intro="Outsource your most sensitive workflows to our state-of-the-art facility. Automated extraction frameworks, strict contamination barriers, certified controls.">
         <div className="reveal grid md:grid-cols-2 gap-4">
           {[
@@ -86,7 +86,7 @@ function ServicesPage() {
             <span className="text-xs uppercase tracking-[0.25em] text-brand font-semibold">Rent-A-Lab</span>
             <h3 className="mt-2 font-display text-2xl md:text-3xl font-bold">Bypass capital cost. Secure bench space.</h3>
             <p className="mt-3 text-muted-foreground leading-relaxed">
-              Rent fully functional bench space equipped with calibrated thermocyclers, biosafety cabinets and gel-doc systems at our premium Abuja hub — for thesis work, independent studies or corporate validations.
+              Rent fully functional bench space equipped with calibrated thermocyclers, biosafety cabinets and gel-doc systems at our premium Abuja hub, for thesis work, independent studies or corporate validations.
             </p>
           </div>
           <div className="flex flex-col justify-center gap-3">
@@ -98,8 +98,8 @@ function ServicesPage() {
         </div>
       </Cluster>
 
-      {/* CLUSTER 2 — Equipment & Reagents */}
-      <Cluster id="equipment" n="Cluster 02" title="Lab Equipment & Reagents" intro="We bridge global manufacturing with the African research ecosystem — local stocking, validated handling and authorized distribution." dark>
+      {/* CLUSTER 2, Equipment & Reagents */}
+      <Cluster id="equipment" n="Cluster 02" title="Lab Equipment & Reagents" intro="We bridge global manufacturing with the African research ecosystem, local stocking, validated handling and authorized distribution." dark>
         <div className="reveal grid lg:grid-cols-3 gap-5">
           {[
             {
@@ -137,7 +137,7 @@ function ServicesPage() {
               </div>
               <ul className="mt-5 space-y-2.5 text-sm text-background/75">
                 {col.items.map((it) => (
-                  <li key={it} className="flex gap-2"><span className="text-accent-cyan mt-1.5">—</span><span>{it}</span></li>
+                  <li key={it} className="flex gap-2"><span className="text-accent-cyan mt-1.5">, </span><span>{it}</span></li>
                 ))}
               </ul>
             </div>
@@ -153,16 +153,16 @@ function ServicesPage() {
         </div>
       </Cluster>
 
-      {/* CLUSTER 3 — Training & Institute */}
+      {/* CLUSTER 3, Training & Institute */}
       <Cluster id="training" n="Cluster 03" title="Training & Institute" intro="Three pathways: short modular courses, immersive multi-day workshops, and institutional workforce upskilling.">
         <div className="reveal grid lg:grid-cols-3 gap-5">
-          <ServiceBlock I={GraduationCap} title="Modular Hands-On Courses" body="Intensive, career-focused masterclasses — from foundational DNA extractions and gel visualization to primer design and downstream data interpretation." cta="Get a Course" to="/academy" />
+          <ServiceBlock I={GraduationCap} title="Modular Hands-On Courses" body="Intensive, career-focused masterclasses, from foundational DNA extractions and gel visualization to primer design and downstream data interpretation." cta="Get a Course" to="/academy" />
           <ServiceBlock I={Users} title="Hands-On Workshops" body="Immersive multi-day cohorts covering real-time PCR diagnostics, microbial metagenomics and bioinformatics. The register button routes to a secure application portal that handles payment, pre-readings and waitlist locking." cta="Register Now" to="/academy" badge="Currently Enrolling" />
-          <ServiceBlock I={Building2} title="Institutional Workforce Upskilling" body="We partner with research institutes, multi-national organizations and ministries — onboarding cohorts, upskilling legacy staff, embedding long-term institutional competency." cta="Upskill Your Team" to="/contact" />
+          <ServiceBlock I={Building2} title="Institutional Workforce Upskilling" body="We partner with research institutes, multi-national organizations and ministries, onboarding cohorts, upskilling legacy staff, embedding long-term institutional competency." cta="Upskill Your Team" to="/contact" />
         </div>
       </Cluster>
 
-      {/* CLUSTER 4 — Consultancy */}
+      {/* CLUSTER 4, Consultancy */}
       <Cluster id="consultancy" n="Cluster 04" title="Consultancy" intro="From architectural lab design to executive strategic advisory.">
         <div className="reveal grid lg:grid-cols-2 gap-5">
           <ServiceBlock I={Beaker} title="Lab Equipment & Design" body="Comprehensive architectural space-planning, air-handling zoning (pre- vs. post-PCR containment), baseline instrumentation profiling, and regulatory readiness audits for international accreditation." cta="Build Your Lab" to="/contact" sub="Request a technical design consultation and layout blueprint." />

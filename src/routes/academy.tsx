@@ -14,7 +14,7 @@ export const Route = createFileRoute("/academy")({
   component: AcademyPage,
   head: () => ({
     meta: [
-      { title: "Academy — Applied Biotech" },
+      { title: "Academy, Applied Biotech" },
       { name: "description", content: "Hands-on biotech training, certifications and applied science courses." },
     ],
   }),
@@ -50,6 +50,11 @@ function AcademyPage() {
           students: c.students || 0,
           price: c.price,
           img: c.image,
+          description: c.description || c.summary || "",
+          outline: Array.isArray(c.outline) ? c.outline : (typeof c.outline === "string" && c.outline ? c.outline.split(/\n+/).filter(Boolean) : []),
+          duration: c.duration || (c.weeks ? `${c.weeks} weeks` : "Self-paced"),
+          format: c.format || "Hybrid · Online theory + on-site practical",
+          certificate: c.certificate ?? true,
           tag: c.status === "Draft" ? "Upcoming" : c.students > 1000 ? "Bestseller" : "",
           rating: 4.8 + (Math.random() * 0.2) // Fallback for UI polish
         }));
@@ -234,7 +239,7 @@ function AcademyPage() {
             </h2>
             <p className="mt-3 text-sm text-muted-foreground max-w-md">
               {academy.user
-                ? "Your courses, your progress, your practical dates — all in one place. Open the full dashboard or jump back into your last lesson."
+                ? "Your courses, your progress, your practical dates, all in one place. Open the full dashboard or jump back into your last lesson."
                 : "Create an account to enrol in courses, track your reading progress, book practicals and request 1:1 coaching from working scientists."}
             </p>
 
@@ -422,15 +427,64 @@ function AcademyPage() {
 
       {/* Buy / Auth modal */}
       {selected && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm grid place-items-center px-4 animate-fade-in" onClick={() => setSelected(null)}>
-          <div className="w-full max-w-md rounded-2xl bg-card border border-border shadow-brand overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-4 border-b border-border">
-              <div className="font-display font-bold">{academy.user ? "Confirm purchase" : "Sign in to buy"}</div>
-              <button onClick={() => setSelected(null)} className="h-8 w-8 grid place-items-center rounded-full hover:bg-accent"><X className="h-4 w-4" /></button>
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm grid place-items-center px-4 py-8 overflow-y-auto animate-fade-in" onClick={() => setSelected(null)}>
+          <div className="w-full max-w-3xl rounded-3xl bg-card border border-border shadow-brand overflow-hidden grid md:grid-cols-[1.1fr_1fr] my-auto" onClick={(e) => e.stopPropagation()}>
+            {/* Left: course details */}
+            <div className="relative bg-gradient-to-br from-brand/10 via-transparent to-accent-cyan/10 p-6 md:p-8">
+              <button onClick={() => setSelected(null)} className="md:hidden absolute right-3 top-3 h-8 w-8 grid place-items-center rounded-full bg-background/80 hover:bg-accent"><X className="h-4 w-4" /></button>
+              {selected.img && (
+                <div className="rounded-2xl overflow-hidden aspect-[16/10] border border-border">
+                  <img src={selected.img} alt={selected.title} className="w-full h-full object-cover" />
+                </div>
+              )}
+              <h3 className="mt-5 font-display text-xl md:text-2xl font-extrabold leading-tight">{selected.title}</h3>
+              {selected.description && <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{selected.description}</p>}
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                <div className="rounded-xl bg-background border border-border p-3">
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Level</div>
+                  <div className="mt-1 text-sm font-bold leading-tight">{selected.level || "All levels"}</div>
+                </div>
+                <div className="rounded-xl bg-background border border-border p-3">
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Duration</div>
+                  <div className="mt-1 text-sm font-bold leading-tight">{selected.duration || `${selected.weeks} weeks`}</div>
+                </div>
+                <div className="rounded-xl bg-background border border-border p-3">
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Format</div>
+                  <div className="mt-1 text-xs font-semibold leading-tight">{selected.format || "Hybrid"}</div>
+                </div>
+              </div>
+              <div className="mt-5">
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Course outline</div>
+                <ul className="mt-2 space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                  {(selected.outline && selected.outline.length > 0 ? selected.outline : [
+                    "Introduction & lab safety",
+                    "Core protocols & hands-on practice",
+                    "Data analysis & interpretation",
+                    "Practical assessment & certification",
+                  ]).map((line: string, i: number) => (
+                    <li key={i} className="flex items-start gap-2 text-sm">
+                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-brand shrink-0" />
+                      <span className="text-foreground/85 leading-snug">{line}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {selected.certificate && (
+                <div className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-brand">
+                  <Award className="h-4 w-4" /> Certificate of completion issued
+                </div>
+              )}
             </div>
 
-            {!academy.user ? (
-              <div className="p-5">
+            {/* Right: auth or buy */}
+            <div className="p-6 md:p-8 border-t md:border-t-0 md:border-l border-border">
+              <div className="hidden md:flex items-center justify-between mb-4">
+                <div className="font-display font-bold">{academy.user ? "Confirm purchase" : "Sign in to enroll"}</div>
+                <button onClick={() => setSelected(null)} className="h-8 w-8 grid place-items-center rounded-full hover:bg-accent"><X className="h-4 w-4" /></button>
+              </div>
+
+              {!academy.user ? (
+                <div>
                 <div className="flex gap-1 p-1 rounded-xl bg-secondary mb-4">
                   <button onClick={() => setAuthTab("signin")} className={`flex-1 h-9 rounded-lg text-sm font-semibold ${authTab === "signin" ? "bg-background shadow-soft" : ""}`}>Sign in</button>
                   <button onClick={() => setAuthTab("signup")} className={`flex-1 h-9 rounded-lg text-sm font-semibold ${authTab === "signup" ? "bg-background shadow-soft" : ""}`}>Create account</button>
@@ -448,17 +502,19 @@ function AcademyPage() {
                     {authBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : authTab === "signin" ? "Sign in" : "Create account"}
                   </button>
                 </form>
-              </div>
-            ) : (
-              <div className="p-5 space-y-4">
-                <div className="flex gap-3">
-                  {selected.img && <img src={selected.img} alt="" className="h-16 w-24 rounded-lg object-cover" />}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-display font-bold leading-snug">{selected.title}</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">{selected.level} · {selected.weeks} weeks</div>
-                  </div>
-                  <div className="font-display font-bold text-lg shrink-0">₦{Number(selected.price).toLocaleString()}</div>
                 </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="rounded-2xl bg-secondary/60 p-4 flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Total</div>
+                      <div className="font-display text-2xl font-extrabold">₦{Number(selected.price).toLocaleString()}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Signed in</div>
+                      <div className="text-sm font-semibold truncate max-w-[150px]">{academy.user.email}</div>
+                    </div>
+                  </div>
 
                 {dbDates.length > 0 && (
                   <div>
@@ -473,12 +529,14 @@ function AcademyPage() {
                 )}
 
                 {academy.isEnrolled(selected.id) ? (
-                  <Link to="/academy/read/$courseId" params={{ courseId: selected.id }} onClick={() => setSelected(null)} className="block w-full h-11 rounded-xl gradient-brand text-brand-foreground text-sm font-bold inline-flex items-center justify-center">Open reader</Link>
+                  <Link to="/academy/read/$courseId" params={{ courseId: selected.id }} onClick={() => setSelected(null)} className="w-full h-12 rounded-xl gradient-brand text-brand-foreground text-sm font-bold inline-flex items-center justify-center gap-2">Open reader <ArrowRight className="h-4 w-4" /></Link>
                 ) : (
-                  <button onClick={confirmBuy} className="w-full h-11 rounded-xl gradient-brand text-brand-foreground text-sm font-bold">Buy now</button>
+                  <button onClick={confirmBuy} className="w-full h-12 rounded-xl gradient-brand text-brand-foreground text-sm font-bold inline-flex items-center justify-center gap-2">Confirm enrollment <ArrowRight className="h-4 w-4" /></button>
                 )}
-              </div>
-            )}
+                  <p className="text-[11px] text-muted-foreground text-center">Instant access. Cancel before the practical for a full refund.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

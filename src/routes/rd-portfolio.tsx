@@ -16,7 +16,7 @@ export const Route = createFileRoute("/rd-portfolio")({
 
 const projects = [
   { I: Microscope, tag: "Diagnostics", t: "Regional Pathogen Surveillance Network", d: "Multiplex PCR panels deployed across 4 states for real-time outbreak monitoring." },
-  { I: Leaf, tag: "AgriBiotech", t: "Climate-Resilient Microbial Bioinoculants", d: "Locally isolated rhizobacterial strains boosting cassava and yam yields by 18–24%." },
+  { I: Leaf, tag: "AgriBiotech", t: "Climate-Resilient Microbial Bioinoculants", d: "Locally isolated rhizobacterial strains boosting cassava and yam yields by 18, 24%." },
   { I: Dna, tag: "Genomics", t: "Indigenous Cattle Lineage Mapping", d: "STR genotyping of West African Ndama and Bunaji breeds for conservation genetics." },
   { I: ShieldPlus, tag: "Public Health", t: "Mobile Lab for Epidemic Response", d: "Solar-powered diagnostic units pre-positioned for cholera and Lassa fever responses." },
   { I: FlaskConical, tag: "Reagents", t: "AquaPure™ Sovereign Reagents", d: "100% locally manufactured nuclease-free water, validated against international references." },

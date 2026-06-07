@@ -23,15 +23,22 @@ const data: Record<string, { title: string; subtitle: string; eyebrow: string; i
     eyebrow: "Service",
     title: "Training & Applied Biotech Institute",
     subtitle: "Internationally certified biotech training.",
-    intro: "Hands-on workshops and certificate programs in molecular biology, lab safety and bioinformatics — built for students, researchers and clinicians.",
+    intro: "Hands-on workshops and certificate programs in molecular biology, lab safety and bioinformatics, built for students, researchers and clinicians.",
     bullets: ["Molecular biology bootcamps", "Bioinformatics short courses", "Lab safety & GLP", "Equipment operation", "Custom institutional cohorts"],
   },
   "consulting": {
     eyebrow: "Service",
     title: "Consulting",
-    subtitle: "Strategy and implementation for biotech projects.",
-    intro: "We help institutions design, equip and operate laboratories — and advance biotech research strategy from concept to delivery.",
-    bullets: ["Lab design & setup", "Regulatory & accreditation support", "R&D strategy", "Procurement advisory", "Capacity building"],
+    subtitle: "Turn your biotechnology vision into reality.",
+    intro: "The next breakthrough in biotechnology will not come from ideas alone. It will come from organisations that know how to turn innovation into impact. Whether you are a researcher seeking commercialisation pathways, a startup looking for direction, or an institution exploring biotech opportunities, our consulting helps you move faster, decide smarter and unlock greater value. Your next breakthrough deserves more than potential. It deserves a strategy.",
+    bullets: [
+      "Identify opportunities others miss",
+      "Connect research with real-world applications",
+      "Lab design, build and accreditation support",
+      "Commercialisation and go-to-market strategy",
+      "Grant writing and multi-institutional project management",
+      "Procurement, sourcing and vendor advisory",
+    ],
   },
 };
 

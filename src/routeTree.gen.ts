@@ -43,6 +43,7 @@ import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as EditorShopRouteImport } from './routes/editor.shop'
 import { Route as EditorProfileRouteImport } from './routes/editor.profile'
+import { Route as EditorOrdersRouteImport } from './routes/editor.orders'
 import { Route as EditorNewsRouteImport } from './routes/editor.news'
 import { Route as EditorMediaRouteImport } from './routes/editor.media'
 import { Route as EditorGalleryRouteImport } from './routes/editor.gallery'
@@ -58,7 +59,6 @@ import { Route as AdminSecurityRouteImport } from './routes/admin.security'
 import { Route as AdminProfileRouteImport } from './routes/admin.profile'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminNewsRouteImport } from './routes/admin.news'
-import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminGalleryRouteImport } from './routes/admin.gallery'
 import { Route as AdminDealRouteImport } from './routes/admin.deal'
 import { Route as AdminContactRouteImport } from './routes/admin.contact'
@@ -242,6 +242,11 @@ const EditorProfileRoute = EditorProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => EditorRoute,
 } as any)
+const EditorOrdersRoute = EditorOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => EditorRoute,
+} as any)
 const EditorNewsRoute = EditorNewsRouteImport.update({
   id: '/news',
   path: '/news',
@@ -315,11 +320,6 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
 const AdminNewsRoute = AdminNewsRouteImport.update({
   id: '/news',
   path: '/news',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminMessagesRoute = AdminMessagesRouteImport.update({
-  id: '/messages',
-  path: '/messages',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminGalleryRoute = AdminGalleryRouteImport.update({
@@ -410,7 +410,6 @@ export interface FileRoutesByFullPath {
   '/admin/contact': typeof AdminContactRoute
   '/admin/deal': typeof AdminDealRoute
   '/admin/gallery': typeof AdminGalleryRoute
-  '/admin/messages': typeof AdminMessagesRoute
   '/admin/news': typeof AdminNewsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -426,6 +425,7 @@ export interface FileRoutesByFullPath {
   '/editor/gallery': typeof EditorGalleryRoute
   '/editor/media': typeof EditorMediaRoute
   '/editor/news': typeof EditorNewsRoute
+  '/editor/orders': typeof EditorOrdersRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -471,7 +471,6 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AdminContactRoute
   '/admin/deal': typeof AdminDealRoute
   '/admin/gallery': typeof AdminGalleryRoute
-  '/admin/messages': typeof AdminMessagesRoute
   '/admin/news': typeof AdminNewsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -487,6 +486,7 @@ export interface FileRoutesByTo {
   '/editor/gallery': typeof EditorGalleryRoute
   '/editor/media': typeof EditorMediaRoute
   '/editor/news': typeof EditorNewsRoute
+  '/editor/orders': typeof EditorOrdersRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -536,7 +536,6 @@ export interface FileRoutesById {
   '/admin/contact': typeof AdminContactRoute
   '/admin/deal': typeof AdminDealRoute
   '/admin/gallery': typeof AdminGalleryRoute
-  '/admin/messages': typeof AdminMessagesRoute
   '/admin/news': typeof AdminNewsRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/profile': typeof AdminProfileRoute
@@ -552,6 +551,7 @@ export interface FileRoutesById {
   '/editor/gallery': typeof EditorGalleryRoute
   '/editor/media': typeof EditorMediaRoute
   '/editor/news': typeof EditorNewsRoute
+  '/editor/orders': typeof EditorOrdersRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -602,7 +602,6 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/deal'
     | '/admin/gallery'
-    | '/admin/messages'
     | '/admin/news'
     | '/admin/orders'
     | '/admin/profile'
@@ -618,6 +617,7 @@ export interface FileRouteTypes {
     | '/editor/gallery'
     | '/editor/media'
     | '/editor/news'
+    | '/editor/orders'
     | '/editor/profile'
     | '/editor/shop'
     | '/news/$slug'
@@ -663,7 +663,6 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/deal'
     | '/admin/gallery'
-    | '/admin/messages'
     | '/admin/news'
     | '/admin/orders'
     | '/admin/profile'
@@ -679,6 +678,7 @@ export interface FileRouteTypes {
     | '/editor/gallery'
     | '/editor/media'
     | '/editor/news'
+    | '/editor/orders'
     | '/editor/profile'
     | '/editor/shop'
     | '/news/$slug'
@@ -727,7 +727,6 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/deal'
     | '/admin/gallery'
-    | '/admin/messages'
     | '/admin/news'
     | '/admin/orders'
     | '/admin/profile'
@@ -743,6 +742,7 @@ export interface FileRouteTypes {
     | '/editor/gallery'
     | '/editor/media'
     | '/editor/news'
+    | '/editor/orders'
     | '/editor/profile'
     | '/editor/shop'
     | '/news/$slug'
@@ -1027,6 +1027,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EditorProfileRouteImport
       parentRoute: typeof EditorRoute
     }
+    '/editor/orders': {
+      id: '/editor/orders'
+      path: '/orders'
+      fullPath: '/editor/orders'
+      preLoaderRoute: typeof EditorOrdersRouteImport
+      parentRoute: typeof EditorRoute
+    }
     '/editor/news': {
       id: '/editor/news'
       path: '/news'
@@ -1130,13 +1137,6 @@ declare module '@tanstack/react-router' {
       path: '/news'
       fullPath: '/admin/news'
       preLoaderRoute: typeof AdminNewsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/messages': {
-      id: '/admin/messages'
-      path: '/messages'
-      fullPath: '/admin/messages'
-      preLoaderRoute: typeof AdminMessagesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/gallery': {
@@ -1258,7 +1258,6 @@ interface AdminRouteChildren {
   AdminContactRoute: typeof AdminContactRoute
   AdminDealRoute: typeof AdminDealRoute
   AdminGalleryRoute: typeof AdminGalleryRoute
-  AdminMessagesRoute: typeof AdminMessagesRoute
   AdminNewsRoute: typeof AdminNewsRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminProfileRoute: typeof AdminProfileRoute
@@ -1276,7 +1275,6 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminContactRoute: AdminContactRoute,
   AdminDealRoute: AdminDealRoute,
   AdminGalleryRoute: AdminGalleryRoute,
-  AdminMessagesRoute: AdminMessagesRoute,
   AdminNewsRoute: AdminNewsRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminProfileRoute: AdminProfileRoute,
@@ -1310,6 +1308,7 @@ interface EditorRouteChildren {
   EditorGalleryRoute: typeof EditorGalleryRoute
   EditorMediaRoute: typeof EditorMediaRoute
   EditorNewsRoute: typeof EditorNewsRoute
+  EditorOrdersRoute: typeof EditorOrdersRoute
   EditorProfileRoute: typeof EditorProfileRoute
   EditorShopRoute: typeof EditorShopRoute
   EditorIndexRoute: typeof EditorIndexRoute
@@ -1324,6 +1323,7 @@ const EditorRouteChildren: EditorRouteChildren = {
   EditorGalleryRoute: EditorGalleryRoute,
   EditorMediaRoute: EditorMediaRoute,
   EditorNewsRoute: EditorNewsRoute,
+  EditorOrdersRoute: EditorOrdersRoute,
   EditorProfileRoute: EditorProfileRoute,
   EditorShopRoute: EditorShopRoute,
   EditorIndexRoute: EditorIndexRoute,
@@ -1408,12 +1408,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

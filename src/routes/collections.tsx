@@ -11,7 +11,7 @@ export const Route = createFileRoute("/collections")({
   component: CollectionsPage,
   head: () => ({
     meta: [
-      { title: "Collections — Applied Biotech" },
+      { title: "Collections, Applied Biotech" },
       { name: "description", content: "Curated bundles of lab equipment, reagents and educational kits." },
     ],
   }),

@@ -137,7 +137,7 @@ function AcademyDashboard() {
           )}
 
           {tab === "courses" && (
-            <Section title="My Courses" subtitle="Every course you own — open any to keep reading.">
+            <Section title="My Courses" subtitle="Every course you own, open any to keep reading.">
               {enrollments.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center text-sm text-muted-foreground">
                   You haven't bought a course yet. <Link to="/academy" className="text-brand font-semibold hover:underline">Browse the Academy.</Link>

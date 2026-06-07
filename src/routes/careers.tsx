@@ -9,7 +9,7 @@ export const Route = createFileRoute("/careers")({
   head: () => ({
     meta: [
       { title: "Careers · Applied Biotech" },
-      { name: "description", content: "Join Applied Biotech — open roles in molecular science, training, engineering and operations." },
+      { name: "description", content: "Join Applied Biotech, open roles in molecular science, training, engineering and operations." },
     ],
   }),
 });
@@ -17,10 +17,10 @@ export const Route = createFileRoute("/careers")({
 const roles = [
   { t: "Senior Molecular Biologist", loc: "Abuja, NG", type: "Full-time", team: "Lab Services" },
   { t: "Bioinformatics Analyst", loc: "Remote · Africa", type: "Full-time", team: "Research" },
-  { t: "Training Coordinator — Academy", loc: "Abuja, NG", type: "Full-time", team: "Capacity Building" },
-  { t: "Field Engineer — Mobile Labs", loc: "Lagos, NG", type: "Full-time", team: "Infrastructure" },
+  { t: "Training Coordinator, Academy", loc: "Abuja, NG", type: "Full-time", team: "Capacity Building" },
+  { t: "Field Engineer, Mobile Labs", loc: "Lagos, NG", type: "Full-time", team: "Infrastructure" },
   { t: "Grants & Partnerships Officer", loc: "Hybrid", type: "Full-time", team: "Consultancy" },
-  { t: "QC Technician — Bio-Manufacturing", loc: "Abuja, NG", type: "Full-time", team: "Manufacturing" },
+  { t: "QC Technician, Bio-Manufacturing", loc: "Abuja, NG", type: "Full-time", team: "Manufacturing" },
 ];
 
 function CareersPage() {
