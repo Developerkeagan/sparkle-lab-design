@@ -164,9 +164,8 @@ function Marquee() {
 }
 
 const FEATURED_SLIDES = [
-  { eyebrow: "Run Cleaner Reactions", headline: "Get AquaPure™ — the water your PCR deserves.", body: "Validated nuclease-free water that ends your contamination headaches. Use it across master mixes, NGS prep and cell culture and watch your yields jump.", img: aquapure, cta: { label: "Order AquaPure", to: "/shop" as const } },
-  { eyebrow: "Deploy Science Anywhere", headline: "Take your lab where the outbreak is.", body: "Rugged, solar-powered, self-sustaining mobile labs that put PCR, sequencing and surveillance in the hands of frontline teams in 30 days flat.", img: mobileLab, cta: { label: "Plan a Deployment", to: "/contact" as const } },
-  { eyebrow: "Lead the Bioeconomy", headline: "Patent your breakthrough — we'll help you scale it.", body: "Locally-sourced biological assets, validated, protected and ready for market. From climate-resilient bioinoculants to sovereign diagnostic kits.", img: heroBioeconomy, cta: { label: "See R&D Pipeline", to: "/rd-portfolio" as const } },
+  { eyebrow: "Run Cleaner Reactions", headline: "Get AquaPure, the water your PCR deserves.", body: "Validated nuclease-free water that ends contamination headaches. Use it across master mixes, NGS prep and cell culture and watch your yields jump.", img: aquapure, cta: { label: "Order AquaPure", to: "/shop" as const } },
+  { eyebrow: "Lead the Bioeconomy", headline: "Patent your breakthrough, we will help you scale it.", body: "Locally sourced biological assets, validated, protected and ready for market. From climate resilient bioinoculants to sovereign diagnostic kits.", img: heroBioeconomy, cta: { label: "See R&D Pipeline", to: "/rd-portfolio" as const } },
 ];
 
 function FeaturedRotator() {
