@@ -126,7 +126,7 @@ function CollModal({ open, onClose, editing, onSave, loading, allProducts }: { o
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
         </PrimaryBtn></>}>
       <div className="space-y-4">
-        <ImageUpload label="Cover image" value={cover} onChange={(val) => { if (typeof val === 'string') setCover(val); else { setCoverFile(val); setCover(URL.createObjectURL(val)); } }} aspect="aspect-[16/9]" />
+        <ImageUpload label="Cover image" value={cover} onChange={(val) => { if (!val) { setCoverFile(null); setCover(""); } else if (typeof val === 'string') setCover(val); else { setCoverFile(val); setCover(URL.createObjectURL(val)); } }} aspect="aspect-[16/9]" />
         <Field label="Collection name"><input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} /></Field>
         <Field label="Description"><textarea rows={3} className={textareaCls} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
         <Field label="Status">
