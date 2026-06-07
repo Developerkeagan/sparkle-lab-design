@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Applied Biotech — Build the Future of African Biotechnology" },
+      { title: "Applied Biotech, Build the Future of African Biotechnology" },
       { name: "description", content: "Train as a scientist, equip your lab, partner on breakthrough research and help shape the bio-economy with Applied Biotech." },
     ],
   }),
@@ -430,19 +430,19 @@ function DealOfWeek() {
 function WhatWeDo() {
   const cards = [
     { n: "01", I: Atom, t: "Drive a discovery that matters",
-      d: "Plug into the genomics, molecular epidemiology and bio-innovation work moving African public health forward. Bring your hypothesis — we'll bring the bench, the bioinformatics and twenty years of experience.",
+      d: "Plug into the genomics, molecular epidemiology and bio-innovation work moving African public health forward. Bring your hypothesis, we'll bring the bench, the bioinformatics and twenty years of experience.",
       cta: "Co-build a project", to: "/rd-portfolio" as const },
     { n: "02", I: ShoppingBag, t: "Stock your bench in days, not months",
       d: "Stop waiting on customs. Order Tier-1 reagents, calibrated instruments and ready-to-ship consumables backed by local warranty, cold-chain integrity and live technical support.",
       cta: "Browse the shop", to: "/shop" as const },
     { n: "03", I: GraduationCap, t: "Become a certified molecular scientist",
-      d: "Pipette, plate, run and analyse — on real benches, with real samples. Walk out with an internationally-recognised certification and the muscle memory of a working lab scientist.",
+      d: "Pipette, plate, run and analyse, on real benches, with real samples. Walk out with an internationally-recognised certification and the muscle memory of a working lab scientist.",
       cta: "Enrol today", to: "/academy" as const },
     { n: "04", I: BrainCircuit, t: "Build the lab you've been sketching",
-      d: "Design, fund and stand up the molecular facility your institution needs — from grant strategy to biosafety zoning to accreditation. We've done it across five hubs and we'll do it with you.",
+      d: "Design, fund and stand up the molecular facility your institution needs, from grant strategy to biosafety zoning to accreditation. We've done it across five hubs and we'll do it with you.",
       cta: "Brief our advisors", to: "/contact" as const },
     { n: "05", I: Lightbulb, t: "Turn local biology into a global asset",
-      d: "Got an idea for a bioinoculant, a kit or a sovereign reagent? We help you validate it, patent it and bring it to market — proudly built on African biodiversity.",
+      d: "Got an idea for a bioinoculant, a kit or a sovereign reagent? We help you validate it, patent it and bring it to market, proudly built on African biodiversity.",
       cta: "Pitch your innovation", to: "/ip-publications" as const },
   ];
   return (
@@ -458,7 +458,7 @@ function WhatWeDo() {
             Five ways to plug in and <span className="gradient-text">change the bench.</span>
           </h2>
           <p className="mt-5 text-muted-foreground text-lg">
-            Whether you're learning, building, supplying or scaling — there's a door for you here.
+            Whether you're learning, building, supplying or scaling, there's a door for you here.
           </p>
         </div>
         <div className="mt-14 max-w-3xl mx-auto flex flex-col gap-10">
@@ -504,7 +504,7 @@ function Welcome() {
         <div className="reveal">
           <span className="text-xs uppercase tracking-[0.25em] text-brand font-semibold">Founder · CEO</span>
           <h2 className="mt-3 font-display text-3xl md:text-5xl font-extrabold leading-[1.05]">
-            Hear why we built this — from <span className="gradient-text">Prof. Nwadiuto Esiobu</span>
+            Hear why we built this, from <span className="gradient-text">Prof. Nwadiuto Esiobu</span>
           </h2>
           <p className="mt-5 text-muted-foreground leading-relaxed">
             A two-minute message on what brought us here, who we're building for, and how you can be part of the next chapter.
@@ -519,7 +519,7 @@ function Welcome() {
               <iframe src={`https://www.youtube.com/embed/${videoId}?autoplay=1`} title="Welcome from Prof. Nwadiuto Esiobu" allow="autoplay; encrypted-media" allowFullScreen className="absolute inset-0 w-full h-full" />
             ) : (
               <button onClick={() => setPlaying(true)} className="absolute inset-0 w-full h-full">
-                <img src={profPortrait} alt="Prof. Nwadiuto Esiobu — Founder & CEO of Applied Biotech" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={profPortrait} alt="Prof. Nwadiuto Esiobu, Founder & CEO of Applied Biotech" loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent" />
                 <div className="absolute inset-0 grid place-items-center">
                   <div className="h-20 w-20 rounded-full bg-background/95 grid place-items-center shadow-brand group-hover:scale-110 transition-transform">
@@ -582,7 +582,7 @@ function News() {
 
 function Pillars() {
   const pillars = [
-    { I: Sparkles, t: "Bench you can trust", d: "Calibrated assays, validated SOPs and zero contamination tolerance — every single run." },
+    { I: Sparkles, t: "Bench you can trust", d: "Calibrated assays, validated SOPs and zero contamination tolerance, every single run." },
     { I: Cpu, t: "Labs that show up", d: "Designed, built and maintained end-to-end. No abandoned facilities, no broken kit." },
     { I: Award, t: "Certifications that travel", d: "Train here, work anywhere. CMD-recognised curriculum trusted across the continent." },
     { I: Shield, t: "Twenty years of receipts", d: "A scientific bench backed by two decades of peer-reviewed, field-proven research." },
@@ -691,7 +691,7 @@ function QuickDoors() {
             <ShoppingBag className="h-3.5 w-3.5" /> Shop
           </span>
           <h3 className="mt-4 font-display text-3xl md:text-4xl font-extrabold leading-tight">Stock your bench in days.</h3>
-          <p className="mt-3 text-white/85 max-w-md">Tier-1 reagents, calibrated instruments, sovereign consumables — backed by local warranty and live technical support. Order today, ship tomorrow.</p>
+          <p className="mt-3 text-white/85 max-w-md">Tier-1 reagents, calibrated instruments, sovereign consumables, backed by local warranty and live technical support. Order today, ship tomorrow.</p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs">
             {["PCR & RT-qPCR", "Cell culture", "NGS consumables", "Lab plasticware"].map((t) => (
               <span key={t} className="px-2.5 py-1 rounded-full bg-white/15">{t}</span>

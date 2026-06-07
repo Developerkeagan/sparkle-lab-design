@@ -24,7 +24,7 @@ const publications = [
 const patents = [
   { t: "Solar-Powered Mobile Molecular Laboratory Container", status: "Granted" },
   { t: "Bioinoculant Formulation for Cassava Yield Resilience", status: "Pending" },
-  { t: "Rapid Antigen Assay Kit — Tropical Indications", status: "Granted" },
+  { t: "Rapid Antigen Assay Kit, Tropical Indications", status: "Granted" },
 ];
 
 function IpPublicationsPage() {

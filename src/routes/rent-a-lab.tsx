@@ -12,7 +12,7 @@ export const Route = createFileRoute("/rent-a-lab")({
   head: () => ({
     meta: [
       { title: "Rent-A-Lab · Applied Biotech" },
-      { name: "description", content: "Rent fully-equipped bench space at our premium Abuja molecular lab — for thesis, independent studies or corporate validations." },
+      { name: "description", content: "Rent fully-equipped bench space at our premium Abuja molecular lab, for thesis, independent studies or corporate validations." },
     ],
   }),
 });
@@ -77,7 +77,7 @@ function RentALabPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <PageHero eyebrow="Rent-A-Lab" title={<>Secure <span className="gradient-text">bench space.</span></>} subtitle="Tell us about your project — research scope, duration and whether you'd like reporting/data-analytics support." />
+      <PageHero eyebrow="Rent-A-Lab" title={<>Secure <span className="gradient-text">bench space.</span></>} subtitle="Tell us about your project, research scope, duration and whether you'd like reporting/data-analytics support." />
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl">
           {done ? (
@@ -102,8 +102,8 @@ function RentALabPage() {
                   <select name="duration" required className={ip}>
                     <option value="">Select…</option>
                     <option>1 week</option>
-                    <option>2–4 weeks</option>
-                    <option>1–3 months</option>
+                    <option>2, 4 weeks</option>
+                    <option>1, 3 months</option>
                     <option>3+ months</option>
                   </select>
                 </Field>

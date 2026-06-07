@@ -63,7 +63,7 @@ function AboutPage() {
             <p className="mt-6 text-base md:text-lg text-muted-foreground leading-[1.85]">
               "Welcome to Applied Biotech International. Since our establishment in 2006, our mission has been to dismantle the structural and infrastructural barriers limiting life science research in developing economies. By integrating high-caliber technical services, elite capacity building, and reliable procurement, we empower African scientists to drive global biological innovations right from home soil."
             </p>
-            <div className="mt-6 text-sm font-semibold text-foreground">— Founder & CEO, Applied Biotech International</div>
+            <div className="mt-6 text-sm font-semibold text-foreground">, Founder & CEO, Applied Biotech International</div>
           </div>
           <div className="reveal order-1 lg:order-2 relative">
             <div className="relative rounded-[2rem] overflow-hidden shadow-brand aspect-[4/5]">

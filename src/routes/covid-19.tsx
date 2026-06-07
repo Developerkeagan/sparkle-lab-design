@@ -19,7 +19,7 @@ function CovidPage() {
   ];
   return (
     <div className="min-h-screen bg-background">
-      <PageHero eyebrow="Covid-19" title={<>Our pandemic <span className="gradient-text">response</span></>} subtitle="From rapid diagnostics to training and community outreach — what we did, and what we continue to do." />
+      <PageHero eyebrow="Covid-19" title={<>Our pandemic <span className="gradient-text">response</span></>} subtitle="From rapid diagnostics to training and community outreach, what we did, and what we continue to do." />
       <section className="py-16 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl grid gap-6 md:grid-cols-2">
           {items.map(({ I, t, d }) => (

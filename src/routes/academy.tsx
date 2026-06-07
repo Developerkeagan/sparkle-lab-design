@@ -14,7 +14,7 @@ export const Route = createFileRoute("/academy")({
   component: AcademyPage,
   head: () => ({
     meta: [
-      { title: "Academy — Applied Biotech" },
+      { title: "Academy, Applied Biotech" },
       { name: "description", content: "Hands-on biotech training, certifications and applied science courses." },
     ],
   }),
@@ -239,7 +239,7 @@ function AcademyPage() {
             </h2>
             <p className="mt-3 text-sm text-muted-foreground max-w-md">
               {academy.user
-                ? "Your courses, your progress, your practical dates — all in one place. Open the full dashboard or jump back into your last lesson."
+                ? "Your courses, your progress, your practical dates, all in one place. Open the full dashboard or jump back into your last lesson."
                 : "Create an account to enrol in courses, track your reading progress, book practicals and request 1:1 coaching from working scientists."}
             </p>
 

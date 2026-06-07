@@ -23,7 +23,7 @@ const data: Record<string, { title: string; subtitle: string; eyebrow: string; i
     eyebrow: "Service",
     title: "Training & Applied Biotech Institute",
     subtitle: "Internationally certified biotech training.",
-    intro: "Hands-on workshops and certificate programs in molecular biology, lab safety and bioinformatics — built for students, researchers and clinicians.",
+    intro: "Hands-on workshops and certificate programs in molecular biology, lab safety and bioinformatics, built for students, researchers and clinicians.",
     bullets: ["Molecular biology bootcamps", "Bioinformatics short courses", "Lab safety & GLP", "Equipment operation", "Custom institutional cohorts"],
   },
   "consulting": {
