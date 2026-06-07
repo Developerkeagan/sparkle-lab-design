@@ -39,13 +39,12 @@ function readJSON<T>(k: string, fallback: T): T {
 }
 
 export function AcademyProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AcademyUser | null>(null);
-  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
-
-  useEffect(() => {
-    setUser(readJSON<AcademyUser | null>(USER_KEY, null));
-    setEnrollments(readJSON<Enrollment[]>(ENROLL_KEY, []));
-  }, []);
+  const [user, setUser] = useState<AcademyUser | null>(() =>
+    typeof window === "undefined" ? null : readJSON<AcademyUser | null>(USER_KEY, null)
+  );
+  const [enrollments, setEnrollments] = useState<Enrollment[]>(() =>
+    typeof window === "undefined" ? [] : readJSON<Enrollment[]>(ENROLL_KEY, [])
+  );
 
   useEffect(() => {
     try { localStorage.setItem(ENROLL_KEY, JSON.stringify(enrollments)); } catch {}
