@@ -43,6 +43,7 @@ import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as EditorShopRouteImport } from './routes/editor.shop'
 import { Route as EditorProfileRouteImport } from './routes/editor.profile'
+import { Route as EditorOrdersRouteImport } from './routes/editor.orders'
 import { Route as EditorNewsRouteImport } from './routes/editor.news'
 import { Route as EditorMediaRouteImport } from './routes/editor.media'
 import { Route as EditorGalleryRouteImport } from './routes/editor.gallery'
@@ -242,6 +243,11 @@ const EditorProfileRoute = EditorProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => EditorRoute,
 } as any)
+const EditorOrdersRoute = EditorOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => EditorRoute,
+} as any)
 const EditorNewsRoute = EditorNewsRouteImport.update({
   id: '/news',
   path: '/news',
@@ -426,6 +432,7 @@ export interface FileRoutesByFullPath {
   '/editor/gallery': typeof EditorGalleryRoute
   '/editor/media': typeof EditorMediaRoute
   '/editor/news': typeof EditorNewsRoute
+  '/editor/orders': typeof EditorOrdersRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -487,6 +494,7 @@ export interface FileRoutesByTo {
   '/editor/gallery': typeof EditorGalleryRoute
   '/editor/media': typeof EditorMediaRoute
   '/editor/news': typeof EditorNewsRoute
+  '/editor/orders': typeof EditorOrdersRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -552,6 +560,7 @@ export interface FileRoutesById {
   '/editor/gallery': typeof EditorGalleryRoute
   '/editor/media': typeof EditorMediaRoute
   '/editor/news': typeof EditorNewsRoute
+  '/editor/orders': typeof EditorOrdersRoute
   '/editor/profile': typeof EditorProfileRoute
   '/editor/shop': typeof EditorShopRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -618,6 +627,7 @@ export interface FileRouteTypes {
     | '/editor/gallery'
     | '/editor/media'
     | '/editor/news'
+    | '/editor/orders'
     | '/editor/profile'
     | '/editor/shop'
     | '/news/$slug'
@@ -679,6 +689,7 @@ export interface FileRouteTypes {
     | '/editor/gallery'
     | '/editor/media'
     | '/editor/news'
+    | '/editor/orders'
     | '/editor/profile'
     | '/editor/shop'
     | '/news/$slug'
@@ -743,6 +754,7 @@ export interface FileRouteTypes {
     | '/editor/gallery'
     | '/editor/media'
     | '/editor/news'
+    | '/editor/orders'
     | '/editor/profile'
     | '/editor/shop'
     | '/news/$slug'
@@ -1025,6 +1037,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/editor/profile'
       preLoaderRoute: typeof EditorProfileRouteImport
+      parentRoute: typeof EditorRoute
+    }
+    '/editor/orders': {
+      id: '/editor/orders'
+      path: '/orders'
+      fullPath: '/editor/orders'
+      preLoaderRoute: typeof EditorOrdersRouteImport
       parentRoute: typeof EditorRoute
     }
     '/editor/news': {
@@ -1310,6 +1329,7 @@ interface EditorRouteChildren {
   EditorGalleryRoute: typeof EditorGalleryRoute
   EditorMediaRoute: typeof EditorMediaRoute
   EditorNewsRoute: typeof EditorNewsRoute
+  EditorOrdersRoute: typeof EditorOrdersRoute
   EditorProfileRoute: typeof EditorProfileRoute
   EditorShopRoute: typeof EditorShopRoute
   EditorIndexRoute: typeof EditorIndexRoute
@@ -1324,6 +1344,7 @@ const EditorRouteChildren: EditorRouteChildren = {
   EditorGalleryRoute: EditorGalleryRoute,
   EditorMediaRoute: EditorMediaRoute,
   EditorNewsRoute: EditorNewsRoute,
+  EditorOrdersRoute: EditorOrdersRoute,
   EditorProfileRoute: EditorProfileRoute,
   EditorShopRoute: EditorShopRoute,
   EditorIndexRoute: EditorIndexRoute,
@@ -1408,12 +1429,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

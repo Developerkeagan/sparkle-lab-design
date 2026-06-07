@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import useFetch from "@/hooks/useFetch";
 
-export const Route = createFileRoute("/admin/orders")({ component: AdminOrders });
+export const Route = createFileRoute("/editor/orders")({ component: AdminOrders });
 
 interface Order {
   id: string;

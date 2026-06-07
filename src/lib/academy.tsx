@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, ReactNode } from "react";
 import { toast } from "sonner";
 
-export type AcademyUser = { email: string; name: string };
+export type AcademyUser = { email: string; name: string; role?: string; username?: string; fullName?: string };
 export type Enrollment = {
   courseId: string;
   title: string;
